@@ -46,10 +46,11 @@ class Sim:
             t = Triangle(pi, pj, pk)
             c = t.centre()
 
-            if any([self.get_distance(c, t.a) < thresh,
-                self.get_distance(c, t.b) < thresh,
-                self.get_distance(c, t.c) < thresh]):
-                continue
+            # if any([self.get_distance(c, t.a) < thresh,
+            #     self.get_distance(c, t.b) < thresh,
+            #     self.get_distance(c, t.c) < thresh]):
+            #     print('edges too small')
+            #     continue
 
             if any([e > 2.0*thresh for e in t.edge_lengths()]):
                 continue
