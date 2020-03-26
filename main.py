@@ -6,11 +6,11 @@ from sim import Sim
 
 if __name__ == "__main__":
     sim = Sim(10.0)
-    for i in range(100):
+    for i in range(50):
         sim.generate_particle()
     # TODO test triangle intersection and triangle get
 
-    triangles = sim.find_triangles()
+    triangles = sim.find_triangles(2)
 
     ax = plt.axes([0, 0, 1, 1], projection='3d')
 
@@ -29,7 +29,7 @@ if __name__ == "__main__":
         ax.plot_surface(x, y, z, color="r")
 
     for triangle in triangles:
-        x, y, z = zip(*triangle)
+        x, y, z = zip(*triangle.vertices())
         ax.plot(x, y, z, '--', color='0.5')
     ax.set_xlim([0,10])
     ax.set_ylim([0,10])
