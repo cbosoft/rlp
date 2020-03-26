@@ -43,7 +43,7 @@ class Sim:
             if ids in trangles_ids:
                 continue
 
-            t = Triangle(pi, pj, pk)
+            t = Triangle(pi.position, pj.position, pk.position)
             c = t.centre()
 
             # if any([self.get_distance(c, t.a) < thresh,
