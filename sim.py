@@ -64,14 +64,14 @@ class Sim:
             if triangle.intersects(particle.position):
                 intersections.append(triangle)
 
-        print("settling particle")
+        print("settling particle", end='')
         if not intersections:
             particle.settle_to(position_z=0.0)
-            print("  on floor")
+            print(" on floor")
         else:
             # TODO select proper height
             particle.settle_to(position_z=1.0)
-            print("  on top")
+            print(" on top")
 
 
 
