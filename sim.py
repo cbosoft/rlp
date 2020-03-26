@@ -31,6 +31,7 @@ class Sim:
 
 
     def find_triangles(self, thresh):
+        # TODO don't re-form tringle list every time, just add new particle's trianlges to the current.
         triplets = itt.product(self.particles, self.particles, self.particles)
         triangles = list()
         trangles_ids = list()
