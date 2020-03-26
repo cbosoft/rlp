@@ -3,30 +3,50 @@ import numpy as np
 def get_distance(p1, p2):
     return np.sqrt(np.sum(np.power(np.subtract(p1, p2), 2)))
 
+def get_internal_angle(v1, v2):
+    mag1 = np.sqrt(np.dot(v1, v1))
+    mag2 = np.sqrt(np.dot(v2, v2))
+    costheta = np.divide(v1.dot(v2), mag1*mag2)
+    return np.arccos(costheta)
+
 class Triangle:
 
-    def __init__(self, pi, pj, pk):
-        self.pi = pi
-        self.pj = pj
-        self.pk = pk
-        self.a = pi.position
-        self.b = pj.position
-        self.c = pk.position
+    def __init__(self, a, b, c):
+        self.a = a
+        self.b = b
+        self.c = c
+        vertices = [a, b, c]
+        self.thetas = list()
+        self.thetas2d = list()
+        for vertex in vertices:
+            vertex = np.array(vertex)
+            vectors = [np.subtract(vertex, other) for other in vertices if any(other != vertex)]
+            vectors2d = [np.subtract(vertex[:-1], other[:-1]) for other in vertices if any(other != vertex)]
+            self.thetas.append(get_internal_angle(*vectors))
+            self.thetas2d.append(get_internal_angle(*vectors2d))
+
+    def __repr__(self):
+        return repr(self.vertices())
+
+    def __str__(self):
+        return str(self.vertices())
+
+
 
     def area(self):
         ab = np.subtract(self.b, self.a)
         ac = np.subtract(self.c, self.a)
-        magab = np.sum(np.power(ab, 2.0))
-        magac = np.sum(np.power(ac, 2.0))
-        #theta = np.acos(np.divide(np.sum(np.multiply(ab, ac)), magab*magac))
-        #area = 0.2*magab*magac*np.sin(theta)
-        costheta = np.divide(np.sum(np.multiply(ab, ac)), magab*magac)
+        magab = np.sqrt(np.sum(np.power(ab, 2.0)))
+        magac = np.sqrt(np.sum(np.power(ac, 2.0)))
+        costheta = np.divide(np.dot(ab, ac), magab*magac)
         sintheta = np.sqrt(np.subtract(1.0, np.power(costheta, 2.0)))
-        area = 0.2*magab*magac*sintheta
+        area = 0.5*magab*magac*sintheta
         return area
+
 
     def centre(self):
         return np.divide(np.add(self.a, np.add(self.b, self.c)), 3.0)
+
 
     def edges(self):
         ba = np.subtract(self.b, self.a)
@@ -34,11 +54,18 @@ class Triangle:
         ca = np.subtract(self.c, self.a)
         return ba, bc, ca
 
+
     def vertex_pairs(self):
         return [(self.a, self.b), (self.a, self.c), (self.b, self.c)]
 
+
+    def vertices(self):
+        return [self.a, self.b, self.c]
+
+
     def edge_lengths(self):
         return [np.sum(np.power(e, 2.0)) for e in self.edges()]
+
 
     def plane(self):
         ba = np.subtract(self.b, self.a)
@@ -47,23 +74,34 @@ class Triangle:
         D = A*self.a[0] + B*self.a[0] + C*self.a[0]
         return A, B, C, D
 
-    def intersects(self, position):
-        # TODO find better method to get intersection of polygon
-        ray = [0.0, 0.0]
-        position = position[:-1]
-        dr = np.subtract(position, ray)
-        dr = np.divide(dr, np.sqrt(np.sum(np.power(dr, 2.0))))
-        step = 1e-5
-        eps = 1e-5
-        intersections = 0
-        while True:
-            for a, b in self.vertex_pairs():
-                raya = get_distance(ray, a)
-                rayb = get_distance(ray, b)
-                if raya - eps < rayb < raya + eps:
-                    intersections += 1
-            rayp = get_distance(ray, position);
-            if rayp < eps:
-                break
-            ray = np.add(ray, np.multiply(dr, step))
-        return intersections == 1
+
+    def intersects(self, position, D=3):
+
+        # first rough check
+        vertices = self.vertices()
+        maxv = np.max(vertices, axis=0)
+        minv = np.min(vertices, axis=0)
+        if np.any(position[:D] > maxv[:D]):
+            return False
+        if np.any(position[:D] < minv[:D]):
+            return False
+
+        # more involved check
+        thetas = self.thetas2d if D == 2 else self.thetas
+        for vertex, theta in zip(vertices, thetas):
+            vertex = np.array(vertex)
+            vectors = list()
+            for other in vertices:
+
+                if all(other[:D] == vertex[:D]):
+                    continue
+
+                vectors.append(np.subtract(vertex[:D], other[:D]))
+
+            v_to_p = np.subtract(vertex, position)
+            for vector in vectors:
+                ang = get_internal_angle(vector[:D], v_to_p[:D])
+                if ang > theta:
+                    return False
+
+        return True
