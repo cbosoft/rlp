@@ -30,7 +30,7 @@ class Sim:
             self.particles.append(new_particle)
 
 
-    def find_triangles(self, thresh=2.0):
+    def find_triangles(self, thresh):
         triplets = itt.product(self.particles, self.particles, self.particles)
         triangles = list()
         trangles_ids = list()
