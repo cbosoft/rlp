@@ -49,7 +49,12 @@ class Sim:
             t = Triangle(pi.position, pj.position, pk.position)
             c = t.centre()
 
-            if any([e > 2.0*thresh for e in t.edge_lengths()]):
+            # if any([e > 2.0*thresh for e in t.edge_lengths()]):
+            #     continue
+            if np.any(t.thetas > np.pi/2.0):
+                continue
+
+            if np.any(get_distance(t.centre(), t.vertices()) > thresh):
                 continue
 
             self.triangles.append(t)
