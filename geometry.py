@@ -24,6 +24,8 @@ class Triangle:
             vectors2d = [np.subtract(vertex[:-1], other[:-1]) for other in vertices if any(other != vertex)]
             self.thetas.append(get_internal_angle(*vectors))
             self.thetas2d.append(get_internal_angle(*vectors2d))
+        self.thetas = np.array(self.thetas, dtype=np.float64)
+        self.thetas2d = np.array(self.thetas2d, dtype=np.float64)
 
     def __repr__(self):
         return repr(self.vertices())
@@ -60,7 +62,7 @@ class Triangle:
 
 
     def vertices(self):
-        return [self.a, self.b, self.c]
+        return np.array([self.a, self.b, self.c], dtype=np.float64)
 
 
     def edge_lengths(self):
