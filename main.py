@@ -1,6 +1,7 @@
 import sys
 
 import numpy as np
+from matplotlib import cm
 from matplotlib import pyplot as plt
 
 from particle import Particle
@@ -48,11 +49,13 @@ if __name__ == "__main__":
         Y = np.sin(u)*np.sin(v)*0.5
         Z = np.cos(v)*0.5
 
+        cmap = cm.get_cmap('viridis', 12)
         for particle in sim.particles:
             x = np.add(X, particle.position[0])
             y = np.add(Y, particle.position[1])
             z = np.add(Z, particle.position[2])
-            ax.plot_surface(x, y, z, color="r")
+            nz = np.divide(particle.position[2], sim.L)
+            ax.plot_surface(x, y, z, color=cmap(nz))
 
             # x, y, z = particle.position
             # ax.plot([x], [y], [z], 'C0o')
