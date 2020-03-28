@@ -37,7 +37,11 @@ class Sim:
         if len(self.particles) < 3:
             return
         pairs = itt.product(self.particles[:-1], self.particles[:-1])
+        others = self.particles[:-1]
         pi = self.particles[-1]
+        others = [o for o in others if get_distance(pi.position, o.position) < (o.diameter + pi.diameter)*2.0 ]
+        pairs = itt.product(others, others)
+        others = self.particles[:-1]
         triangles_ids = list()
         for pj, pk in pairs:
             ids = set(sorted([pi.id, pj.id, pk.id]))
