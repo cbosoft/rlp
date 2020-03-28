@@ -53,8 +53,6 @@ class Sim:
             t = Triangle(pi.position, pj.position, pk.position, pi.diameter, pj.diameter, pk.diameter)
             c = t.centre()
 
-            # if any([e > 2.0*thresh for e in t.edge_lengths()]):
-            #     continue
             if np.any(t.thetas > np.pi/2.0):
                 continue
 
