@@ -11,11 +11,12 @@ def get_internal_angle(v1, v2):
 
 class Triangle:
 
-    def __init__(self, a, b, c):
+    def __init__(self, a, b, c, da, db, dc):
         self.a = a
         self.b = b
         self.c = c
         vertices = [a, b, c]
+        self.diameters = [da, db, dc]
         self.thetas = list()
         self.thetas2d = list()
         for vertex in vertices:
