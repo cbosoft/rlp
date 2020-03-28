@@ -15,7 +15,7 @@ class TestFailure(Exception):
 
 class Test:
 
-    critical = False
+    critical = True
     name = 'BASE TEST'
 
     def fail_test(self, extra=None):
