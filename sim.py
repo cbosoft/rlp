@@ -80,7 +80,7 @@ class Sim:
             # TODO select proper height
             particle.settle_to(position_z=1.0)
             # TODO if particle settles in triangle, triangle is blocked - remove from list
-            print(' on top')
+            self.log(' on top')
 
 
     def log(self, *args, **kwargs):
