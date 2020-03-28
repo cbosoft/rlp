@@ -19,6 +19,10 @@ class Sim:
         self.log(f'generating particle {len(self.particles)} ', end='')
         position = np.multiply(self.L, np.random.random((3)))
         position[2] = self.L
+        self.add_particle(position, diameter)
+
+
+    def add_particle(self, position, diameter=1.0):
         new_particle = Particle(position, diameter)
         self.settle(new_particle)
 
