@@ -50,7 +50,7 @@ class Sim:
                 continue
             triangles_ids.append(ids)
 
-            t = Triangle(pi.position, pj.position, pk.position)
+            t = Triangle(pi.position, pj.position, pk.position, pi.diameter, pj.diameter, pk.diameter)
             c = t.centre()
 
             # if any([e > 2.0*thresh for e in t.edge_lengths()]):
@@ -58,7 +58,7 @@ class Sim:
             if np.any(t.thetas > np.pi/2.0):
                 continue
 
-            if np.any(get_distance(t.centre(), t.vertices()) > thresh):
+            if np.any(get_distance(t.centre(), t.vertices()) > thresh*3):
                 continue
 
             self.triangles.append(t)
@@ -77,8 +77,26 @@ class Sim:
             particle.settle_to(position_z=0.0)
             self.log(' on floor')
         else:
+
+            triangles = list(sorted(self.triangles, key=lambda t: max([v[2] for v in t.vertices()])))
+            for triangle in triangles[1:]:
+                self.triangles.pop(self.triangles.index(triangle))
+            triangle = triangles[0]
+            v = triangle.vertices()
+
             # TODO select proper height
-            particle.settle_to(position_z=1.0)
+            a = 1.0
+            b = -1.0*v[0][2]
+            c = -(particle.diameter + triangle.diameters[0])
+            for d in [0,1]:
+                B = (v[1][d] + v[2][d] - 2*v[0][d]) / 3.0
+                c += B**2.0
+            c += v[0][2]**2.0
+            sqrtdisc = ((b**2.0) - 4*a*c)**0.5
+            s = triangle.centre()
+            s[2] = max([(-b + sqrtdisc)/(2*a), (-b - sqrtdisc)/(2*a)])
+            particle.settle_to(position=s)
+
             # TODO if particle settles in triangle, triangle is blocked - remove from list
             self.log(' on top')
 
