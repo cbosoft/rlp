@@ -66,6 +66,8 @@ class Sim:
                 self.log(f'no because distant: any({cv_sep} > {d})', verbosity_minimum=2)
                 continue
 
+            # TODO: discount triangle if too steep (i.e. zangle lowest vertex to highest > pi/4)
+
             self.triangles.append(t)
 
 
