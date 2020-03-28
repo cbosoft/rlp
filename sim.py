@@ -34,7 +34,7 @@ class Sim:
 
 
     def update_triangles(self):
-        if not self.particles:
+        if len(self.particles) < 3:
             return
         pairs = itt.product(self.particles[:-1], self.particles[:-1])
         pi = self.particles[-1]
