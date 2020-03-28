@@ -94,6 +94,7 @@ class Sim:
             # remove triangles blocked by higher triangles
             for triangle in triangles[1:]:
                 self.triangles.pop(self.triangles.index(triangle))
+
             triangle = triangles[0]
             v = triangle.vertices()
 
@@ -124,7 +125,7 @@ class Sim:
             S[2] = max([(-b + sqrtdisc)/(2*a), (-b - sqrtdisc)/(2*a)])
             particle.settle_to(position=S)
 
-            # TODO if particle settles in triangle, triangle is blocked - remove from list
+            self.triangles.pop(self.triangles.index(triangle))
             self.log(' on top')
 
 
