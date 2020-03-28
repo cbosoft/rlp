@@ -126,7 +126,7 @@ class SimAddParticleTestCount(Test):
 
     def run(self):
         # Build and operate
-        sim = Sim(10.0, verbose=False)
+        sim = Sim(10.0, verbose=0)
         sim.add_particle([0.0, 0.0, 0.0])
         sim.add_particle([0.0, 2.0, 0.0])
         sim.add_particle([2.0, 0.0, 0.0])
@@ -142,7 +142,7 @@ class SimAddParticleTestTriangle(Test):
 
     def run(self):
         # Build and operate
-        sim = Sim(10.0, verbose=False)
+        sim = Sim(10.0, verbose=0)
         sim.add_particle([0.0, 0.0, 0.0])
         sim.add_particle([0.0, 2.0, 0.0])
         sim.add_particle([2.0, 0.0, 0.0])
