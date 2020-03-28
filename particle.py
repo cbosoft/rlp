@@ -1,11 +1,8 @@
-idcounter = 0
 
 class Particle:
 
-    def __init__(self, position, diameter):
-        global idcounter
-        self.id = idcounter
-        idcounter += 1
+    def __init__(self, position, diameter, id=0):
+        self.id = id
         self.position = position
         self.diameter = diameter
         self.settled = False

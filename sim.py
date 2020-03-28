@@ -23,7 +23,7 @@ class Sim:
 
 
     def add_particle(self, position, diameter=1.0):
-        new_particle = Particle(position, diameter)
+        new_particle = Particle(position, diameter, len(self.particles))
         self.settle(new_particle)
 
         if not new_particle.settled:
