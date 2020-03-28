@@ -38,7 +38,6 @@ class Sim:
             return
         pairs = itt.product(self.particles[:-1], self.particles[:-1])
         pi = self.particles[-1]
-        thresh = pi.diameter
         triangles_ids = list()
         for pj, pk in pairs:
             ids = set(sorted([pi.id, pj.id, pk.id]))
@@ -50,16 +49,21 @@ class Sim:
             if ids in triangles_ids:
                 self.log(f'no because repeat', verbosity_minimum=2)
                 continue
+
             triangles_ids.append(ids)
 
             t = Triangle(pi.position, pj.position, pk.position, pi.diameter, pj.diameter, pk.diameter)
             c = t.centre()
+            v = t.vertices()
 
             if np.any(t.thetas > np.pi/2.0):
                 self.log(f'no because obtuse: any({t.thetas} > {np.pi/2.0})', verbosity_minimum=2)
                 continue
 
-            if np.any(get_distance(t.centre(), t.vertices()) > thresh*3):
+            d = np.add(np.multiply(t.diameters, 0.5), pi.diameter)
+            cv_sep = [get_distance(c, vi) for vi in v]
+            if np.any(cv_sep > d):
+                self.log(f'no because distant: any({cv_sep} > {d})', verbosity_minimum=2)
                 continue
 
             self.triangles.append(t)
