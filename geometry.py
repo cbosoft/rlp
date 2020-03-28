@@ -10,6 +10,10 @@ def get_internal_angle(v1, v2):
     return np.arccos(costheta)
 
 class Triangle:
+    '''
+    Triangle class: a representation of a trio of particles which together form
+    a triangle, with particle centres at each of vertices.
+    '''
 
     def __init__(self, a, b, c, da, db, dc):
         self.a = a
