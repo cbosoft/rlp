@@ -32,7 +32,10 @@ class TriangleAreaTest(Test):
     name = 'Triangle area test'
 
     def run(self):
-        t = Triangle([0, 0, 0], [1, 0, 0], [0, 1, 0])
+        # Build
+        t = Triangle([0, 0, 0], [1, 0, 0], [0, 1, 0], 1.0, 1.0, 1.0)
+
+        # Operate and Check
         if (a:= t.area()) != 0.5:
             self.fail_test(f'({a} != 0.5)')
         else:
@@ -44,7 +47,7 @@ class TriangleCentreTest(Test):
     name = 'Triangle centre test'
 
     def run(self):
-        t = Triangle([0.0, 1.0, 0.0], [-1.0, 0.0, 0.0], [1.0, 0.0, 0.0])
+        t = Triangle([0.0, 1.0, 0.0], [-1.0, 0.0, 0.0], [1.0, 0.0, 0.0], 1.0, 1.0, 1.0)
         if (c := list(t.centre())) != (cp := [0.0, 1.0/3.0, 0.0]):
             self.fail_test(f'({c} != {cp})')
         else:
@@ -71,7 +74,7 @@ class TriangleIntersectTest3D(Test):
         self.i = i
 
     def run(self):
-        t = Triangle([0.0, 1.0, 0.0], [-1.0, 0.0, 0.0], [1.0, 0.0, 0.0])
+        t = Triangle([0.0, 1.0, 0.0], [-1.0, 0.0, 0.0], [1.0, 0.0, 0.0], 1.0, 1.0, 1.0)
         p = self.points[self.i]
         o = self.outcomes[self.i]
         i = t.intersects(p)
@@ -100,7 +103,7 @@ class TriangleIntersectTest2D(Test):
         self.i = i
 
     def run(self):
-        t = Triangle([0.0, 1.0, 0.0], [-1.0, 0.0, 0.0], [1.0, 0.0, 0.0])
+        t = Triangle([0.0, 1.0, 0.0], [-1.0, 0.0, 0.0], [1.0, 0.0, 0.0], 1.0, 1.0, 1.0)
         p = self.points[self.i]
         o = self.outcomes[self.i]
         i = t.intersects(p, D=2)
