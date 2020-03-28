@@ -7,7 +7,7 @@ from geometry import Triangle, get_distance
 
 class Sim:
 
-    def __init__(self, L, verbose=True, log_file='rlp_log.txt'):
+    def __init__(self, L, verbose=1, log_file='rlp_log.txt'):
         self.particles = list()
         self.L = L
         self.triangles = list()
@@ -44,9 +44,11 @@ class Sim:
             ids = set(sorted([pi.id, pj.id, pk.id]))
             
             if len(ids) < 3:
+                self.log(f'no because same ids: {pi.id} {pj.id} {pk.id}', verbosity_minimum=2)
                 continue
 
             if ids in triangles_ids:
+                self.log(f'no because repeat', verbosity_minimum=2)
                 continue
             triangles_ids.append(ids)
 
@@ -54,6 +56,7 @@ class Sim:
             c = t.centre()
 
             if np.any(t.thetas > np.pi/2.0):
+                self.log(f'no because obtuse: any({t.thetas} > {np.pi/2.0})', verbosity_minimum=2)
                 continue
 
             if np.any(get_distance(t.centre(), t.vertices()) > thresh*3):
@@ -99,8 +102,8 @@ class Sim:
             self.log(' on top')
 
 
-    def log(self, *args, **kwargs):
-        if self.verbose:
+    def log(self, *args, verbosity_minimum=1, **kwargs):
+        if self.verbose >= verbosity_minimum:
             print(*args, **kwargs)
         with open (self.logf, 'a') as f:
             f.write(f'{" ".join(args)}\n')
