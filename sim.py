@@ -7,16 +7,16 @@ from geometry import Triangle, get_distance
 
 class Sim:
 
-    def __init__(self, L):
+    def __init__(self, L, verbose=True, log_file='rlp_log.txt'):
         self.particles = list()
         self.L = L
         self.triangles = list()
+        self.verbose = verbose
+        self.logf = log_file
 
 
     def generate_particle(self, diameter=1.0):
-
-        print(f'generating particle {len(self.particles)} ', end='')
-
+        self.log(f'generating particle {len(self.particles)} ', end='')
         position = np.multiply(self.L, np.random.random((3)))
         position[2] = self.L
         new_particle = Particle(position, diameter)
@@ -66,14 +66,21 @@ class Sim:
             if triangle.intersects(particle.position, D=2):
                 intersections.append(triangle)
 
-        print('setting', end='')
+        self.log(f'{len(self.triangles)} setting', end='')
         if not intersections:
             # TODO not falling into a triangle means the particle will not be supported, but doesn't mean it won't fall.
             # check for nearest neighbours, if they have an XY-separation less than radius, then will tumble away
             particle.settle_to(position_z=0.0)
-            print(' on floor')
+            self.log(' on floor')
         else:
             # TODO select proper height
             particle.settle_to(position_z=1.0)
             # TODO if particle settles in triangle, triangle is blocked - remove from list
             print(' on top')
+
+
+    def log(self, *args, **kwargs):
+        if self.verbose:
+            print(*args, **kwargs)
+        with open (self.logf, 'a') as f:
+            f.write(f'{" ".join(args)}\n')
