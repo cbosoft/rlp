@@ -6,6 +6,9 @@ from colours import *
 
 # Test-driven-development inspired by "Clean Code" - Uncle Bob.
 
+def approx_eq(a, b, eps=1e-7):
+    return a-eps <= b <= a+eps
+
 
 class TestFailure(Exception):
     '''test failed.'''
@@ -150,6 +153,31 @@ class SimAddParticleTestTriangle(Test):
         else:
             self.pass_test()
 
+class SimAddParticleTestIntersection(Test):
+    name = 'Sim add particle test (intersection)'
+
+    def run(self):
+        # Build and operate
+        sim = Sim(10.0, verbose=0)
+        # first three form a triangle
+        sim.add_particle([0.0, 0.0, 10.0])
+        sim.add_particle([0.0, 1.0, 10.0])
+        sim.add_particle([1.0, 0.0, 10.0])
+        cx, cy, cz = sim.triangles[-1].centre()
+
+        # last one should settle on the triangle
+        sim.add_particle([0.5, 0.5, 10.0])
+
+        # check
+        sx, sy, sz = sim.particles[-1].position
+        if sx != cx or sy != cy:
+            self.fail_test(f'settled xy not centre ({[sx, sy]} != {cx, cy})')
+        elif not approx_eq(sz, 1.2, 0.05):
+            self.fail_test(f'settled z not correct height ({sz} !~ {1.2})')
+        else:
+            self.pass_test()
+
+
 
 
 
@@ -170,3 +198,4 @@ if __name__ == "__main__":
 
     SimAddParticleTestCount().run()
     SimAddParticleTestTriangle().run()
+    SimAddParticleTestIntersection().run()
