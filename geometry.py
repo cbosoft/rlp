@@ -19,10 +19,10 @@ class Triangle:
         self.diameters = [da, db, dc]
         self.thetas = list()
         self.thetas2d = list()
-        for vertex in vertices:
+        for i, vertex in enumerate(vertices):
             vertex = np.array(vertex)
-            vectors = [np.subtract(vertex, other) for other in vertices if any(other != vertex)]
-            vectors2d = [np.subtract(vertex[:-1], other[:-1]) for other in vertices if any(other != vertex)]
+            vectors = [np.subtract(vertex, other) for j, other in enumerate(vertices) if i != j]
+            vectors2d = [np.subtract(vertex[:-1], other[:-1]) for j, other in enumerate(vertices) if i != j]
             self.thetas.append(get_internal_angle(*vectors))
             self.thetas2d.append(get_internal_angle(*vectors2d))
         self.thetas = np.array(self.thetas, dtype=np.float64)
