@@ -29,8 +29,8 @@ class Sim:
         if not new_particle.settled:
             raise Exception('settling failed')
 
-        self.update_triangles()
         self.particles.append(new_particle)
+        self.update_triangles()
 
 
     def update_triangles(self):
