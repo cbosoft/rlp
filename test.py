@@ -1,5 +1,10 @@
+
 from geometry import Triangle
+from sim import Sim
 from colours import *
+
+
+# Test-driven-development inspired by "Clean Code" - Uncle Bob.
 
 
 class TestFailure(Exception):
@@ -113,6 +118,41 @@ class TriangleIntersectTest2D(Test):
         else:
             self.fail_test(f'({p} should{n} be in {t})')
 
+class SimAddParticleTestCount(Test):
+    name = 'Sim add particle test (count)'
+
+    def run(self):
+        # Build and operate
+        sim = Sim(10.0, verbose=False)
+        sim.add_particle([0.0, 0.0, 0.0])
+        sim.add_particle([0.0, 2.0, 0.0])
+        sim.add_particle([2.0, 0.0, 0.0])
+
+        # check
+        if (l := len(sim.particles)) != 3:
+            self.fail_test(f'number particles ({l}) != 3')
+        else:
+            self.pass_test()
+
+class SimAddParticleTestTriangle(Test):
+    name = 'Sim add particle test (triangle)'
+
+    def run(self):
+        # Build and operate
+        sim = Sim(10.0, verbose=False)
+        sim.add_particle([0.0, 0.0, 0.0])
+        sim.add_particle([0.0, 2.0, 0.0])
+        sim.add_particle([2.0, 0.0, 0.0])
+
+        # check
+        if (l := len(sim.triangles)) != 1:
+            self.fail_test(f'number triangles ({l}) != 1')
+        else:
+            self.pass_test()
+
+
+
+
 
 if __name__ == "__main__":
     TriangleAreaTest().run()
@@ -127,3 +167,6 @@ if __name__ == "__main__":
     TriangleIntersectTest2D().run()
     TriangleIntersectTest2D(1).run()
     TriangleIntersectTest2D(2).run()
+
+    SimAddParticleTestCount().run()
+    SimAddParticleTestTriangle().run()
