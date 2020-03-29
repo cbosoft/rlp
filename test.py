@@ -327,6 +327,7 @@ class TriangleIntersectTest2D(MultiTest):
         else:
             self.fail_test(f'({p} should{n} intersect {t})')
 
+
 class SimAddParticleTestCount(Test):
     name = 'Sim add particle test (count)'
 
@@ -342,6 +343,7 @@ class SimAddParticleTestCount(Test):
             self.fail_test(f'number particles ({l}) != 3')
         else:
             self.pass_test()
+
 
 class SimAddParticleTestTriangle(Test):
     name = 'Sim add particle test (triangle)'
@@ -359,8 +361,9 @@ class SimAddParticleTestTriangle(Test):
         else:
             self.pass_test()
 
-class SimAddParticleTestIntersection(Test):
-    name = 'Sim add particle test (intersection)'
+
+class SimAddParticleTestIntersectionTriangle(Test):
+    name = 'Sim add particle test (intersection) (triangle)'
 
     def run(self):
         # Build and operate
@@ -380,6 +383,23 @@ class SimAddParticleTestIntersection(Test):
             self.fail_test(f'settled xy not centre ({[sx, sy]} != {cx, cy})')
         elif not approx_eq(sz, 1.2, 0.05):
             self.fail_test(f'settled z not correct height ({sz} !~ {1.2})')
+        else:
+            self.pass_test()
+
+
+class SimAddParticleTestTumbleVertex(Test):
+    name = 'Sim add particle test (tumble) (vertex)'
+
+    def run(self):
+        # Build and operate
+        sim = Sim(10.0, verbose=0)
+        sim.add_particle([0.0, 0.0, 10.0])
+        sim.add_particle([0.5, 0.0, 10.0])
+
+        # check
+        p = sim.particles[-1].position
+        if np.any(p != [1.0, 0.0, 0.0]):
+            self.fail_test(f'settled position not correct ({p} != [1.0, 0.0, 0.0])')
         else:
             self.pass_test()
 
@@ -410,7 +430,8 @@ def run_tests(quiet=False):
     # Sim
     SimAddParticleTestCount().run()
     SimAddParticleTestTriangle().run()
-    SimAddParticleTestIntersection().run()
+    SimAddParticleTestTumbleVertex().run()
+    SimAddParticleTestIntersectionTriangle().run()
 
 if __name__ == "__main__":
     run_tests()
