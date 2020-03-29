@@ -32,12 +32,13 @@ class Triangle:
         self.thetas = np.array(self.thetas, dtype=np.float64)
         self.thetas2d = np.array(self.thetas2d, dtype=np.float64)
 
+
     def __repr__(self):
         return repr(self.vertices())
 
+
     def __str__(self):
         return str(self.vertices())
-
 
 
     def area(self):
@@ -84,6 +85,8 @@ class Triangle:
 
     def intersects(self, position, D=3):
 
+        assert D in [2,3]
+
         # first rough check
         vertices = self.vertices()
         maxv = np.max(vertices, axis=0)
@@ -112,3 +115,46 @@ class Triangle:
                     return False
 
         return True
+
+
+
+class Line:
+
+    def __init__(self, p1, p2, d1, d2):
+        self.vertices = np.array([p1, p2], dtype=np.float64)
+        self.diameters = np.array([d1, d2], dtype=np.float64)
+
+
+    def __repr__(self):
+        return repr(self.vertices)
+
+
+    def __str__(self):
+        return str(self.vertices)
+
+
+    def intersects(self, position, diameter, D=3):
+        assert D in [2,3]
+        distances = [get_distance(v[:D], position[:D]) for v in self.vertices]
+        return all([distance < (diameter + vdiameter)*0.5 for distance, vdiameter in zip(distances, self.diameters)])
+
+
+
+class Vertex:
+
+    def __init__(self, p, d):
+        self.vertex = np.array(p, dtype=np.float64)
+        self.diameter = d
+
+
+    def __repr__(self):
+        return repr(self.vertex)
+
+
+    def __str__(self):
+        return str(self.diameter)
+
+
+    def intersects(self, position, diameter, D=3):
+        assert D in [2,3]
+        return get_distance(self.vertex[:D], position[:D]) < (diameter + self.diameter)*0.5

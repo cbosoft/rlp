@@ -1,5 +1,5 @@
 
-from geometry import Triangle
+from geometry import Vertex, Line, Triangle
 from sim import Sim
 from colours import *
 
@@ -63,6 +63,140 @@ class MultiTest(Test):
         for i in range(len(self.points)):
             self.i = i
             self.run(i)
+
+
+
+
+class VertexTestIntersect2D(MultiTest):
+
+    name = 'Vertex intersection test (2D)'
+    points = [
+            [0.5, 0.5, 0.0],
+            [2.0, 2.0, 0.0],
+            [0.5, 0.5, 10.0]
+        ]
+    results = [
+            True,
+            False,
+            True
+        ]
+
+    def run(self, i):
+        # build
+        v = Vertex([0.0, 0.0, 0.0], 1.0)
+
+        # operate
+        p = self.points[i]
+        expected_result = self.results[i]
+        res = v.intersects(p, 1.0, D=2)
+        n = '' if expected_result else 'n\'t'
+        nn = 'n\'t' if expected_result else ''
+        if res == expected_result:
+            self.pass_test()
+        else:
+            self.fail_test(f'{p} should{n} intersect {v}, but did{nn}.')
+
+
+
+class VertexTestIntersect3D(MultiTest):
+
+    name = 'Vertex intersection test (3D)'
+    points = [
+            [0.5, 0.5, 0.0],
+            [2.0, 2.0, 0.0],
+            [0.5, 0.5, 10.0]
+        ]
+    results = [
+            True,
+            False,
+            False
+        ]
+
+    def run(self, i):
+        # build
+        v = Vertex([0.0, 0.0, 0.0], 1.0)
+
+        # operate
+        p = self.points[i]
+        expected_result = self.results[i]
+        res = v.intersects(p, 1.0)
+        n = '' if expected_result else 'n\'t'
+        nn = 'n\'t' if expected_result else ''
+        if res == expected_result:
+            self.pass_test()
+        else:
+            self.fail_test(f'{p} should{n} intersect {v}, but did{nn}.')
+
+
+
+
+class LineIntersectionTest2D(MultiTest):
+
+    name = 'Line intersection test (2D)'
+    points = [
+            [0.75, 0.0, 0.0],
+            [5.0, 5.0, 5.0],
+            [0.75, 0.0, 10.0]
+        ]
+    results = [
+            True,
+            False,
+            True
+        ]
+
+    def run(self, i):
+        l = Line([0.0, 0.0, 0.0], [1.5, 0.0, 0.0], 1.0, 1.0)
+        p = self.points[i]
+        expected_result = self.results[i]
+        res = l.intersects(p, 1.0, D=2)
+        n = '' if expected_result else 'n\'t'
+        nn = 'n\'t' if expected_result else ''
+        if res == expected_result:
+            self.pass_test()
+        else:
+            self.fail_test(f'{p} should{n} intersect {l}, but did{nn}.')
+
+
+
+
+class LineIntersectionTest3D(MultiTest):
+
+    name = 'Line intersection test (3D)'
+    points = [
+            [0.75, 0.0, 0.0],
+            [5.0, 5.0, 5.0],
+            [0.75, 0.0, 10.0]
+        ]
+    results = [
+            True,
+            False,
+            False
+        ]
+
+    def run(self, i):
+        l = Line([0.0, 0.0, 0.0], [1.5, 0.0, 0.0], 1.0, 1.0)
+        p = self.points[i]
+        expected_result = self.results[i]
+        res = l.intersects(p, 1.0)
+        n = '' if expected_result else 'n\'t'
+        nn = 'n\'t' if expected_result else ''
+        if res == expected_result:
+            self.pass_test()
+        else:
+            self.fail_test(f'{p} should{n} intersect {l}, but did{nn}.')
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 class TriangleAreaTest(Test):
 
@@ -206,6 +340,15 @@ class SimAddParticleTestIntersection(Test):
 
 
 if __name__ == "__main__":
+
+    # Vertex
+    VertexTestIntersect2D().run_each()
+    VertexTestIntersect2D().run_each()
+
+    # Line
+    LineIntersectionTest2D().run_each()
+    LineIntersectionTest3D().run_each()
+
     # Triangle
     TriangleAreaTest().run()
     TriangleCentreTest().run()
