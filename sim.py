@@ -3,7 +3,7 @@ import itertools as itt
 import numpy as np
 
 from particle import Particle
-from geometry import Triangle, get_distance
+from geometry import Vertex, Line, Triangle, get_distance
 
 class Sim:
 
@@ -11,6 +11,7 @@ class Sim:
         self.particles = list()
         self.L = L
         self.triangles = list()
+        self.lines = list()
         self.verbose = verbose
         self.logf = log_file
 
@@ -30,16 +31,31 @@ class Sim:
             raise Exception('settling failed')
 
         self.particles.append(new_particle)
-        self.update_triangles()
+        self.update_geometry()
 
 
-    def update_triangles(self):
-        if len(self.particles) < 3:
+    def update_geometry(self):
+
+        if len(self.particles) < 2:
             return
-        pairs = itt.product(self.particles[:-1], self.particles[:-1])
+
         others = self.particles[:-1]
         pi = self.particles[-1]
         others = [o for o in others if get_distance(pi.position, o.position) < (o.diameter + pi.diameter)*2.0 ]
+        lines_ids = list()
+        for pj in others:
+            if pi.id == pj.id:
+                continue
+
+            ids = set(sorted([pi.id, pj.id]))
+            if ids in lines_ids:
+                continue
+            lines_ids.append(ids)
+            self.lines.append(Line(pi.position, pj.position, pi.diameter, pj.diameter))
+
+        if len(self.particles) < 3:
+            return
+
         pairs = itt.product(others, others)
         others = self.particles[:-1]
         triangles_ids = list()
@@ -81,15 +97,53 @@ class Sim:
             if triangle.intersects(particle.position, D=2):
                 intersections.append(triangle)
 
-        self.log(f'{len(self.triangles)} setting', end='')
+        self.log(f'{len(self.triangles)} {len(self.lines)} setting', end='')
         if not intersections:
-            # TODO not falling into a triangle means the particle will not be 
-            # supported, but doesn't mean it'll reach the ground. Check for 
-            # nearest neighbours, if they have an XY-separation less than 
-            # radius, then will tumble away i.e. move to side and try to find 
+
+            # Not falling into a triangle means the particle will not be
+            # supported, but doesn't mean it'll reach the ground. Check for
+            # nearest neighbours, if they have an XY-separation less than
+            # radius, then will tumble away i.e. move to side and try to find
             # supporting triangle. If no particles are below, settle to floor
-            particle.settle_to(position_z=0.0)
-            self.log(' on floor')
+            
+            for line in self.lines:
+                if line.intersects(particle.position, D=2):
+                    intersections.append(line)
+
+            if not intersections:
+
+                # finally, see if the falling particle will hit a single other particle
+                for other in self.particles:
+                    v = Vertex(other.position, other.diameter)
+                    if v.intersects(particle.position, particle.diameter):
+                        intersections.append(v)
+
+                if not intersections:
+
+                    particle.settle_to(position_z=0.0)
+                    self.log(' on floor')
+
+                else:
+                    # sort vertices by z position
+                    vertices = list(sorted(intersections, key=lambda ve: ve.vertex[2]))
+
+                    # particle moves out of range of vertex
+                    particle.position = vertices[0].tumble(particle.position, particle.diameter)
+
+                    # and continues settling
+                    self.settle(particle)
+                    return
+
+            else:
+                # sort lines by z position
+                lines = list(sorted(intersections, key=lambda l: max([v[2] for v in l.vertices])))
+
+                # particle moves out of range of line
+                particle.position = lines[0].tumble(particle.position, particle.diameter)
+
+                # and continues settling
+                self.settle(particle)
+                return
         else:
 
             # sort triangles by z position
