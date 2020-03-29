@@ -28,8 +28,9 @@ class Sim:
         new_particle = Particle(position, diameter, len(self.particles))
         self.settle(new_particle)
 
-        if not new_particle.settled:
-            raise Exception('settling failed')
+        if not all([0 <= p <= self.L for p in new_particle.position[:2]]):
+            self.generate_particle(diameter=diameter)
+            return
 
         self.particles.append(new_particle)
         self.update_geometry()
