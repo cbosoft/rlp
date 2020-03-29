@@ -107,7 +107,7 @@ class Sim:
             # supporting triangle. If no particles are below, settle to floor
             
             for line in self.lines:
-                if line.intersects(particle.position, D=2):
+                if line.intersects(particle.position, particle.diameter, D=2):
                     intersections.append(line)
 
             if not intersections:
