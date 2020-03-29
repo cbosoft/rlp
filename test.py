@@ -15,8 +15,10 @@ class TestFailure(Exception):
 
 class Test:
 
+
     critical = True
     name = 'BASE TEST'
+
 
     def fail_test(self, extra=None):
         m = self.name
@@ -28,12 +30,39 @@ class Test:
         else:
             print(m)
 
+
+    def get_name(self):
+        return self.name
+
+
     def pass_test(self):
-        print(f'{self.name} {FG_GREEN}PASSED{RESET}')
+        print(f'{self.get_name()} {FG_GREEN}PASSED{RESET}')
+
 
     def run(self):
         raise NotImplementedError('func not implemented in base; use derived')
 
+
+
+
+class MultiTest(Test):
+
+    i = 0
+    points = list()
+
+
+    def get_name(self):
+        return f'{self.name} ({self.i+1}/{len(self.points)})'
+
+
+    def run(self, i):
+        raise NotImplementedError('func not implemented in base; use derived')
+
+
+    def run_each(self):
+        for i in range(len(self.points)):
+            self.i = i
+            self.run(i)
 
 class TriangleAreaTest(Test):
 
@@ -62,7 +91,7 @@ class TriangleCentreTest(Test):
             self.pass_test()
 
 
-class TriangleIntersectTest3D(Test):
+class TriangleIntersectTest3D(MultiTest):
 
     name = 'Triangle point intersection test (3D)'
     points = [
@@ -78,22 +107,19 @@ class TriangleIntersectTest3D(Test):
             False
         ]
 
-    def __init__(self, i=0):
-        self.i = i
-
-    def run(self):
+    def run(self, i):
         t = Triangle([0.0, 1.0, 0.0], [-1.0, 0.0, 0.0], [1.0, 0.0, 0.0], 1.0, 1.0, 1.0)
-        p = self.points[self.i]
-        o = self.outcomes[self.i]
-        i = t.intersects(p)
-        n = '' if o else 'n\'t'
-        if i == o:
+        p = self.points[i]
+        expected_result = self.outcomes[i]
+        result = t.intersects(p)
+        n = '' if expected_result else 'n\'t'
+        if result == expected_result:
             self.pass_test()
         else:
-            self.fail_test(f'({p} should{n} be in {t})')
+            self.fail_test(f'({p} should{n} intersect {t})')
 
 
-class TriangleIntersectTest2D(Test):
+class TriangleIntersectTest2D(MultiTest):
 
     name = 'Triangle point intersection test (2D)'
     points = [
@@ -107,19 +133,16 @@ class TriangleIntersectTest2D(Test):
             False
         ]
 
-    def __init__(self, i=0):
-        self.i = i
-
-    def run(self):
+    def run(self, i):
         t = Triangle([0.0, 1.0, 0.0], [-1.0, 0.0, 0.0], [1.0, 0.0, 0.0], 1.0, 1.0, 1.0)
-        p = self.points[self.i]
-        o = self.outcomes[self.i]
-        i = t.intersects(p, D=2)
-        n = '' if o else 'n\'t'
-        if i == o:
+        p = self.points[i]
+        expected_result = self.outcomes[i]
+        result = t.intersects(p, D=2)
+        n = '' if expected_result else 'n\'t'
+        if result == expected_result:
             self.pass_test()
         else:
-            self.fail_test(f'({p} should{n} be in {t})')
+            self.fail_test(f'({p} should{n} intersect {t})')
 
 class SimAddParticleTestCount(Test):
     name = 'Sim add particle test (count)'
@@ -183,19 +206,13 @@ class SimAddParticleTestIntersection(Test):
 
 
 if __name__ == "__main__":
+    # Triangle
     TriangleAreaTest().run()
-    
     TriangleCentreTest().run()
-    
-    TriangleIntersectTest3D().run()
-    TriangleIntersectTest3D(1).run()
-    TriangleIntersectTest3D(2).run()
-    TriangleIntersectTest3D(3).run()
+    TriangleIntersectTest3D().run_each()
+    TriangleIntersectTest2D().run_each()
 
-    TriangleIntersectTest2D().run()
-    TriangleIntersectTest2D(1).run()
-    TriangleIntersectTest2D(2).run()
-
+    # Sim
     SimAddParticleTestCount().run()
     SimAddParticleTestTriangle().run()
     SimAddParticleTestIntersection().run()
