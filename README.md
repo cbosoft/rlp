@@ -5,5 +5,13 @@ loose packing (minimum concentration for self-supporting structures).
 
 # Status
 
-Rogue Lonely People is in pre-development: I'm doing a mock up in python of how
-it may work before re-writing in C++ for performance (if necessary).
+Randy Looking Porcupines is in almost there. The racontour-like particles are
+settling in a manner like Random Loose Packing (i.e. volume fraction approx 0.55
+for monodisperse spheres). Rampant Lavish Peas is slow, but it works (for
+monodisperse spheres). It's slow, so I'm going to re-write it in C++, now that I
+have the basic algorithm sorted.
+
+# TODO
+
+  - [ ] Add polydispersity
+  - [ ] Re-write in C++
