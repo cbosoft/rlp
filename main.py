@@ -32,6 +32,16 @@ if __name__ == "__main__":
     for i in range(int(args['--number'])):
         sim.generate_particle(float(args['--diameter']))
 
+    volume_particles = 0.0
+    t = 0.0
+    for particle in sim.particles:
+        volume_particles += (np.pi/6.)*(particle.diameter**3)
+        if particle.position[2] > t:
+            t = particle.position[2]
+
+    volume_box = sim.L*sim.L*(t+1.0)
+    print('volfrac =', volume_particles / volume_box)
+
     print('outputting')
     with open(args['--output'], 'w') as f:
         for particle in sim.particles:
