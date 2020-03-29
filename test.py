@@ -345,6 +345,22 @@ class SimAddParticleTestCount(Test):
             self.pass_test()
 
 
+class SimAddParticleTestLine(Test):
+    name = 'Sim add particle test (line)'
+
+    def run(self):
+        # Build and operate
+        sim = Sim(10.0, verbose=0)
+        sim.add_particle([0.0, 0.0, 0.0])
+        sim.add_particle([0.0, 2.0, 0.0])
+
+        # check
+        if (l := len(sim.lines)) != 1:
+            self.fail_test(f'number lines ({l}) != 1')
+        else:
+            self.pass_test()
+
+
 class SimAddParticleTestTriangle(Test):
     name = 'Sim add particle test (triangle)'
 
@@ -358,6 +374,43 @@ class SimAddParticleTestTriangle(Test):
         # check
         if (l := len(sim.triangles)) != 1:
             self.fail_test(f'number triangles ({l}) != 1')
+        else:
+            self.pass_test()
+
+
+class SimAddParticleTestTumbleVertex(Test):
+    name = 'Sim add particle test (tumble) (vertex)'
+
+    def run(self):
+        # Build and operate
+        sim = Sim(10.0, verbose=0)
+        sim.add_particle([0.0, 0.0, 10.0])
+        sim.add_particle([0.5, 0.0, 10.0])
+
+        # check
+        p = sim.particles[-1].position
+        if np.any(p != [1.0, 0.0, 0.0]):
+            self.fail_test(f'settled position not correct ({p} != [1.0, 0.0, 0.0])')
+        else:
+            self.pass_test()
+
+
+class SimAddParticleTestTumbleLine(Test):
+    name = 'Sim add particle test (tumble) (line)'
+
+    def run(self):
+        # Build and operate
+        sim = Sim(10.0, verbose=0)
+        sim.add_particle([0.0, 0.0, 10.0])
+        sim.add_particle([1.0, 0.0, 10.0])
+
+        sim.add_particle([0.5, 0.1, 10.0])
+
+        # check
+        result = sim.particles[-1].position
+        expected_result = [0.5, 3.0**0.5, 0.0]
+        if not vector_approx(result, expected_result):
+            self.fail_test(f'settled position not correct ({result} != {expected_result})')
         else:
             self.pass_test()
 
@@ -387,23 +440,6 @@ class SimAddParticleTestIntersectionTriangle(Test):
             self.pass_test()
 
 
-class SimAddParticleTestTumbleVertex(Test):
-    name = 'Sim add particle test (tumble) (vertex)'
-
-    def run(self):
-        # Build and operate
-        sim = Sim(10.0, verbose=0)
-        sim.add_particle([0.0, 0.0, 10.0])
-        sim.add_particle([0.5, 0.0, 10.0])
-
-        # check
-        p = sim.particles[-1].position
-        if np.any(p != [1.0, 0.0, 0.0]):
-            self.fail_test(f'settled position not correct ({p} != [1.0, 0.0, 0.0])')
-        else:
-            self.pass_test()
-
-
 
 
 
@@ -429,8 +465,10 @@ def run_tests(quiet=False):
 
     # Sim
     SimAddParticleTestCount().run()
+    SimAddParticleTestLine().run()
     SimAddParticleTestTriangle().run()
     SimAddParticleTestTumbleVertex().run()
+    SimAddParticleTestTumbleLine().run()
     SimAddParticleTestIntersectionTriangle().run()
 
 if __name__ == "__main__":
