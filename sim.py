@@ -93,7 +93,6 @@ class Sim:
 
 
     def settle(self, particle):
-        print(f'settling {particle.position}')
         intersections = list()
         for triangle in self.triangles:
             if triangle.intersects(particle.position, D=2):

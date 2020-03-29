@@ -209,8 +209,8 @@ class Vertex:
         S = S0 + UNIT(S0 - R)*(Ds + Dr)*0.5
         '''
 
-        # separation vector
-        ds = np.subtract(position, self.vertex)
+        # xy separation vector
+        ds = np.subtract(position[:2], self.vertex[:2])
 
         # divide by magnitude: unit vector
         ds = np.divide(ds, np.sqrt(np.sum(np.power(ds, 2.0))))
@@ -218,8 +218,8 @@ class Vertex:
         # multiply by distance
         ds = np.multiply(ds, (diameter + self.diameter)*0.5)
 
-        new_position = np.add(self.vertex, ds)
-        new_position[2] = position[2]
+        new_position = np.copy(position)
+        new_position[:2] = np.add(self.vertex[:2], ds)
         return new_position
 
 
