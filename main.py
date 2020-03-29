@@ -7,6 +7,7 @@ from matplotlib import pyplot as plt
 
 from particle import Particle
 from sim import Sim
+from test import run_tests
 
 if __name__ == "__main__":
 
@@ -23,8 +24,7 @@ if __name__ == "__main__":
         specified_args = {k:v for k,v in zip(argv, argv[1:])}
         args = {**args, **specified_args}
 
-    print(sys.argv)
-
+    run_tests(True)
 
     print('generating particles')
     sim = Sim(float(args['--length']))

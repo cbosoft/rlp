@@ -4,6 +4,7 @@ from geometry import Vertex, Line, Triangle
 from sim import Sim
 from colours import *
 
+QUIET = False
 
 # Test-driven-development inspired by "Clean Code" - Uncle Bob.
 
@@ -31,7 +32,7 @@ class Test:
         m += f' {BG_RED}FAILED{RESET}'
         if self.critical:
             raise TestFailure(m)
-        else:
+        elif not QUIET:
             print(m)
 
 
@@ -40,7 +41,8 @@ class Test:
 
 
     def pass_test(self):
-        print(f'{self.get_name()} {FG_GREEN}PASSED{RESET}')
+        if not QUIET:
+            print(f'{self.get_name()} {FG_GREEN}PASSED{RESET}')
 
 
     def run(self):
@@ -379,7 +381,9 @@ class SimAddParticleTestIntersection(Test):
 
 
 
-if __name__ == "__main__":
+def run_tests(quiet=False):
+    global QUIET
+    QUIET = quiet
 
     # Vertex
     VertexTestIntersect2D().run_each()
@@ -400,3 +404,6 @@ if __name__ == "__main__":
     SimAddParticleTestCount().run()
     SimAddParticleTestTriangle().run()
     SimAddParticleTestIntersection().run()
+
+if __name__ == "__main__":
+    run_tests()
