@@ -115,7 +115,7 @@ class Sim:
                 # finally, see if the falling particle will hit a single other particle
                 for other in self.particles:
                     v = Vertex(other.position, other.diameter)
-                    if v.intersects(particle.position, particle.diameter):
+                    if v.intersects(particle.position, particle.diameter, D=2):
                         intersections.append(v)
 
                 if not intersections:
