@@ -119,32 +119,41 @@ class Triangle:
         return True
 
     def tumble(self, diameter):
-        # this bit is a bit mathsy. We've got three spheres 
-        # (radius = radius vertex + radius settling) centred on the 
-        # vertices. The new particle position will be the highest
-        # intersection point: let's call this point S.
-        #
-        # We can simplify the calculation as we already know the 
-        # x-y coords of the intersection point: the center coords of the 
-        # triangle.
-        #
-        # Sx = Cx; Sy = Cy
-        S = self.centre()
-        #
-        # The z coordinate can be found by solving the equation for a 
-        # sphere about one of the vertices with the constraints in place.
-        # The result is a quadratic, solved by quadtratic formula, with 
-        # two results: the top intersection and the bottom.
-        v = self.vertices()
-        a = 1.0
-        b = -1.0*v[0][2]
-        c = -(diameter + self.diameters[0])
-        for d in [0,1]:
-            B = (v[1][d] + v[2][d] - 2*v[0][d]) / 3.0
-            c += B**2.0
-        c += v[0][2]**2.0
-        sqrtdisc = ((b**2.0) - 4*a*c)**0.5
-        S[2] = max([(-b + sqrtdisc)/(2*a), (-b - sqrtdisc)/(2*a)])
+        '''
+        this bit is a bit mathsy. We've got three spheres 
+        (radius = radius vertex + radius settling) centred on the vertices. The
+        new particle position will be the highest intersection point: let's 
+        call this point S.
+        
+        We can simplify the calculation as we already know the x-y coords of the
+        intersection point: the center coords of the triangle.
+        
+        Sx = Cx; Sy = Cy
+
+        We need to find the z component. To do this, we just need to find the 
+        side lengths of a triangle: the centre of vertex with the largest 
+        diameter (V), the centre point of the triangle (C) and the final 
+        position of the settling particle (S).
+
+        CS^2 = SV^2 - VC^2
+
+        CS is the vertical line up from centre to position. SV is vertex to
+        position: the average of the largest diameter and the settling diameter.
+        VC is vertex to centre. These are scalar distances, not vectors.
+        '''
+        C = self.centre()
+        S = np.array(C)
+        DS = diameter
+        V = self.vertices()[0]
+        DV = self.diameters[0]
+        for vertex, vertex_diameter in zip(self.vertices()[1:], self.diameters[1:]):
+            if vertex_diameter > DV:
+                V = vertex
+                DV = vertex_diameter
+        SV = (DV + DS)*0.5
+        VC = np.sqrt(np.sum(np.power(np.subtract(C, V), 2.0)))
+        CS = (SV*SV - VC*VC)**0.5
+        S[2] = CS
         return S
 
 

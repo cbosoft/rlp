@@ -434,7 +434,7 @@ class SimAddParticleTestIntersectionTriangle(Test):
         sx, sy, sz = sim.particles[-1].position
         if sx != cx or sy != cy:
             self.fail_test(f'settled xy not centre ({[sx, sy]} != {cx, cy})')
-        elif not approx_eq(sz, 1.2, 0.05):
+        elif not approx_eq(sz, 2./3.):
             self.fail_test(f'settled z not correct height ({sz} !~ {1.2})')
         else:
             self.pass_test()
