@@ -1,3 +1,4 @@
+import numpy as np
 
 from geometry import Vertex, Line, Triangle
 from sim import Sim
@@ -8,6 +9,9 @@ from colours import *
 
 def approx_eq(a, b, eps=1e-7):
     return a-eps <= b <= a+eps
+
+def vector_approx(vector1, vector2, eps=1e-7):
+    return all([vj-eps < vi < vj+eps for vi,vj in zip(vector1, vector2)])
 
 
 class TestFailure(Exception):
@@ -126,6 +130,42 @@ class VertexTestIntersect3D(MultiTest):
             self.pass_test()
         else:
             self.fail_test(f'{p} should{n} intersect {v}, but did{nn}.')
+
+
+class VertexTestTumble(MultiTest):
+
+    name = 'Vertex tumble test'
+    points = [
+            [0.5, 0.0, 0.0],
+            [0.0, 0.5, 0.0],
+            [0.5, 0.5, 0.0]
+        ]
+    results = [
+            [1.0, 0.0, 0.0],
+            [0.0, 1.0, 0.0],
+            [np.sqrt(0.5), np.sqrt(0.5), 0.0]
+        ]
+
+    def run(self, i):
+        # build
+        v = Vertex([0.0, 0.0, 0.0], 1.0)
+
+        # operate
+        p = self.points[i]
+        expected_result = self.results[i]
+        result = v.tumble(p, 1.0)
+        n = '' if expected_result else 'n\'t'
+        nn = 'n\'t' if expected_result else ''
+        if vector_approx(result, expected_result):
+            self.pass_test()
+        else:
+            self.fail_test(f'{p} should{n} settle to {expected_result}, but did{nn} ({result}).')
+
+
+
+
+
+
 
 
 
@@ -344,6 +384,7 @@ if __name__ == "__main__":
     # Vertex
     VertexTestIntersect2D().run_each()
     VertexTestIntersect2D().run_each()
+    VertexTestTumble().run_each()
 
     # Line
     LineIntersectionTest2D().run_each()

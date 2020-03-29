@@ -191,5 +191,28 @@ class Vertex:
         assert D in [2,3]
         return get_distance(self.vertex[:D], position[:D]) < (diameter + self.diameter)*0.5
 
+
     def tumble(self, position, diameter):
-        pass
+        '''
+        A particle (S0) hitting another particle (R) from above will tumble around until
+        it is clear of R's diameter.
+
+        The settling particle's new (xy) position will be:
+
+        S = S0 + UNIT(S0 - R)*(Ds + Dr)*0.5
+        '''
+
+        # separation vector
+        ds = np.subtract(position, self.vertex)
+
+        # divide by magnitude: unit vector
+        ds = np.divide(ds, np.sqrt(np.sum(np.power(ds, 2.0))))
+
+        # multiply by distance
+        ds = np.multiply(ds, (diameter + self.diameter)*0.5)
+
+        new_position = np.add(self.vertex, ds)
+        new_position[2] = position[2]
+        return new_position
+
+
