@@ -116,6 +116,35 @@ class Triangle:
 
         return True
 
+    def tumble(self, diameter):
+        # this bit is a bit mathsy. We've got three spheres 
+        # (radius = radius vertex + radius settling) centred on the 
+        # vertices. The new particle position will be the highest
+        # intersection point: let's call this point S.
+        #
+        # We can simplify the calculation as we already know the 
+        # x-y coords of the intersection point: the center coords of the 
+        # triangle.
+        #
+        # Sx = Cx; Sy = Cy
+        S = self.centre()
+        #
+        # The z coordinate can be found by solving the equation for a 
+        # sphere about one of the vertices with the constraints in place.
+        # The result is a quadratic, solved by quadtratic formula, with 
+        # two results: the top intersection and the bottom.
+        v = self.vertices()
+        a = 1.0
+        b = -1.0*v[0][2]
+        c = -(diameter + self.diameters[0])
+        for d in [0,1]:
+            B = (v[1][d] + v[2][d] - 2*v[0][d]) / 3.0
+            c += B**2.0
+        c += v[0][2]**2.0
+        sqrtdisc = ((b**2.0) - 4*a*c)**0.5
+        S[2] = max([(-b + sqrtdisc)/(2*a), (-b - sqrtdisc)/(2*a)])
+        return S
+
 
 
 class Line:
@@ -138,6 +167,9 @@ class Line:
         distances = [get_distance(v[:D], position[:D]) for v in self.vertices]
         return all([distance < (diameter + vdiameter)*0.5 for distance, vdiameter in zip(distances, self.diameters)])
 
+    def tumble(self, position, diameter):
+        pass
+
 
 
 class Vertex:
@@ -158,3 +190,6 @@ class Vertex:
     def intersects(self, position, diameter, D=3):
         assert D in [2,3]
         return get_distance(self.vertex[:D], position[:D]) < (diameter + self.diameter)*0.5
+
+    def tumble(self, position, diameter):
+        pass

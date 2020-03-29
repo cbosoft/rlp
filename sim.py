@@ -100,34 +100,7 @@ class Sim:
                 self.triangles.pop(self.triangles.index(triangle))
 
             triangle = triangles[0]
-            v = triangle.vertices()
-
-            # this bit is a bit mathsy. We've got three spheres 
-            # (radius = radius vertex + radius settling) centred on the 
-            # vertices. The new particle position will be the highest
-            # intersection point: let's call this point S.
-            #
-            # We can simplify the calculation as we already know the 
-            # x-y coords of the intersection point: the center coords of the 
-            # triangle.
-            #
-            # Sx = Cx; Sy = Cy
-            S = triangle.centre()
-            #
-            # The z coordinate can be found by solving the equation for a 
-            # sphere about one of the vertices with the constraints in place.
-            # The result is a quadratic, solved by quadtratic formula, with 
-            # two results: the top intersection and the bottom.
-            a = 1.0
-            b = -1.0*v[0][2]
-            c = -(particle.diameter + triangle.diameters[0])
-            for d in [0,1]:
-                B = (v[1][d] + v[2][d] - 2*v[0][d]) / 3.0
-                c += B**2.0
-            c += v[0][2]**2.0
-            sqrtdisc = ((b**2.0) - 4*a*c)**0.5
-            S[2] = max([(-b + sqrtdisc)/(2*a), (-b - sqrtdisc)/(2*a)])
-            particle.settle_to(position=S)
+            particle.settle_to(position=triangle.tumble(particle.diameter))
 
             self.triangles.pop(self.triangles.index(triangle))
             self.log(' on top')
