@@ -125,6 +125,8 @@ class VertexTestIntersect3D(MultiTest):
         # operate
         p = self.points[i]
         expected_result = self.results[i]
+
+        # check
         res = v.intersects(p, 1.0)
         n = '' if expected_result else 'n\'t'
         nn = 'n\'t' if expected_result else ''
@@ -156,6 +158,11 @@ class VertexTestTumble(MultiTest):
         p = self.points[i]
         expected_result = self.results[i]
         result = v.tumble(p, 1.0)
+        conf = v.intersects(result, 1.0)
+        if conf:
+            self.fail_test(f'{result} should be out-of-range of {v}, but it isn\'t.')
+
+        # check
         n = '' if expected_result else 'n\'t'
         nn = 'n\'t' if expected_result else ''
         if vector_approx(result, expected_result):

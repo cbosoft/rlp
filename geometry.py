@@ -1,5 +1,7 @@
 import numpy as np
 
+EPSILON = 1e-15
+
 def get_distance(p1, p2):
     return np.sqrt(np.sum(np.power(np.subtract(p1, p2), 2)))
 
@@ -188,8 +190,13 @@ class Vertex:
 
 
     def intersects(self, position, diameter, D=3):
+        '''
+        Vertex-particle intersection; occurs if centre-centre distance (dS) is
+        less than the average of the two diameters. To stop particles /just/
+        in contact being counted, increase the distance by epsilon.
+        '''
         assert D in [2,3]
-        return get_distance(self.vertex[:D], position[:D]) < (diameter + self.diameter)*0.5
+        return get_distance(self.vertex[:D], position[:D]) + EPSILON < (diameter + self.diameter)*0.5
 
 
     def tumble(self, position, diameter):
