@@ -7,13 +7,14 @@ from geometry import Vertex, Line, Triangle, get_distance
 
 class Sim:
 
-    def __init__(self, L, verbose=1, log_file='rlp_log.txt'):
+    def __init__(self, L, verbose=1, log_file='rlp_log.txt', seed=1):
         self.particles = list()
         self.L = L
         self.triangles = list()
         self.lines = list()
         self.verbose = verbose
         self.logf = log_file
+        np.random.seed(seed)
 
 
     def generate_particle(self, diameter=1.0):

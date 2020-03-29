@@ -17,6 +17,7 @@ if __name__ == "__main__":
             '--number':100,
             '--length':10.0,
             '--diameter':1.0,
+            '--seed':1,
             '--plot':None
         }
     if argv:
@@ -27,7 +28,7 @@ if __name__ == "__main__":
     run_tests(True)
 
     print('generating particles')
-    sim = Sim(float(args['--length']))
+    sim = Sim(float(args['--length']), seed=int(args['--seed']))
     for i in range(int(args['--number'])):
         sim.generate_particle(float(args['--diameter']))
 
