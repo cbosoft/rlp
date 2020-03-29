@@ -169,8 +169,63 @@ class Line:
         distances = [get_distance(v[:D], position[:D]) for v in self.vertices]
         return all([distance < (diameter + vdiameter)*0.5 for distance, vdiameter in zip(distances, self.diameters)])
 
+
     def tumble(self, position, diameter):
-        pass
+        '''
+        A particle (S0) tumbling over a line (R1, R2). The particle will head
+        to the centre, and then over to the side it was on until it is out of
+        range of the line.
+
+            dS = S0 - R1
+
+            dR = R2 - R1
+
+        Get component of dS parallel to dR:
+
+            TS = ((dS·dR)/(dR·dR))·dR
+
+        Normal component is sum of tangent and main:
+
+            NS = S0 + TS
+
+        Normalise (making a unit vector):
+
+            NS = NS / |NS|
+
+        Get the centre point of the line:
+
+            C = R1 + 0.5(R2 - R1)
+
+        Get the length of the separation between centre C and settling particle
+        final position S (finding the length of the triangle side):
+
+            a = max([DR1, DR2]) + DS
+            b = |0.5*dR|
+            c = (a^2 - b^2)^0.5
+
+        Particle final position is then simply:
+
+            S = C + cNS
+        '''
+        S0 = position[:2]
+        DS = diameter
+        DR1, DR2 = self.diameters
+        R1, R2 = self.vertices
+        R1 = R1[:2]
+        R2 = R2[:2]
+        dS = S0 - R1
+        dR = R2 - R1
+        TS = dR*np.dot(dS, dR)/np.dot(dR, dR)
+        NS = S0+TS
+        NS = np.divide(NS, np.sqrt(np.sum(np.power(NS, 2.0))))
+        C = R1 + 0.5*(R2 - R1)
+        a = max([DR1, DR2]) + DS
+        b = np.sqrt(np.sum(np.power(dR*0.5, 2.0)))
+        c = (a*a - b*b)**0.5
+        S = C + NS*c
+        new_position = np.array(position)
+        new_position[:2] = S
+        return new_position
 
 
 
