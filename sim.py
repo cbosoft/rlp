@@ -93,7 +93,7 @@ class Sim:
         else:
 
             # sort triangles by z position
-            triangles = list(sorted(self.triangles, key=lambda t: max([v[2] for v in t.vertices()])))
+            triangles = list(sorted(intersections, key=lambda t: max([v[2] for v in t.vertices()])))
 
             # remove triangles blocked by higher triangles
             for triangle in triangles[1:]:
