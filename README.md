@@ -13,7 +13,8 @@ have the basic algorithm sorted.
 
 # TODO
 
-  - [ ] Find out where the NaN comes from: (invalid value in arccos?)
+  - [ ] Correct intersection issue: particles are intersection, this should not
+    be possible.
   - [ ] Correct volume fraction calculate (remove edge effects)
   - [ ] Add polydispersity
   - [ ] Add friction threshold
