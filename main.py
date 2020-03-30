@@ -53,31 +53,20 @@ if __name__ == "__main__":
     if args['--plot']:
         print('plotting')
 
-        triangles = sim.triangles
-
-        ax = plt.axes([0, 0, 1, 1], projection='3d')
-
-        u, v = np.mgrid[0:2*np.pi:20j, 0:np.pi:10j]
-        X = np.cos(u)*np.sin(v)*0.5
-        Y = np.sin(u)*np.sin(v)*0.5
-        Z = np.cos(v)*0.5
-
+        fig, axes = plt.subplots(nrows=3)
         cmap = cm.get_cmap('viridis', 12)
-        for particle in sim.particles:
-            x = np.add(X, particle.position[0])
-            y = np.add(Y, particle.position[1])
-            z = np.add(Z, particle.position[2])
-            nz = np.divide(particle.position[2], sim.L)
-            ax.plot_surface(x, y, z, color=cmap(nz))
+        for ax in axes:
+            ax.set_ylim([-1, sim.L+1])
+            ax.set_xlim([-1, sim.L+1])
 
-            # x, y, z = particle.position
-            # ax.plot([x], [y], [z], 'C0o')
 
-        for triangle in triangles:
-            x, y, z = zip(*triangle.vertices())
-            ax.plot(x, y, z, '--', color='0.5')
-        ax.set_xlim([0,sim.L])
-        ax.set_ylim([0,sim.L])
-        ax.set_zlim([0,sim.L])
+        particles = list(sim.particles)
+        plt.sca(axes[0])
+        for i, ax in enumerate(axes):
+            particles = list(sorted(particles, key=lambda p:p.position[i]))
+            for particle in particles:
+                xy = list(particle.position)
+                z = xy.pop(i)
+                ax.add_patch(plt.Circle(xy, particle.diameter/2.0, ec='black', fc=cmap(z/sim.L)))
         plt.savefig(args['--plot'])
 
