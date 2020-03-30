@@ -33,6 +33,7 @@ if __name__ == "__main__":
     print('generating particles')
     sim = Sim(float(args['--length']), seed=int(args['--seed']), verbose=int(args['--verbosity']))
     for i in range(int(args['--number'])):
+        assert i == len(sim.particles)
         sim.generate_particle(float(args['--diameter']))
 
     volume_particles = 0.0
