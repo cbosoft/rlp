@@ -18,7 +18,8 @@ if __name__ == "__main__":
             '--length':10.0,
             '--diameter':1.0,
             '--seed':1,
-            '--plot':None
+            '--plot':None,
+            '--verbosity': 1
         }
     if argv:
         assert len(argv) % 2 == 0
@@ -28,7 +29,7 @@ if __name__ == "__main__":
     run_tests(True)
 
     print('generating particles')
-    sim = Sim(float(args['--length']), seed=int(args['--seed']))
+    sim = Sim(float(args['--length']), seed=int(args['--seed']), verbose=int(args['--verbosity']))
     for i in range(int(args['--number'])):
         sim.generate_particle(float(args['--diameter']))
 
