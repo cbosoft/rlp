@@ -207,14 +207,12 @@ class Line(Interactable):
         if all([get_distance(particle.position[:D], vertex[:D])+EPSILON >= (vertex_diameter + particle.diameter)*0.5 for vertex, vertex_diameter in zip(v, self.diameters)]):
             return False
 
-        for vertex, other in zip(self.vertices, self.vertices[::-1]):
-            dv = np.subtract(other[:D], vertex[:D])
+        l = get_distance(self.vertices[0][:D], self.vertices[1][:D])
+        for vertex in self.vertices:
             dp = np.subtract(particle.position[:D], vertex[:D])
-            theta = get_internal_angle(dv, dp)
-            if theta >= np.pi/2.0:
+            if np.sqrt(np.dot(dp, dp)) > l:
                 return False
 
-        #d = [get_distance(particle.position[:D], vertex[:D])-1e-10 for vertex in v]
         return True
 
 
