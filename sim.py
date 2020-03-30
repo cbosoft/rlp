@@ -49,8 +49,12 @@ class Sim:
         if not all([0 <= p <= self.L for p in new_particle.position[:2]]):
             raise OutOfBoundsError("OOB")
 
-        self.particles.append(new_particle)
-        self.update_geometry()
+        try:
+            self.particles.append(new_particle)
+            self.update_geometry()
+        except Exception as e:
+            self.particles.pop(-1)
+            raise
 
 
     def update_geometry(self):
