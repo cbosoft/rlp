@@ -9,3 +9,6 @@ class RecursionDepthError(RLPError):
 
 class GoingInCirclesError(RLPError):
     pass
+
+class IntersectionError(RLPError):
+    pass
