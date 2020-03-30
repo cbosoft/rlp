@@ -17,3 +17,9 @@ class Particle:
             raise Exception("position or position_z must be specified.")
 
         self.settled = True
+
+    def __repr__(self):
+        return repr(self.position)
+
+    def __str__(self):
+        return str(self.position)
