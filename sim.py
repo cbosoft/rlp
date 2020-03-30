@@ -162,8 +162,8 @@ class Sim:
                     particle.position = vertices[0].tumble(particle.position, particle.diameter)
 
                     # and continues settling
-                    self.settle(particle)
                     self.log(f'hit vertex {vertices[0].vertex[0]} {vertices[0].vertex[1]} {vertices[0].vertex[2]}', verbosity_minimum=2)
+                    self.settle(particle, n=n+1)
                     return
 
             else:
@@ -175,8 +175,8 @@ class Sim:
                 particle.position = lines[0].tumble(particle.position, particle.diameter)
 
                 # and continues settling
-                self.settle(particle)
                 self.log(f'\nhit line ({lines[0]}) {pp} -> {particle.position} ({lines[0].intersects(particle.position, particle.diameter, D=2)})\n', verbosity_minimum=2)
+                self.settle(particle, n=n+1)
                 return
         else:
 
