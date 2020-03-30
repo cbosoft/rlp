@@ -82,8 +82,12 @@ class Sim:
             if ids in lines_ids:
                 continue
 
-            if (zangle := get_internal_angle(ZAXIS, np.subtract(pj.position, pi.position))) <= np.pi/4.0:
-                self.log(f'no because steep: {zangle} <= {np.pi/4.0})', verbosity_minimum=2)
+            z_angles = [
+                    get_internal_angle(ZAXIS, np.subtract(pj.position, pi.position)),
+                    get_internal_angle(ZAXIS, np.subtract(pi.position, pj.position))
+                    ]
+            if any([za <= np.pi/4.0 for za in z_angles]):
+                self.log(f'no because steep: {min(z_angles)} <= {np.pi/4.0})', verbosity_minimum=2)
                 continue
             
             lines_ids.append(ids)
