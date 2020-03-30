@@ -402,8 +402,8 @@ class SimAddParticleTestTriangle(Test):
         # Build and operate
         sim = Sim(10.0, verbose=0)
         sim.add_particle([0.0, 0.0, 0.0])
-        sim.add_particle([0.0, 2.0, 0.0])
-        sim.add_particle([2.0, 0.0, 0.0])
+        sim.add_particle([0.0, 1.0, 0.0])
+        sim.add_particle([1.0, 0.0, 0.0])
 
         # check
         if (l := len(sim.triangles)) != 1:
