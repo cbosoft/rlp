@@ -62,6 +62,7 @@ class Triangle(Interactable):
         self.b = np.array(b, dtype=np.float64)
         self.c = np.array(c, dtype=np.float64)
         self.vertices = np.array([a, b, c], dtype=np.float64)
+        self.Vertices = [Vertex(a, da), Vertex(b, db), Vertex(c, dc)]
         self.diameters = [da, db, dc]
         self.thetas = list()
         self.thetas2d = list()
@@ -117,36 +118,38 @@ class Triangle(Interactable):
 
         assert D in [2,3]
 
-        # first rough check
-        maxv = np.max(self.vertices, axis=0)
-        minv = np.min(self.vertices, axis=0)
-        if np.any(particle.position[:D] > maxv[:D]):
-            return False
-        if np.any(particle.position[:D] < minv[:D]):
-            return False
+        return len([1 for v in self.Vertices if v.could_interact_with(particle, D=D)]) == 3
 
-        # more involved check
-        thetas = self.thetas2d if D == 2 else self.thetas
-        for vertex, theta in zip(self.vertices, thetas):
-            vertex = np.array(vertex)
-            vectors = list()
-            for other in self.vertices:
+        # # first rough check
+        # maxv = np.max(self.vertices, axis=0)
+        # minv = np.min(self.vertices, axis=0)
+        # if np.any(particle.position[:D] > maxv[:D]):
+        #     return False
+        # if np.any(particle.position[:D] < minv[:D]):
+        #     return False
 
-                if all(other[:D] == vertex[:D]):
-                    continue
+        # # more involved check
+        # thetas = self.thetas2d if D == 2 else self.thetas
+        # for vertex, theta in zip(self.vertices, thetas):
+        #     vertex = np.array(vertex)
+        #     vectors = list()
+        #     for other in self.vertices:
 
-                vectors.append(np.subtract(vertex[:D], other[:D]))
+        #         if all(other[:D] == vertex[:D]):
+        #             continue
 
-            v_to_p = np.subtract(vertex, particle.position)
-            for vector in vectors:
-                angle = min([get_internal_angle(vector[:D]*m, v_to_p[:D]) for m in [1.0, -1.0]])
-                if angle > theta:
-                    return False
+        #         vectors.append(np.subtract(vertex[:D], other[:D]))
 
-        if self.trilaterate(particle.diameter) is None:
-            return False
+        #     v_to_p = np.subtract(vertex, particle.position)
+        #     for vector in vectors:
+        #         angle = min([get_internal_angle(vector[:D]*m, v_to_p[:D]) for m in [1.0, -1.0]])
+        #         if angle > theta:
+        #             return False
 
-        return True
+        # if self.trilaterate(particle.diameter) is None:
+        #     return False
+
+        # return True
 
 
     def trilaterate(self, diameter):
