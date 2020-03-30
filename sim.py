@@ -125,7 +125,7 @@ class Sim:
             if triangle.intersects(particle.position, particle.diameter, D=2):
                 intersections.append(triangle)
 
-        self.log(f'{len(self.triangles)} {len(self.lines)} setting', end='')
+        self.log(f'{flpos}->', end='')
         intersections = list(filter(lambda t: min([v[2] for v in t.vertices()]) < particle.position[2], intersections))
         if not intersections:
 
@@ -152,7 +152,7 @@ class Sim:
                 if not intersections:
 
                     particle.settle_to(position_z=0.0)
-                    self.log(' on floor')
+                    self.log('FLOOR')
 
                 else:
                     # sort vertices by z position
@@ -163,6 +163,7 @@ class Sim:
 
                     # and continues settling
                     self.settle(particle)
+                    self.log(f'hit vertex {vertices[0].vertex[0]} {vertices[0].vertex[1]} {vertices[0].vertex[2]}', verbosity_minimum=2)
                     return
 
             else:
@@ -170,10 +171,12 @@ class Sim:
                 lines = list(sorted(intersections, key=lambda l: np.average([v[2]*100.0 + get_distance(particle.position[:2], v[:2]) for v in l.vertices])))
 
                 # particle moves out of range of line
+                pp = particle.position
                 particle.position = lines[0].tumble(particle.position, particle.diameter)
 
                 # and continues settling
                 self.settle(particle)
+                self.log(f'\nhit line ({lines[0]}) {pp} -> {particle.position} ({lines[0].intersects(particle.position, particle.diameter, D=2)})\n', verbosity_minimum=2)
                 return
         else:
 
@@ -188,7 +191,8 @@ class Sim:
             particle.settle_to(position=triangle.tumble(particle.diameter))
 
             self.triangles.pop(self.triangles.index(triangle))
-            self.log(' on top')
+            flpos = '[' + ', '.join([f'{p:.2f}' for p in particle.position]) + ']'
+            self.log(f'{flpos}')
 
 
     def log(self, *args, verbosity_minimum=1, **kwargs):
