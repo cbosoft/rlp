@@ -487,7 +487,7 @@ class SimAddParticleTestFarTriangle(Test):
 
     def run(self):
         # Build and operate
-        sim = Sim(10.0, verbose=10)
+        sim = Sim(10.0, verbose=0)
         for point in self.points:
             sim.add_particle(point)
 
