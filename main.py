@@ -20,7 +20,8 @@ if __name__ == "__main__":
             '--diameter':1.0,
             '--seed':1,
             '--plot':None,
-            '--verbosity': 1
+            '--verbosity': 1,
+            '--ids':None
         }
     if argv:
         assert len(argv) % 2 == 0
@@ -69,6 +70,12 @@ if __name__ == "__main__":
 
 
         particles = list(sim.particles)
+
+        if args['--ids']:
+            f = [int(i) for i in args['--ids'].split(',')]
+            particles = [p for p in particles if p.id in f]
+
+
         plt.sca(axes[0])
         for i, ax in enumerate(axes):
             particles = list(sorted(particles, key=lambda p:p.position[i]))
