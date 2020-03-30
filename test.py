@@ -585,7 +585,9 @@ def run_tests(quiet=False):
 
     SimAddParticleTestFarTriangle().run()
     SimAddParticleTestFarTrianlgleTumble().run()
-    print("done!")
+
+    if not quiet:
+        print("done!")
 
 if __name__ == "__main__":
     run_tests()
