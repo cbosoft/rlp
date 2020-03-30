@@ -3,7 +3,7 @@ import itertools as itt
 import numpy as np
 
 from particle import Particle
-from geometry import Vertex, Line, Triangle, get_distance
+from geometry import Vertex, Line, Triangle, get_distance, get_internal_angle, ZAXIS
 
 class Sim:
 
@@ -52,6 +52,11 @@ class Sim:
             ids = set(sorted([pi.id, pj.id]))
             if ids in lines_ids:
                 continue
+
+            if (zangle := get_internal_angle(ZAXIS, np.subtract(pj.position, pi.position))) <= np.pi/4.0:
+                self.log(f'no because steep: {zangle} <= {np.pi/4.0})', verbosity_minimum=2)
+                continue
+            
             lines_ids.append(ids)
             self.lines.append(Line(pi.position, pj.position, pi.diameter, pj.diameter))
 
@@ -83,12 +88,15 @@ class Sim:
                 continue
 
             d = np.add(np.multiply(t.diameters, 0.5), pi.diameter)
-            cv_sep = [get_distance(c, vi) for vi in v]
+            cv_sep = np.array([get_distance(c, vi) for vi in v], dtype=np.float64)
             if np.any(cv_sep > d):
                 self.log(f'no because distant: any({cv_sep} > {d})', verbosity_minimum=2)
                 continue
 
-            # TODO: discount triangle if too steep (i.e. zangle lowest vertex to highest > pi/4)
+            zangles = np.array([get_internal_angle(ZAXIS, np.subtract(v[0], vi)) for vi in v[1:]], dtype=np.float64)
+            if np.any(zangles <= np.pi/4.0):
+                self.log(f'no because steep: any({zangles} <= {np.pi/4.0})', verbosity_minimum=2)
+                continue
 
             self.triangles.append(t)
 

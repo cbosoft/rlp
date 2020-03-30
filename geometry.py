@@ -2,6 +2,8 @@ import numpy as np
 
 EPSILON = 1e-15
 
+ZAXIS = np.array([0.0, 0.0, 1.0])
+
 def get_distance(p1, p2):
     return np.sqrt(np.sum(np.power(np.subtract(p1, p2), 2)))
 
