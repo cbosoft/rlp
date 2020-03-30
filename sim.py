@@ -4,6 +4,8 @@ import numpy as np
 
 from particle import Particle
 from geometry import Vertex, Line, Triangle, get_distance, get_internal_angle, ZAXIS
+from exception import OutOfBoundsError
+
 
 class Sim:
 
@@ -21,7 +23,14 @@ class Sim:
         self.log(f'generating particle {len(self.particles)} ', end='')
         position = np.multiply(self.L, np.random.random((3)))
         position[2] = self.L
-        self.add_particle(position, diameter)
+
+        try:
+            self.add_particle(position, diameter)
+        except OutOfBoundsError:
+            self.generate_particle(diameter=diameter)
+        except RecursionError:
+            self.log("Particle caught between two places!")
+            self.generate_particle(diameter=diameter)
 
 
     def add_particle(self, position, diameter=1.0):
@@ -29,8 +38,7 @@ class Sim:
         self.settle(new_particle)
 
         if not all([0 <= p <= self.L for p in new_particle.position[:2]]):
-            self.generate_particle(diameter=diameter)
-            return
+            raise OutOfBoundsError("OOB")
 
         self.particles.append(new_particle)
         self.update_geometry()
