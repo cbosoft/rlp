@@ -289,7 +289,7 @@ class Vertex:
 
 
     def __str__(self):
-        return str(self.diameter)
+        return str(self.vertex)
 
 
     def intersects(self, position, diameter, D=3):
