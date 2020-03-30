@@ -108,6 +108,7 @@ class Sim:
                 intersections.append(triangle)
 
         self.log(f'{len(self.triangles)} {len(self.lines)} setting', end='')
+        intersections = list(filter(lambda t: min([v[2] for v in t.vertices()]) < particle.position[2], intersections))
         if not intersections:
 
             # Not falling into a triangle means the particle will not be
@@ -120,6 +121,7 @@ class Sim:
                 if line.intersects(particle.position, particle.diameter, D=2):
                     intersections.append(line)
 
+            intersections = list(filter(lambda l: min([v[2] for v in l.vertices]) < particle.position[2], intersections))
             if not intersections:
 
                 # finally, see if the falling particle will hit a single other particle
@@ -128,6 +130,7 @@ class Sim:
                     if v.intersects(particle.position, particle.diameter, D=2):
                         intersections.append(v)
 
+                intersections = list(filter(lambda ve: ve.vertex[2] < particle.position[2], intersections))
                 if not intersections:
 
                     particle.settle_to(position_z=0.0)
