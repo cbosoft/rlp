@@ -43,12 +43,15 @@ if __name__ == "__main__":
         if particle.position[2] > t:
             t = particle.position[2]
 
+    n_intersection = 0
     for pi in sim.particles:
         for pj in sim.particles:
             if pi.id <= pj.id:
                 continue
             if (d := get_distance(pi.position, pj.position)+1e-5) < (t := (pi.diameter+pj.diameter)*0.5):
                 print(f'particle-particle intersection! [{pi.id} and {pj.id}] {d} < {t}')
+                n_intersection += 1
+    print(f'number of intersections = {n_intersection}')
 
     volume_box = (sim.L+1)*(sim.L+1)*(t+1.0)
     print('volfrac =', volume_particles / volume_box)
