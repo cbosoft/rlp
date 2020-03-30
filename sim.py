@@ -4,7 +4,7 @@ import numpy as np
 
 from particle import Particle
 from geometry import Vertex, Line, Triangle, get_distance, get_internal_angle, ZAXIS
-from exception import OutOfBoundsError
+from exception import OutOfBoundsError, RecursionDepthError, GoingInCirclesError
 
 
 class Sim:
@@ -30,8 +30,9 @@ class Sim:
             self.add_particle(position, diameter)
         except OutOfBoundsError:
             self.generate_particle(diameter=diameter)
-        except RecursionError:
-            self.log("Particle caught between two places!")
+        except RecursionDepthError:
+            self.generate_particle(diameter=diameter)
+        except GoingInCirclesError:
             self.generate_particle(diameter=diameter)
 
 
@@ -104,11 +105,11 @@ class Sim:
     def settle(self, particle, n=0, recursion_limit=100, history_limit=5):
 
         if n > recursion_limit:
-            raise RecursionError('Exceeded recursion limit.')
+            raise RecursionDepthError('Exceeded recursion limit.')
 
         lpos = list(particle.position)
         if lpos in self.previous_settling_positions:
-            raise RecursionError(f'Going in circles: found current position in recent history ({lpos} in {self.previous_settling_positions}).')
+            raise GoingInCirclesError(f'Going in circles: found current position in recent history ({lpos} in {self.previous_settling_positions}).')
 
         self.previous_settling_positions.append(lpos)
         if len(self.previous_settling_positions) > history_limit:

@@ -3,3 +3,9 @@ class RLPError(Exception):
 
 class OutOfBoundsError(RLPError):
     pass
+
+class RecursionDepthError(RLPError):
+    pass
+
+class GoingInCirclesError(RLPError):
+    pass
