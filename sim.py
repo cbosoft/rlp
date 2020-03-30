@@ -4,7 +4,7 @@ import numpy as np
 
 from particle import Particle
 from geometry import Vertex, Line, Triangle, get_distance, get_internal_angle, ZAXIS
-from exception import OutOfBoundsError, RecursionDepthError, GoingInCirclesError
+from exception import RLPError, OutOfBoundsError, RecursionDepthError, GoingInCirclesError, IntersectionError
 
 
 class Sim:
@@ -33,11 +33,11 @@ class Sim:
             self.add_particle(position, diameter)
         except FloatingPointError:
             self.generate_particle(diameter=diameter)
-        except OutOfBoundsError:
-            self.generate_particle(diameter=diameter)
-        except RecursionDepthError:
-            self.generate_particle(diameter=diameter)
-        except GoingInCirclesError:
+        except IntersectionError:
+            for i in self.last_list_interactions:
+                print(i)
+            raise
+        except RLPError:
             self.generate_particle(diameter=diameter)
 
 
@@ -48,6 +48,11 @@ class Sim:
 
         if not all([0 <= p <= self.L for p in new_particle.position[:2]]):
             raise OutOfBoundsError("OOB")
+
+        for particle in self.particles:
+            if particle.intersects_with(new_particle):
+                print(particle.position, new_particle.position)
+                raise IntersectionError('Particle-particle intersection')
 
         try:
             self.particles.append(new_particle)
@@ -146,12 +151,16 @@ class Sim:
             self.log('FLOOR')
             return
 
+        self.last_list_interactions = list(sorted(interactions, key=lambda i: i.get_sortkey(particle)))
         interaction = sorted(interactions, key=lambda i: i.get_sortkey(particle))[0]
         interaction.interact(particle)
 
         if not particle.settled:
             self.settle(particle, n=n+1)
         else:
+            assert isinstance(interaction, Triangle)
+
+            self.triangles.pop(self.triangles.index(interaction))
             flpos = '[' + ', '.join([f'{p:.2f}' for p in particle.position]) + ']'
             self.log(f'{flpos}')
 
