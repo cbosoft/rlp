@@ -90,25 +90,13 @@ class Sim:
             triangles_ids.append(ids)
 
             t = Triangle(pi.position, pj.position, pk.position, pi.diameter, pj.diameter, pk.diameter)
-            c = t.centre()
-            v = t.vertices()
 
-            if np.any(t.thetas > np.pi/2.0):
-                self.log(f'no because obtuse: any({t.thetas} > {np.pi/2.0})', verbosity_minimum=2)
-                continue
-
-            d = np.add(np.multiply(t.diameters, 0.5), pi.diameter)
-            cv_sep = np.array([get_distance(c, vi) for vi in v], dtype=np.float64)
-            if np.any(cv_sep > d):
-                self.log(f'no because distant: any({cv_sep} > {d})', verbosity_minimum=2)
-                continue
-
-            zangles = np.array([get_internal_angle(ZAXIS, np.subtract(v[0], vi)) for vi in v[1:]], dtype=np.float64)
-            if np.any(zangles <= np.pi/4.0):
-                self.log(f'no because steep: any({zangles} <= {np.pi/4.0})', verbosity_minimum=2)
+            if t.trilaterate(1.0) is None:
                 continue
 
             self.triangles.append(t)
+
+
     def settle(self, particle, n=0, recursion_limit=100, history_limit=5):
 
         lpos = list(particle.position)
