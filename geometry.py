@@ -117,8 +117,8 @@ class Triangle:
 
             v_to_p = np.subtract(vertex, position)
             for vector in vectors:
-                ang = get_internal_angle(vector[:D], v_to_p[:D])
-                if ang > theta:
+                angle = min([get_internal_angle(vector[:D]*m, v_to_p[:D]) for m in [1.0, -1.0]])
+                if angle > theta:
                     return False
 
         if self.trilaterate(diameter) is None:
