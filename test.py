@@ -8,11 +8,13 @@ QUIET = False
 
 # Test-driven-development inspired by "Clean Code" - Uncle Bob.
 
+
 def approx_eq(a, b, eps=1e-7):
     return a-eps <= b <= a+eps
 
 def vector_approx(vector1, vector2, eps=1e-7):
     return all([vj-eps < vi < vj+eps for vi,vj in zip(vector1, vector2)])
+
 
 
 class TestFailure(Exception):
@@ -292,7 +294,7 @@ class TriangleAreaTest(Test):
 
 class TriangleCentreTest(Test):
 
-    name = 'Triangle centre test'
+    name = 'Triangle test (centre)'
 
     def run(self):
         t = Triangle([0.0, 1.0, 0.0], [-1.0, 0.0, 0.0], [1.0, 0.0, 0.0], 1.0, 1.0, 1.0)
@@ -300,6 +302,7 @@ class TriangleCentreTest(Test):
             self.fail_test(f'({c} != {cp})')
         else:
             self.pass_test()
+
 
 
 class TriangleIntersectTest2D(MultiTest):
@@ -459,7 +462,6 @@ class SimAddParticleTestIntersectionTriangle(Test):
         sim.add_particle([0.0, 0.0, 10.0])
         sim.add_particle([0.0, 1.0, 10.0])
         sim.add_particle([1.0, 0.0, 10.0])
-        cx, cy, cz = sim.triangles[-1].centre()
 
         # last one should settle on the triangle
         sim.add_particle([0.49, 0.5, 10.0])
