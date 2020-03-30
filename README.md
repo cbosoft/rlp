@@ -13,7 +13,6 @@ have the basic algorithm sorted.
 
 # TODO
 
-  - [ ] Fix tumble and intersection calc for Triangles
   - [ ] Find out where the NaN comes from: (invalid value in arccos?)
   - [ ] Correct volume fraction calculate (remove edge effects)
   - [ ] Add polydispersity

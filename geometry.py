@@ -23,9 +23,9 @@ class Triangle:
     '''
 
     def __init__(self, a, b, c, da, db, dc):
-        self.a = a
-        self.b = b
-        self.c = c
+        self.a = np.array(a, dtype=np.float64)
+        self.b = np.array(b, dtype=np.float64)
+        self.c = np.array(c, dtype=np.float64)
         vertices = [a, b, c]
         self.diameters = [da, db, dc]
         self.thetas = list()
@@ -90,7 +90,7 @@ class Triangle:
         return A, B, C, D
 
 
-    def intersects(self, position, D=3):
+    def intersects(self, position, diameter, D=3):
 
         assert D in [2,3]
 
@@ -121,45 +121,43 @@ class Triangle:
                 if ang > theta:
                     return False
 
+        if self.trilaterate(diameter) is None:
+            return False
+
         return True
 
+    def trilaterate(self, diameter):
+        '''
+        Trilaterate intersection points of three spheres centred on the
+        triangles vertices.
+
+        https://stackoverflow.com/a/18654302
+        '''
+        r1, r2, r3 = np.multiply(np.add(self.diameters, diameter), 0.5)
+        temp1 = self.b - self.a
+        d = np.linalg.norm(temp1)
+        e_x = temp1/d
+        temp2 = self.c - self.a
+        i = np.dot(e_x, temp2)
+        temp3 = temp2 - i*e_x
+        e_y = temp3/np.linalg.norm(temp3)
+        e_z = np.cross(e_x, e_y)
+        j = np.dot(e_y, temp2)
+        x = (r1*r1 - r2*r2 + d*d) / (2*d)
+        y = (r1*r1 - r3*r3 -2*i*x + i*i + j*j) / (2*j)
+        temp4 = r1*r1 - x*x - y*y
+        if temp4 < 0:
+            return None
+        z = np.sqrt(temp4)
+        p_12_a = self.a + x*e_x + y*e_y + z*e_z
+        p_12_b = self.a + x*e_x + y*e_y - z*e_z
+        return p_12_a, p_12_b
+
     def tumble(self, diameter):
-        '''
-        this bit is a bit mathsy. We've got three spheres 
-        (radius = radius vertex + radius settling) centred on the vertices. The
-        new particle position will be the highest intersection point: let's 
-        call this point S.
-        
-        We can simplify the calculation as we already know the x-y coords of the
-        intersection point: the center coords of the triangle.
-        
-        Sx = Cx; Sy = Cy
-
-        We need to find the z component. To do this, we just need to find the 
-        side lengths of a triangle: the centre of vertex with the largest 
-        diameter (V), the centre point of the triangle (C) and the final 
-        position of the settling particle (S).
-
-        CS^2 = SV^2 - VC^2
-
-        CS is the vertical line up from centre to position. SV is vertex to
-        position: the average of the largest diameter and the settling diameter.
-        VC is vertex to centre. These are scalar distances, not vectors.
-        '''
-        C = self.centre()
-        S = np.array(C)
-        DS = diameter
-        V = self.vertices()[0]
-        DV = self.diameters[0]
-        for vertex, vertex_diameter in zip(self.vertices()[1:], self.diameters[1:]):
-            if vertex_diameter > DV:
-                V = vertex
-                DV = vertex_diameter
-        SV = (DV + DS)*0.5
-        VC = np.sqrt(np.sum(np.power(np.subtract(C, V), 2.0)))
-        CS = (SV*SV - VC*VC)**0.5
-        S[2] = CS
-        return S
+        a, b = self.trilaterate(diameter)
+        if a[2] > b[2]:
+            return a
+        return b
 
 
 

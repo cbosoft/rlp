@@ -104,7 +104,7 @@ class Sim:
     def settle(self, particle):
         intersections = list()
         for triangle in self.triangles:
-            if triangle.intersects(particle.position, D=2):
+            if triangle.intersects(particle.position, particle.diameter, D=2):
                 intersections.append(triangle)
 
         self.log(f'{len(self.triangles)} {len(self.lines)} setting', end='')
