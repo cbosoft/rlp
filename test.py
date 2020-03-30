@@ -3,6 +3,7 @@ import numpy as np
 from geometry import Vertex, Line, Triangle
 from sim import Sim
 from colours import *
+from exception import OutOfBoundsError
 
 QUIET = False
 
@@ -475,6 +476,53 @@ class SimAddParticleTestIntersectionTriangle(Test):
             self.pass_test()
 
 
+class SimAddParticleTestFarTriangle(Test):
+    name = 'Sim add particle test (far triangle)'
+    points = [
+            [3.91670032, 0.4896196, 0.0],
+
+            [2.3668456, 0.71321559, 0.0],
+            [3.02332573, 1.4755891, 0.0]
+        ]
+
+    def run(self):
+        # Build and operate
+        sim = Sim(10.0, verbose=10)
+        for point in self.points:
+            sim.add_particle(point)
+
+        # check
+        if (l := len(sim.triangles)) != 1:
+            self.fail_test(f'number triangles ({l}) != 1')
+        else:
+            self.pass_test()
+
+class SimAddParticleTestFarTrianlgleTumble(SimAddParticleTestFarTriangle):
+    name = 'Sim add particle test (far triangle) (tumble)'
+
+    def run(self):
+        # Build and operate
+        sim = Sim(10.0, verbose=0)
+        for point in self.points:
+            sim.add_particle(point)
+
+        p = [2.9180535, 0.5462543, 10.0]
+        t = sim.triangles[-1]
+        result = False
+        try:
+            sim.add_particle(p)
+            result = False
+        except OutOfBoundsError:
+            result = True
+
+        # check
+        expected_result = True
+        if expected_result == result:
+            self.pass_test()
+        else:
+            self.fail_test(f'settled pos not out of bounds as expected.')
+
+
 
 
 
@@ -506,6 +554,10 @@ def run_tests(quiet=False):
     SimAddParticleTestTumbleVertex().run()
     SimAddParticleTestTumbleLine().run()
     SimAddParticleTestIntersectionTriangle().run()
+
+    SimAddParticleTestFarTriangle().run()
+    SimAddParticleTestFarTrianlgleTumble().run()
+    print("done!")
 
 if __name__ == "__main__":
     run_tests()
