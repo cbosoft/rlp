@@ -20,7 +20,7 @@ class Particle:
         self.settled = True
 
     def intersects_with(self, other):
-        return get_distance(self.position, other.position) + EPSILON < (self.diameter + other.diameter)*0.5
+        return get_distance(self.position, other.position) + 1e-5 < (self.diameter + other.diameter)*0.5
 
     def __repr__(self):
         return repr(self.position)
