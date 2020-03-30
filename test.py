@@ -408,7 +408,7 @@ class SimAddParticleTestTumbleLine(Test):
 
         # check
         result = sim.particles[-1].position
-        expected_result = [0.5, (2.0*2.0 - 0.5*0.5)**0.5, 0.0]
+        expected_result = [0.5, (1.0 - 0.5*0.5)**0.5, 0.0]
         if not vector_approx(result, expected_result):
             self.fail_test(f'settled position not correct ({result} != {expected_result})')
         else:

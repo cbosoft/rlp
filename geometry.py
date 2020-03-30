@@ -4,14 +4,17 @@ EPSILON = 1e-15
 
 ZAXIS = np.array([0.0, 0.0, 1.0])
 
+
 def get_distance(p1, p2):
     return np.sqrt(np.sum(np.power(np.subtract(p1, p2), 2)))
+
 
 def get_internal_angle(v1, v2):
     mag1 = np.sqrt(np.dot(v1, v1))
     mag2 = np.sqrt(np.dot(v2, v2))
     costheta = np.divide(v1.dot(v2), mag1*mag2)
     return np.arccos(costheta)
+
 
 class Triangle:
     '''
@@ -188,8 +191,10 @@ class Line:
         range of the line.
 
             dS = S0 - R1
+            dS' = dS/|dS|
 
             dR = R2 - R1
+            dR' = dR/|dR|
 
         Get component of dS parallel to dR:
 
@@ -201,22 +206,24 @@ class Line:
 
         Normalise (making a unit vector):
 
-            NS = NS / |NS|
+            NS' = NS / |NS|
+
+        Get angle between R1->S and R1->R2:
+
+            a = |R1->R2|
+            b = |R1->S| = (DR1 + DS)*0.5
+            c = |R2->S| = (DR2 + DS)*0.5
+            theta = arccos( (a^2 + b^2 - c^2)/(2*a*b) )
 
         Get the centre point of the line:
 
-            C = R1 + 0.5(R2 - R1)
+            t = |R1->C| = |R1->S|*cos(theta)
+            C = R1 + dR'*t
 
-        Get the length of the separation between centre C and settling particle
-        final position S (finding the length of the triangle side):
+        Get final position:
 
-            a = max([DR1, DR2]) + DS
-            b = |0.5*dR|
-            c = (a^2 - b^2)^0.5
-
-        Particle final position is then simply:
-
-            S = C + cNS
+            l = |C->S| = |R1->S|*sin(theta)
+            S = C + NS'*l
         '''
         S0 = position[:2]
         DS = diameter
@@ -224,16 +231,29 @@ class Line:
         R1, R2 = self.vertices
         R1 = R1[:2]
         R2 = R2[:2]
-        dS = S0 - R1
+        dS0 = S0 - R1
+        dS0_mag = np.sqrt(np.dot(dS0, dS0))
         dR = R2 - R1
-        TS = dR*np.dot(dS, dR)/np.dot(dR, dR)
-        NS = S0+TS
-        NS = np.divide(NS, np.sqrt(np.sum(np.power(NS, 2.0))))
-        C = R1 + 0.5*(R2 - R1)
-        a = max([DR1, DR2]) + DS
-        b = np.sqrt(np.sum(np.power(dR*0.5, 2.0)))
-        c = (a*a - b*b)**0.5
-        S = C + NS*c
+        dR_mag = np.sqrt(np.dot(dR, dR))
+        dRu = np.divide(dR, dR_mag)
+
+        TS = dR*np.dot(dS0, dR)/np.dot(dR, dR)
+        NS0 = S0+TS
+        NS0u = np.divide(NS0, np.sqrt(np.dot(NS0, NS0)))
+
+        a = dR_mag
+        b = (DR1 + DS)*0.5
+        c = (DR2 + DS)*0.5
+        costheta = (a*a + b*b - c*c)/(2*a*b)
+        theta = np.arccos(costheta)
+
+        dS_mag = (DR1 + DS)*0.5
+        t = dS_mag * costheta
+        C = np.add(R1, np.multiply(dRu, t))
+
+        l = dS_mag * np.sin(theta)
+        S = np.add(C, np.multiply(NS0u, l))
+
         new_position = np.array(position)
         new_position[:2] = S
         return new_position
