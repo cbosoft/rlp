@@ -17,8 +17,11 @@ class Sim:
         self.vertices =list()
         self.verbose = verbose
         self.logf = log_file
-        np.random.seed(seed)
         self.previous_settling_positions = list()
+
+        # set up numpy stuff
+        np.random.seed(seed)
+        np.seterr(all='raise')
 
 
     def generate_particle(self, diameter=1.0):
@@ -28,6 +31,8 @@ class Sim:
 
         try:
             self.add_particle(position, diameter)
+        except FloatingPointError:
+            self.generate_particle(diameter=diameter)
         except OutOfBoundsError:
             self.generate_particle(diameter=diameter)
         except RecursionDepthError:
