@@ -178,8 +178,24 @@ class Line:
 
     def intersects(self, position, diameter, D=3):
         assert D in [2,3]
-        distances = [get_distance(v[:D], position[:D]) for v in self.vertices]
-        return all([distance < (diameter + vdiameter)*0.5 for distance, vdiameter in zip(distances, self.diameters)])
+
+        v = self.vertices
+        if get_distance(v[0], v[1]) >= diameter + np.average(self.diameters):
+            return False
+
+        if all([get_distance(position[:D], vertex[:D])+EPSILON >= (vertex_diameter + diameter)*0.5 for vertex, vertex_diameter in zip(v, self.diameters)]):
+            return False
+
+        for vertex, other in zip(self.vertices, self.vertices[::-1]):
+            dv = np.subtract(other[:D], vertex[:D])
+            dp = np.subtract(position[:D], vertex[:D])
+            theta = get_internal_angle(dv, dp)
+            if theta >= np.pi/2.0:
+                return False
+
+        d = [get_distance(position[:D], vertex[:D])-1e-10 for vertex in v]
+        return True
+
 
 
     def tumble(self, position, diameter):
