@@ -5,6 +5,7 @@ from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import cm
 from matplotlib import pyplot as plt
 
+from geometry import get_distance
 from particle import Particle
 from sim import Sim
 from test import run_tests
@@ -40,7 +41,14 @@ if __name__ == "__main__":
         if particle.position[2] > t:
             t = particle.position[2]
 
-    volume_box = sim.L*sim.L*(t+1.0)
+    for pi in sim.particles:
+        for pj in sim.particles:
+            if pi == pj:
+                continue
+            if (d := get_distance(pi.position, pj.position)+1e-5) < (t := (pi.diameter+pj.diameter)*0.5):
+                raise Exception(f'particle-particle intersection! [{pi.id} and {pj.id}] {d} < {t}')
+
+    volume_box = (sim.L+1)*(sim.L+1)*(t+1.0)
     print('volfrac =', volume_particles / volume_box)
 
     print('outputting')
