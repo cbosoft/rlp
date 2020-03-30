@@ -156,7 +156,7 @@ class Sim:
 
                 else:
                     # sort vertices by z position
-                    vertices = list(sorted(intersections, key=lambda ve: ve.vertex[2]))
+                    vertices = list(sorted(intersections, key=lambda ve: ve.vertex[2]*100.0 + get_distance(particle.position[:2], ve.vertex[:2])))
 
                     # particle moves out of range of vertex
                     particle.position = vertices[0].tumble(particle.position, particle.diameter)
@@ -167,7 +167,7 @@ class Sim:
 
             else:
                 # sort lines by z position
-                lines = list(sorted(intersections, key=lambda l: max([v[2] for v in l.vertices])))
+                lines = list(sorted(intersections, key=lambda l: np.average([v[2]*100.0 + get_distance(particle.position[:2], v[:2]) for v in l.vertices])))
 
                 # particle moves out of range of line
                 particle.position = lines[0].tumble(particle.position, particle.diameter)
