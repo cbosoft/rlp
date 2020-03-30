@@ -16,36 +16,63 @@ def get_internal_angle(v1, v2):
     return np.arccos(costheta)
 
 
-class Triangle:
+
+class Interactable:
+
+    TIEBREAK = 0.0
+    NAME = 'Interactable'
+
+    def __init__(self):
+        self.vertices = list()
+
+
+    def __repr__(self):
+        return f'{self.NAME}({repr(self.vertices)})'
+
+
+    def __str__(self):
+        return f'{self.NAME}({str(self.vertices)})'
+
+
+    def get_lowpoint(self):
+        return min([v[2] for v in self.vertices])
+
+
+    def get_sortkey(self, particle):
+
+        # highest point
+        h = (1e9-max([v[2] for v in self.vertices]))
+
+        # xy-separation
+        s = np.min([get_distance(particle.position[:2], v[:2]) for v in self.vertices])
+        return h*100.0 + s*10.0 + self.TIEBREAK
+
+
+
+class Triangle(Interactable):
     '''
     Triangle class: a representation of a trio of particles which together form
     a triangle, with particle centres at each of vertices.
     '''
 
+    NAME = 'Triangle'
+
     def __init__(self, a, b, c, da, db, dc):
         self.a = np.array(a, dtype=np.float64)
         self.b = np.array(b, dtype=np.float64)
         self.c = np.array(c, dtype=np.float64)
-        vertices = [a, b, c]
+        self.vertices = np.array([a, b, c], dtype=np.float64)
         self.diameters = [da, db, dc]
         self.thetas = list()
         self.thetas2d = list()
-        for i, vertex in enumerate(vertices):
+        for i, vertex in enumerate(self.vertices):
             vertex = np.array(vertex)
-            vectors = [np.subtract(vertex, other) for j, other in enumerate(vertices) if i != j]
-            vectors2d = [np.subtract(vertex[:-1], other[:-1]) for j, other in enumerate(vertices) if i != j]
+            vectors = [np.subtract(vertex, other) for j, other in enumerate(self.vertices) if i != j]
+            vectors2d = [np.subtract(vertex[:-1], other[:-1]) for j, other in enumerate(self.vertices) if i != j]
             self.thetas.append(get_internal_angle(*vectors))
             self.thetas2d.append(get_internal_angle(*vectors2d))
         self.thetas = np.array(self.thetas, dtype=np.float64)
         self.thetas2d = np.array(self.thetas2d, dtype=np.float64)
-
-
-    def __repr__(self):
-        return repr(self.vertices())
-
-
-    def __str__(self):
-        return str(self.vertices())
 
 
     def area(self):
@@ -74,10 +101,6 @@ class Triangle:
         return [(self.a, self.b), (self.a, self.c), (self.b, self.c)]
 
 
-    def vertices(self):
-        return np.array([self.a, self.b, self.c], dtype=np.float64)
-
-
     def edge_lengths(self):
         return [np.sum(np.power(e, 2.0)) for e in self.edges()]
 
@@ -90,41 +113,41 @@ class Triangle:
         return A, B, C, D
 
 
-    def intersects(self, position, diameter, D=3):
+    def could_interact_with(self, particle, D=2):
 
         assert D in [2,3]
 
         # first rough check
-        vertices = self.vertices()
-        maxv = np.max(vertices, axis=0)
-        minv = np.min(vertices, axis=0)
-        if np.any(position[:D] > maxv[:D]):
+        maxv = np.max(self.vertices, axis=0)
+        minv = np.min(self.vertices, axis=0)
+        if np.any(particle.position[:D] > maxv[:D]):
             return False
-        if np.any(position[:D] < minv[:D]):
+        if np.any(particle.position[:D] < minv[:D]):
             return False
 
         # more involved check
         thetas = self.thetas2d if D == 2 else self.thetas
-        for vertex, theta in zip(vertices, thetas):
+        for vertex, theta in zip(self.vertices, thetas):
             vertex = np.array(vertex)
             vectors = list()
-            for other in vertices:
+            for other in self.vertices:
 
                 if all(other[:D] == vertex[:D]):
                     continue
 
                 vectors.append(np.subtract(vertex[:D], other[:D]))
 
-            v_to_p = np.subtract(vertex, position)
+            v_to_p = np.subtract(vertex, particle.position)
             for vector in vectors:
                 angle = min([get_internal_angle(vector[:D]*m, v_to_p[:D]) for m in [1.0, -1.0]])
                 if angle > theta:
                     return False
 
-        if self.trilaterate(diameter) is None:
+        if self.trilaterate(particle.diameter) is None:
             return False
 
         return True
+
 
     def trilaterate(self, diameter):
         '''
@@ -153,52 +176,50 @@ class Triangle:
         p_12_b = self.a + x*e_x + y*e_y - z*e_z
         return p_12_a, p_12_b
 
-    def tumble(self, diameter):
-        a, b = self.trilaterate(diameter)
+
+    def interact(self, particle):
+        a, b = self.trilaterate(particle.diameter)
         if a[2] > b[2]:
-            return a
-        return b
+            particle.position = a
+        else:
+            particle.position = b
+        particle.settled = True
 
 
 
-class Line:
+class Line(Interactable):
+
+    TIEBREAK = 1.0
+    NAME = 'Line'
 
     def __init__(self, p1, p2, d1, d2):
         self.vertices = np.array([p1, p2], dtype=np.float64)
         self.diameters = np.array([d1, d2], dtype=np.float64)
 
 
-    def __repr__(self):
-        return repr(self.vertices)
-
-
-    def __str__(self):
-        return str(self.vertices)
-
-
-    def intersects(self, position, diameter, D=3):
+    def could_interact_with(self, particle, D=2):
         assert D in [2,3]
 
         v = self.vertices
-        if get_distance(v[0], v[1]) >= diameter + np.average(self.diameters):
+        if get_distance(v[0], v[1]) >= particle.diameter + np.average(self.diameters):
             return False
 
-        if all([get_distance(position[:D], vertex[:D])+EPSILON >= (vertex_diameter + diameter)*0.5 for vertex, vertex_diameter in zip(v, self.diameters)]):
+        if all([get_distance(particle.position[:D], vertex[:D])+EPSILON >= (vertex_diameter + particle.diameter)*0.5 for vertex, vertex_diameter in zip(v, self.diameters)]):
             return False
 
         for vertex, other in zip(self.vertices, self.vertices[::-1]):
             dv = np.subtract(other[:D], vertex[:D])
-            dp = np.subtract(position[:D], vertex[:D])
+            dp = np.subtract(particle.position[:D], vertex[:D])
             theta = get_internal_angle(dv, dp)
             if theta >= np.pi/2.0:
                 return False
 
-        d = [get_distance(position[:D], vertex[:D])-1e-10 for vertex in v]
+        #d = [get_distance(particle.position[:D], vertex[:D])-1e-10 for vertex in v]
         return True
 
 
 
-    def tumble(self, position, diameter):
+    def interact(self, particle):
         '''
         A particle (S0) tumbling over a line (R1, R2). The particle will head
         to the centre, and then over to the side it was on until it is out of
@@ -239,8 +260,8 @@ class Line:
             l = |C->S| = |R1->S|*sin(theta)
             S = C + NS'*l
         '''
-        S0 = position[:2]
-        DS = diameter
+        S0 = particle.position[:2]
+        DS = particle.diameter
         DR1, DR2 = self.diameters
         R1, R2 = self.vertices
         R1, R2 = R1[:2], R2[:2]
@@ -267,42 +288,31 @@ class Line:
         l = dS_mag * np.sin(theta)
         S = np.add(C, np.multiply(NS0u, l))
 
-        new_position = np.array(position)
-        new_position[:2] = S
-
-        if all([pi-1e-15 < npi < pi+1e-15 for pi,npi in zip(position, new_position)]):
-            raise RecursionError(f'new position {new_position} same as old position {position}')
-
-        return new_position
+        particle.position[:2] = S
 
 
 
-class Vertex:
+class Vertex(Interactable):
+
+    TIEBREAK = 3.0
+    NAME = 'VERTEX'
 
     def __init__(self, p, d):
-        self.vertex = np.array(p, dtype=np.float64)
+        self.vertices = [np.array(p, dtype=np.float64)]
         self.diameter = d
 
 
-    def __repr__(self):
-        return repr(self.vertex)
-
-
-    def __str__(self):
-        return str(self.vertex)
-
-
-    def intersects(self, position, diameter, D=3):
+    def could_interact_with(self, particle, D=2):
         '''
         Vertex-particle intersection; occurs if centre-centre distance (dS) is
         less than the average of the two diameters. To stop particles /just/
         in contact being counted, increase the distance by epsilon.
         '''
         assert D in [2,3]
-        return get_distance(self.vertex[:D], position[:D]) + EPSILON < (diameter + self.diameter)*0.5
+        return get_distance(self.vertices[0][:D], particle.position[:D]) + EPSILON < (particle.diameter + self.diameter)*0.5
 
 
-    def tumble(self, position, diameter):
+    def interact(self, particle):
         '''
         A particle (S0) hitting another particle (R) from above will tumble around until
         it is clear of R's diameter.
@@ -313,16 +323,12 @@ class Vertex:
         '''
 
         # xy separation vector
-        ds = np.subtract(position[:2], self.vertex[:2])
+        ds = np.subtract(particle.position[:2], self.vertices[0][:2])
 
         # divide by magnitude: unit vector
         ds = np.divide(ds, np.sqrt(np.sum(np.power(ds, 2.0))))
 
         # multiply by distance
-        ds = np.multiply(ds, (diameter + self.diameter)*0.5)
+        ds = np.multiply(ds, (particle.diameter + self.diameter)*0.5)
 
-        new_position = np.copy(position)
-        new_position[:2] = np.add(self.vertex[:2], ds)
-        return new_position
-
-
+        particle.position[:2] = np.add(self.vertices[0][:2], ds)

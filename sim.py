@@ -14,6 +14,7 @@ class Sim:
         self.L = L
         self.triangles = list()
         self.lines = list()
+        self.vertices =list()
         self.verbose = verbose
         self.logf = log_file
         np.random.seed(seed)
@@ -48,11 +49,14 @@ class Sim:
 
     def update_geometry(self):
 
+        pi = self.particles[-1]
+        self.vertices.append(Vertex(pi.position, pi.diameter))
+
         if len(self.particles) < 2:
             return
 
         others = self.particles[:-1]
-        pi = self.particles[-1]
+
         others = [o for o in others if get_distance(pi.position, o.position) < (o.diameter + pi.diameter)*2.0 ]
         lines_ids = list()
         for pj in others:
@@ -99,86 +103,45 @@ class Sim:
 
     def settle(self, particle, n=0, recursion_limit=100, history_limit=5):
 
+        if n > recursion_limit:
+            raise RecursionError('Exceeded recursion limit.')
+
         lpos = list(particle.position)
-        flpos = '[' + ', '.join([f'{p:.2f}' for p in particle.position]) + ']'
-        if n > recursion_limit or lpos in self.previous_settling_positions:
-            raise RecursionError('')
+        if lpos in self.previous_settling_positions:
+            raise RecursionError(f'Going in circles: found current position in recent history ({lpos} in {self.previous_settling_positions}).')
 
         self.previous_settling_positions.append(lpos)
         if len(self.previous_settling_positions) > history_limit:
             self.previous_settling_positions.pop(0)
 
-        intersections = list()
+        interactions = list()
         for triangle in self.triangles:
-            if triangle.intersects(particle.position, particle.diameter, D=2):
-                intersections.append(triangle)
+            if triangle.could_interact_with(particle):
+                interactions.append(triangle)
 
+        for line in self.lines:
+            if line.could_interact_with(particle):
+                interactions.append(line)
+
+        for vertex in self.vertices:
+            if vertex.could_interact_with(particle):
+                interactions.append(vertex)
+
+        flpos = '[' + ', '.join([f'{p:.2f}' for p in particle.position]) + ']'
         self.log(f'{flpos}->', end='')
-        intersections = list(filter(lambda t: min([v[2] for v in t.vertices()]) < particle.position[2], intersections))
-        if not intersections:
+        interactions = list(filter(lambda i: i.get_lowpoint() < particle.position[2], interactions))
 
-            # Not falling into a triangle means the particle will not be
-            # supported, but doesn't mean it'll reach the ground. Check for
-            # nearest neighbours, if they have an XY-separation less than
-            # radius, then will tumble away i.e. move to side and try to find
-            # supporting triangle. If no particles are below, settle to floor
-            
-            for line in self.lines:
-                if line.intersects(particle.position, particle.diameter, D=2):
-                    intersections.append(line)
+        if not interactions:
+            particle.settle_to(position_z=0.0)
+            self.log('FLOOR')
+            return
 
-            intersections = list(filter(lambda l: min([v[2] for v in l.vertices]) < particle.position[2], intersections))
-            if not intersections:
+        interaction = sorted(interactions, key=lambda i: i.get_sortkey(particle))[0]
+        interaction.interact(particle)
 
-                # finally, see if the falling particle will hit a single other particle
-                for other in self.particles:
-                    v = Vertex(other.position, other.diameter)
-                    if v.intersects(particle.position, particle.diameter, D=2):
-                        intersections.append(v)
-
-                intersections = list(filter(lambda ve: ve.vertex[2] < particle.position[2], intersections))
-                if not intersections:
-
-                    particle.settle_to(position_z=0.0)
-                    self.log('FLOOR')
-
-                else:
-                    # sort vertices by z position
-                    vertices = list(sorted(intersections, key=lambda ve: ve.vertex[2]*100.0 + get_distance(particle.position[:2], ve.vertex[:2])))
-
-                    # particle moves out of range of vertex
-                    particle.position = vertices[0].tumble(particle.position, particle.diameter)
-
-                    # and continues settling
-                    self.log(f'hit vertex {vertices[0].vertex[0]} {vertices[0].vertex[1]} {vertices[0].vertex[2]}', verbosity_minimum=2)
-                    self.settle(particle, n=n+1)
-                    return
-
-            else:
-                # sort lines by z position
-                lines = list(sorted(intersections, key=lambda l: np.average([v[2]*100.0 + get_distance(particle.position[:2], v[:2]) for v in l.vertices])))
-
-                # particle moves out of range of line
-                pp = particle.position
-                particle.position = lines[0].tumble(particle.position, particle.diameter)
-
-                # and continues settling
-                self.log(f'\nhit line ({lines[0]}) {pp} -> {particle.position} ({lines[0].intersects(particle.position, particle.diameter, D=2)})\n', verbosity_minimum=2)
-                self.settle(particle, n=n+1)
-                return
+        if not particle.settled:
+            self.settle(particle, n=n+1)
         else:
-
-            # sort triangles by z position
-            triangles = list(sorted(intersections, key=lambda t: max([v[2] for v in t.vertices()])))
-
-            # remove triangles blocked by higher triangles
-            for triangle in triangles[1:]:
-                self.triangles.pop(self.triangles.index(triangle))
-
-            triangle = triangles[0]
-            particle.settle_to(position=triangle.tumble(particle.diameter))
-
-            self.triangles.pop(self.triangles.index(triangle))
             flpos = '[' + ', '.join([f'{p:.2f}' for p in particle.position]) + ']'
             self.log(f'{flpos}')
 

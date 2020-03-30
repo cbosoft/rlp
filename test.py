@@ -1,6 +1,7 @@
 import numpy as np
 
 from geometry import Vertex, Line, Triangle
+from particle import Particle
 from sim import Sim
 from colours import *
 from exception import OutOfBoundsError
@@ -95,9 +96,11 @@ class VertexTestIntersect2D(MultiTest):
         v = Vertex([0.0, 0.0, 0.0], 1.0)
 
         # operate
-        p = self.points[i]
+        p = Particle(self.points[i], 1.0)
+        res = v.could_interact_with(p)
+
+        # check
         expected_result = self.results[i]
-        res = v.intersects(p, 1.0, D=2)
         n = '' if expected_result else 'n\'t'
         nn = 'n\'t' if expected_result else ''
         if res == expected_result:
@@ -126,17 +129,18 @@ class VertexTestIntersect3D(MultiTest):
         v = Vertex([0.0, 0.0, 0.0], 1.0)
 
         # operate
-        p = self.points[i]
-        expected_result = self.results[i]
+        p = Particle(self.points[i], 1.0)
+        res = v.could_interact_with(p, D=3)
 
         # check
-        res = v.intersects(p, 1.0)
+        expected_result = self.results[i]
         n = '' if expected_result else 'n\'t'
         nn = 'n\'t' if expected_result else ''
         if res == expected_result:
             self.pass_test()
         else:
             self.fail_test(f'{p} should{n} intersect {v}, but did{nn}.')
+
 
 
 class VertexTestTumble(MultiTest):
@@ -158,14 +162,16 @@ class VertexTestTumble(MultiTest):
         v = Vertex([0.0, 0.0, 0.0], 1.0)
 
         # operate
-        p = self.points[i]
+        p = Particle(self.points[i], 1.0)
         expected_result = self.results[i]
-        result = v.tumble(p, 1.0)
-        conf = v.intersects(result, 1.0)
-        if conf:
-            self.fail_test(f'{result} should be out-of-range of {v}, but it isn\'t.')
+        v.interact(p)
+        result = p.position
 
         # check
+        conf = v.could_interact_with(p)
+        if conf:
+            self.fail_test(f'{p} should be out-of-range of {v}, but it isn\'t.')
+
         n = '' if expected_result else 'n\'t'
         nn = 'n\'t' if expected_result else ''
         if vector_approx(result, expected_result):
@@ -197,13 +203,18 @@ class LineIntersectionTest2D(MultiTest):
         ]
 
     def run(self, i):
+        # build
         l = Line([0.0, 0.0, 0.0], [1.5, 0.0, 0.0], 1.0, 1.0)
-        p = self.points[i]
+        p = Particle(self.points[i], 1.0)
+
+        # operate
+        result = l.could_interact_with(p)
+
+        # check
         expected_result = self.results[i]
-        res = l.intersects(p, 1.0, D=2)
         n = '' if expected_result else 'n\'t'
         nn = 'n\'t' if expected_result else ''
-        if res == expected_result:
+        if result == expected_result:
             self.pass_test()
         else:
             self.fail_test(f'{p} should{n} intersect {l}, but did{nn}.')
@@ -226,13 +237,18 @@ class LineIntersectionTest3D(MultiTest):
         ]
 
     def run(self, i):
+        # build
         l = Line([0.0, 0.0, 0.0], [1.5, 0.0, 0.0], 1.0, 1.0)
-        p = self.points[i]
+        p = Particle(self.points[i], 1.0)
+
+        # operate
+        result = l.could_interact_with(p, D=3)
+
+        # check
         expected_result = self.results[i]
-        res = l.intersects(p, 1.0)
         n = '' if expected_result else 'n\'t'
         nn = 'n\'t' if expected_result else ''
-        if res == expected_result:
+        if result == expected_result:
             self.pass_test()
         else:
             self.fail_test(f'{p} should{n} intersect {l}, but did{nn}.')
@@ -253,11 +269,12 @@ class LineTumbleTest(MultiTest):
     def run(self, i):
         # build
         l = Line([0.0, 0.0, 0.0], [1.0, 0.0, 0.0], 1.0, 1.0)
-        p = self.points[i]
+        p = Particle(self.points[i], 1.0)
         expected_result = self.results[i]
 
         # operate
-        result = l.tumble(p, 1.0)
+        l.interact(p)
+        result = p.position
 
         # check
         if vector_approx(result, expected_result, 1e-3):
@@ -321,18 +338,24 @@ class TriangleIntersectTest2D(MultiTest):
         ]
 
     def run(self, i):
+        # build
         t = Triangle(
                 [0.0, 0.0, 0.0], 
                 [1.0, 0.0, 0.0], 
                 [0.0, 1.0, 0.0], 1.0, 1.0, 1.0)
-        p = self.points[i]
+        p = Particle(self.points[i], 1.0)
+
+        # operate
+        result = t.could_interact_with(p)
+
+        # check
         expected_result = self.outcomes[i]
-        result = t.intersects(p, 1.0, D=2)
         n = '' if expected_result else 'n\'t'
+        nn = 'n\'t' if expected_result else ''
         if result == expected_result:
             self.pass_test()
         else:
-            self.fail_test(f'({p} should{n} intersect {t})')
+            self.fail_test(f'{p} should{n} intersect {t}, but did{nn}.')
 
 
 class TriangleIntersectTest3D(MultiTest):
@@ -352,13 +375,18 @@ class TriangleIntersectTest3D(MultiTest):
         ]
 
     def run(self, i):
+        # build
         t = Triangle(
                 [0.0, 0.0, 0.0],
                 [1.0, 0.0, 0.0],
                 [0.0, 1.0, 0.0], 1.0, 1.0, 1.0)
-        p = self.points[i]
+        p = Particle(self.points[i], 1.0)
+
+        # operate
+        result = t.could_interact_with(p, D=3)
+
+        # check
         expected_result = self.outcomes[i]
-        result = t.intersects(p, 1.0)
         n = '' if expected_result else 'n\'t'
         if result == expected_result:
             self.pass_test()
