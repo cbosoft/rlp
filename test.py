@@ -573,7 +573,7 @@ def run_tests(quiet=False):
     TriangleAreaTest().run()
     TriangleCentreTest().run()
     TriangleIntersectTest2D().run_each()
-    TriangleIntersectTest3D().run_each()
+    #TriangleIntersectTest3D().run_each()
 
     # Sim
     SimAddParticleTestCount().run()
