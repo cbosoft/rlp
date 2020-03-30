@@ -114,6 +114,16 @@ class Sim:
 
             t = Triangle(pi.position, pj.position, pk.position, pi.diameter, pj.diameter, pk.diameter)
 
+            z_angles = [
+                    get_internal_angle(ZAXIS, np.subtract(pj.position, pi.position)),
+                    get_internal_angle(ZAXIS, np.subtract(pk.position, pi.position)),
+                    get_internal_angle(ZAXIS, np.subtract(pi.position, pk.position)),
+                    get_internal_angle(ZAXIS, np.subtract(pi.position, pj.position))
+                    ]
+            if any([za <= np.pi/4.0 for za in z_angles]):
+                self.log(f'no because steep: {min(z_angles)} <= {np.pi/4.0})', verbosity_minimum=2)
+                continue
+
             if t.trilaterate(1.0) is None:
                 continue
 
