@@ -17,6 +17,7 @@ class Sim:
         self.verbose = verbose
         self.logf = log_file
         np.random.seed(seed)
+        self.previous_settling_positions = list()
 
 
     def generate_particle(self, diameter=1.0):
@@ -35,6 +36,7 @@ class Sim:
 
     def add_particle(self, position, diameter=1.0):
         new_particle = Particle(position, diameter, len(self.particles))
+        self.previous_settling_positions = list()
         self.settle(new_particle)
 
         if not all([0 <= p <= self.L for p in new_particle.position[:2]]):
@@ -107,9 +109,17 @@ class Sim:
                 continue
 
             self.triangles.append(t)
+    def settle(self, particle, n=0, recursion_limit=100, history_limit=5):
 
+        lpos = list(particle.position)
+        flpos = '[' + ', '.join([f'{p:.2f}' for p in particle.position]) + ']'
+        if n > recursion_limit or lpos in self.previous_settling_positions:
+            raise RecursionError('')
 
-    def settle(self, particle):
+        self.previous_settling_positions.append(lpos)
+        if len(self.previous_settling_positions) > history_limit:
+            self.previous_settling_positions.pop(0)
+
         intersections = list()
         for triangle in self.triangles:
             if triangle.intersects(particle.position, particle.diameter, D=2):

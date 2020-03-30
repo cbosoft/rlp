@@ -269,6 +269,10 @@ class Line:
 
         new_position = np.array(position)
         new_position[:2] = S
+
+        if all([pi-1e-15 < npi < pi+1e-15 for pi,npi in zip(position, new_position)]):
+            raise RecursionError(f'new position {new_position} same as old position {position}')
+
         return new_position
 
 
