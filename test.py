@@ -235,6 +235,34 @@ class LineIntersectionTest3D(MultiTest):
             self.fail_test(f'{p} should{n} intersect {l}, but did{nn}.')
 
 
+class LineTumbleTest(MultiTest):
+
+    name = 'Line tumble test'
+    points = [
+            [0.5,  0.1, 0.0],
+            [0.5, -0.1, 0.0],
+        ]
+    results = [
+            [0.5,  0.866, 0.0],
+            [0.5, -0.866, 0.0]
+        ]
+
+    def run(self, i):
+        # build
+        l = Line([0.0, 0.0, 0.0], [1.0, 0.0, 0.0], 1.0, 1.0)
+        p = self.points[i]
+        expected_result = self.results[i]
+
+        # operate
+        result = l.tumble(p, 1.0)
+
+        # check
+        if vector_approx(result, expected_result, 1e-3):
+            self.pass_test()
+        else:
+            self.fail_test(f'({result} !~ {expected_result})')
+
+
 
 
 
@@ -274,12 +302,41 @@ class TriangleCentreTest(Test):
             self.pass_test()
 
 
+class TriangleIntersectTest2D(MultiTest):
+
+    name = 'Triangle point intersection test (2D)'
+    points = [
+            [0.5, 0.5, 19.0],
+            [-5, -5, 100],
+            [-1, 0.9, 1.0]
+        ]
+    outcomes = [
+            True,
+            False,
+            False
+        ]
+
+    def run(self, i):
+        t = Triangle(
+                [0.0, 0.0, 0.0], 
+                [1.0, 0.0, 0.0], 
+                [0.0, 1.0, 0.0], 1.0, 1.0, 1.0)
+        p = self.points[i]
+        expected_result = self.outcomes[i]
+        result = t.intersects(p, 1.0, D=2)
+        n = '' if expected_result else 'n\'t'
+        if result == expected_result:
+            self.pass_test()
+        else:
+            self.fail_test(f'({p} should{n} intersect {t})')
+
+
 class TriangleIntersectTest3D(MultiTest):
 
     name = 'Triangle point intersection test (3D)'
     points = [
-            [0.0, 0.5, 0.0],
-            [0.0, 0.5, 1.0],
+            [0.5, 0.5, 0.0],
+            [0.5, 0.5, 1.0],
             [-5, -5, -5],
             [-1, 0.9, 0.0]
         ]
@@ -291,36 +348,13 @@ class TriangleIntersectTest3D(MultiTest):
         ]
 
     def run(self, i):
-        t = Triangle([0.0, 1.0, 0.0], [-1.0, 0.0, 0.0], [1.0, 0.0, 0.0], 1.0, 1.0, 1.0)
+        t = Triangle(
+                [0.0, 0.0, 0.0],
+                [1.0, 0.0, 0.0],
+                [0.0, 1.0, 0.0], 1.0, 1.0, 1.0)
         p = self.points[i]
         expected_result = self.outcomes[i]
-        result = t.intersects(p)
-        n = '' if expected_result else 'n\'t'
-        if result == expected_result:
-            self.pass_test()
-        else:
-            self.fail_test(f'({p} should{n} intersect {t})')
-
-
-class TriangleIntersectTest2D(MultiTest):
-
-    name = 'Triangle point intersection test (2D)'
-    points = [
-            [0.0, 0.5, 19.0],
-            [-5, -5, 100],
-            [-1, 0.9, 1.0]
-        ]
-    outcomes = [
-            True,
-            False,
-            False
-        ]
-
-    def run(self, i):
-        t = Triangle([0.0, 1.0, 0.0], [-1.0, 0.0, 0.0], [1.0, 0.0, 0.0], 1.0, 1.0, 1.0)
-        p = self.points[i]
-        expected_result = self.outcomes[i]
-        result = t.intersects(p, D=2)
+        result = t.intersects(p, 1.0)
         n = '' if expected_result else 'n\'t'
         if result == expected_result:
             self.pass_test()
@@ -428,14 +462,13 @@ class SimAddParticleTestIntersectionTriangle(Test):
         cx, cy, cz = sim.triangles[-1].centre()
 
         # last one should settle on the triangle
-        sim.add_particle([0.5, 0.5, 10.0])
+        sim.add_particle([0.49, 0.5, 10.0])
 
         # check
-        sx, sy, sz = sim.particles[-1].position
-        if sx != cx or sy != cy:
-            self.fail_test(f'settled xy not centre ({[sx, sy]} != {cx, cy})')
-        elif not approx_eq(sz, 2./3.):
-            self.fail_test(f'settled z not correct height ({sz} !~ {1.2})')
+        result = sim.particles[-1].position
+        expected_result = [0.5, 0.5, np.sqrt(0.5)]
+        if not vector_approx(result, expected_result):
+            self.fail_test(f'settled pos not correct ({result} !~ {expected_result})')
         else:
             self.pass_test()
 
@@ -456,12 +489,13 @@ def run_tests(quiet=False):
     # Line
     LineIntersectionTest2D().run_each()
     LineIntersectionTest3D().run_each()
+    LineTumbleTest().run_each()
 
     # Triangle
     TriangleAreaTest().run()
     TriangleCentreTest().run()
-    TriangleIntersectTest3D().run_each()
     TriangleIntersectTest2D().run_each()
+    TriangleIntersectTest3D().run_each()
 
     # Sim
     SimAddParticleTestCount().run()
