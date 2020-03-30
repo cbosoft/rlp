@@ -49,10 +49,13 @@ class Sim:
         if not all([0 <= p <= self.L for p in new_particle.position[:2]]):
             raise OutOfBoundsError("OOB")
 
-        for particle in self.particles:
-            if particle.intersects_with(new_particle):
-                print(particle.position, new_particle.position)
-                raise IntersectionError('Particle-particle intersection')
+        # for particle in self.particles:
+        #     if particle.intersects_with(new_particle):
+        #         print(
+        #                 particle.position, new_particle.position, 
+        #                 get_distance(particle.position, new_particle.position), 
+        #                 (particle.diameter + new_particle.diameter)*0.5)
+        #         raise IntersectionError('Particle-particle intersection')
 
         try:
             self.particles.append(new_particle)
