@@ -1,3 +1,4 @@
+from geometry import get_distance, EPSILON
 
 class Particle:
 
@@ -17,6 +18,9 @@ class Particle:
             raise Exception("position or position_z must be specified.")
 
         self.settled = True
+
+    def intersects_with(self, other):
+        return get_distance(self.position, other.position) + EPSILON < (self.diameter + other.diameter)*0.5
 
     def __repr__(self):
         return repr(self.position)
