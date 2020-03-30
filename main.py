@@ -47,7 +47,7 @@ if __name__ == "__main__":
             if pi.id <= pj.id:
                 continue
             if (d := get_distance(pi.position, pj.position)+1e-5) < (t := (pi.diameter+pj.diameter)*0.5):
-                raise Exception(f'particle-particle intersection! [{pi.id} and {pj.id}] {d} < {t}')
+                print(f'particle-particle intersection! [{pi.id} and {pj.id}] {d} < {t}')
 
     volume_box = (sim.L+1)*(sim.L+1)*(t+1.0)
     print('volfrac =', volume_particles / volume_box)
