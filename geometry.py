@@ -227,16 +227,15 @@ class Line:
         DS = diameter
         DR1, DR2 = self.diameters
         R1, R2 = self.vertices
-        R1 = R1[:2]
-        R2 = R2[:2]
+        R1, R2 = R1[:2], R2[:2]
         dS0 = S0 - R1
         dS0_mag = np.sqrt(np.dot(dS0, dS0))
         dR = R2 - R1
         dR_mag = np.sqrt(np.dot(dR, dR))
         dRu = np.divide(dR, dR_mag)
 
-        TS = dR*np.dot(dS0, dR)/np.dot(dR, dR)
-        NS0 = S0+TS
+        TS = dRu*np.dot(dS0, dR)/dR_mag
+        NS0 = dS0-TS
         NS0u = np.divide(NS0, np.sqrt(np.dot(NS0, NS0)))
 
         a = dR_mag
