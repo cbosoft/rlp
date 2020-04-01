@@ -6,6 +6,8 @@
 void run_tests()
 {
   int counter = 0;
+
+  // vector tests
   VectorMagnitudeTest(counter).run_each();
   VectorDotTest(counter).run_each();
   VectorCrossTest(counter).run_each();
@@ -20,4 +22,6 @@ void run_tests()
   LineCreationTest(counter).run_each();
   LineInteractionTest(counter).run_each();
 
+  if (counter)
+    throw TestError(Formatter() << counter << " tests failed!");
 }
