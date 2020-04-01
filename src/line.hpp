@@ -8,7 +8,7 @@
 class Line : public virtual ParticleArrangement {
 
   private:
-    double supportable_size;
+    double dist, supportable_size;
     std::array<Particle *, 2> particles;
     PeriodicBox *box;
 

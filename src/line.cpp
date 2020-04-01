@@ -6,8 +6,8 @@ Line::Line(Particle *a, Particle *b, PeriodicBox *box)
   this->particles[0] = a;
   this->particles[1] = b;
   this->box = box;
-  double dist = this->box->get_effective_separation(a->get_position(), b->get_position()).magnitude();
-  this->supportable_size = dist - a->get_radius() - b->get_radius();
+  this->dist = this->box->get_effective_separation(a->get_position(), b->get_position()).magnitude();
+  this->supportable_size = this->dist - a->get_radius() - b->get_radius();
 }
 
 
@@ -23,20 +23,20 @@ bool Line::check_interacts_with(const Particle *p)
   for (size_t i = 0; i < this->particles.size(); i++) {
     Vec2 vpos = this->particles[i]->get_position().restrict<2>();
     double d = this->box->get_effective_separation(ppos, vpos).magnitude();
-    if (d < this->particles[i]->get_radius() + p->get_radius()) {
+
+    // check if particle hits line not just end
+    if (d > this->dist)
+      return false;
+
+    // check particle hits at all
+    if (d < this->particles[i]->get_radius() + p->get_radius())
       close_enough ++;
-    }
+
   }
 
   if (!close_enough)
     return false;
-  else if (close_enough == 2) {
-    return true;
-  }
 
-  // I think just these two checks are sufficient. If the particle is not
-  // interacting with both vertices of the line at once, then it will interact
-  // with a single vertex and get pushed into the line (or not)
   return false;
 }
 
