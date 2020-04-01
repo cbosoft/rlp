@@ -1,6 +1,16 @@
 #include "triangle.hpp"
 
 
+Triangle::Triangle(Particle *a, Particle *b, Particle *c, PeriodicBox *box)
+{
+  this->particles[0] = a;
+  this->particles[1] = b;
+  this->particles[2] = c;
+  this->box = box;
+
+  // TODO precompute distances
+}
+
 bool Triangle::check_interacts_with(const Particle *p)
 {
   int close_enough = 0;
