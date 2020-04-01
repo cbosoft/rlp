@@ -2,14 +2,16 @@
 
 #include <array>
 #include "arrangement.hpp"
+#include "box.hpp"
 
 class Triangle : public virtual ParticleArrangement {
 
   private:
     std::array<Particle *, 3> particles;
+    PeriodicBox *box;
 
   public:
-    Triangle(Particle *a, Particle *b, Particle *c);
+    Triangle(Particle *a, Particle *b, Particle *c, PeriodicBox *box);
 
     bool check_interacts_with(const Particle *p) override;
     Vec3 get_interaction_result(const Particle *p) override;
