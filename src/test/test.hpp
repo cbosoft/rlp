@@ -11,7 +11,7 @@ class TestRunner {
 
   private:
 
-    int &counter;
+    int &counter, curidx;
     std::string name;
     bool is_critical;
 
@@ -29,13 +29,14 @@ class TestRunner {
     void run_each()
     {
       for (size_t i = 0; i < this->expected_results.size(); i++) {
+        this->curidx = i;
         this->run(this->input_data[i], this->expected_results[i]);
       }
     }
 
     void pass()
     {
-      std::cerr << this->name << " " FG_GREEN "PASSED" RESET << std::endl;
+      std::cerr << this->name << "[" << this->curidx+1 << "/" << this->input_data.size() << "] " FG_GREEN "PASSED" RESET << std::endl;
     }
 
     void fail(std::string reason)
