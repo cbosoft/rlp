@@ -10,6 +10,8 @@ class Triangle : public virtual ParticleArrangement {
     std::array<Particle *, 3> particles;
     PeriodicBox *box;
 
+    bool trilaterate(double radius, Vec3 &v);
+
   public:
     Triangle(Particle *a, Particle *b, Particle *c, PeriodicBox *box);
 

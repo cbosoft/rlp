@@ -44,3 +44,34 @@ double Triangle::get_sort_distance(const Particle *p)
   }
   return totdist / double(this->particles.size());
 }
+
+
+bool Triangle::trilaterate(double radius, Vec3 &rv)
+{
+  // https://stackoverflow.com/questions/1406375/finding-intersection-points-between-3-spheres/18654302#18654302
+  Vec3 r_ji = this->particles[1]->get_position() - this->particles[0]->get_position();
+  double d = r_ji.magnitude();
+  Vec3 e_x = r_ji / d;
+  Vec3 r_ki = this->particles[2]->get_position() - this->particles[0]->get_position();
+  double i = e_x.dot(r_ki);
+  Vec3 e_y = (r_ki - e_x*i).unit();
+  Vec3 e_z = e_y.cross(e_x);
+  double j = e_y.dot(r_ki);
+  double r1 = this->particles[0]->get_radius()+radius, r2 = this->particles[1]->get_radius()+radius, r3 = this->particles[2]->get_radius()+radius;
+  double x = (r1*r1 - r2*r2 + d*d) / (2*d);
+  double y = (r1*r1 - r3*r3 -2*i*x + i*i + j*j) / (2*j);
+  double z2 = r1*r1 - x*x - y*y;
+  if (z2 < 0.0)
+    return false;
+
+  double z = std::pow(z2, 0.5);
+  Vec3 solution_a = this->particles[0]->get_position() + e_x*x + e_y*y + e_z*z;
+  Vec3 solution_b = this->particles[0]->get_position() + e_x*x + e_y*y - e_z*z;
+
+  if (solution_a.get(2) > solution_b.get(2)) {
+    rv = solution_a;
+    return true;
+  }
+  rv = solution_b;
+  return true;
+}
