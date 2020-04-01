@@ -1,6 +1,7 @@
 #include "run_tests.hpp"
 #include "vec.hpp"
 #include "vertex.hpp"
+#include "line.hpp"
 
 void run_tests()
 {
@@ -13,4 +14,9 @@ void run_tests()
 
   // vertex tests
   VertexInteractionTest(counter).run_each();
+
+  // line tests
+  LineCreationTest(counter).run_each();
+  LineInteractionTest(counter).run_each();
+
 }
