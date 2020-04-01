@@ -14,8 +14,10 @@ Line::Line(Particle *a, Particle *b, PeriodicBox *box)
 bool Line::check_interacts_with(const Particle *p)
 {
   // could the line support the particle?
-  if (this->supportable_size <= p->get_diameter())
+  if (this->supportable_size > p->get_diameter()) {
+    //std::cerr << "no because wide" << std::endl;
     return false;
+  }
 
   // is the particle close enough to either line point?
   int close_enough = 0;
@@ -25,8 +27,10 @@ bool Line::check_interacts_with(const Particle *p)
     double d = this->box->get_effective_separation(ppos, vpos).magnitude();
 
     // check if particle hits line not just end
-    if (d > this->dist)
+    if (d > this->dist) {
+      //std::cerr << "no because glancing" << std::endl;
       return false;
+    }
 
     // check particle hits at all
     if (d < this->particles[i]->get_radius() + p->get_radius())
@@ -34,10 +38,12 @@ bool Line::check_interacts_with(const Particle *p)
 
   }
 
-  if (!close_enough)
+  if (!close_enough) {
+    //std::cerr << "no because doesn't touch" << std::endl;
     return false;
+  }
 
-  return false;
+  return true;
 }
 
 
