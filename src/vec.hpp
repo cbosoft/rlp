@@ -208,6 +208,13 @@ class VecN {
       this->v[i] = v;
     }
 
+    double get(int i)
+    {
+      if ((i >= N) or (i < 0))
+        throw IndexError(Formatter() << "Index " << i << " invalid for vector of size " << N << ".");
+      return this->v[i];
+    }
+
     template<int I>
     VecN<I> restrict()
     {
