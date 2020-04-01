@@ -6,17 +6,17 @@
 #include "../box.hpp"
 #include "../particle.hpp"
 
-class VertexInteractionTest : public virtual TestRunner<bool> {
+class VertexInteractionTest : public virtual TestRunner<Vec3, bool> {
 
 
   public:
     VertexInteractionTest(int &counter) : TestRunner(counter, "Vertex Test (interaction)")
     {
-      this->points = {
-        {5.0, 5.0, 10.0},
-        {4.5, 4.5, 10.0},
-        {5.0, 5.5, 10.0},
-        {4.0, 4.0, 10.0}
+      this->input_data = {
+        Vec3({5.0, 5.0, 10.0}),
+        Vec3({4.5, 4.5, 10.0}),
+        Vec3({5.0, 5.5, 10.0}),
+        Vec3({4.0, 4.0, 10.0})
       };
       this->expected_results = {
         true,
@@ -26,10 +26,10 @@ class VertexInteractionTest : public virtual TestRunner<bool> {
       };
     }
 
-    void run(int test_index=0) override
+    void run(Vec3 point, bool expected_result) override
     {
       PeriodicBox box(10.0);
-      Particle *pi = new Particle(1.0, Vec3(this->points[test_index]));
+      Particle *pi = new Particle(1.0, point);
       Vertex vertex(pi, &box);
       box.add_particle(pi);
 
@@ -40,7 +40,6 @@ class VertexInteractionTest : public virtual TestRunner<bool> {
 
 
       bool result = vertex.check_interacts_with(pj);
-      bool expected_result = this->expected_results[test_index];
 
       if (result != expected_result) {
         Vec3 ri = pi->get_position();

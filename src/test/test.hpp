@@ -6,7 +6,7 @@
 #include "../colour.hpp"
 #include "../exception.hpp"
 
-template<typename T>
+template<typename I, typename ER>
 class TestRunner {
 
   private:
@@ -17,19 +17,19 @@ class TestRunner {
 
   protected:
 
-    std::vector<std::array<double, 3>> points;
-    std::vector<T> expected_results;
+    std::vector<I> input_data;
+    std::vector<ER> expected_results;
 
   public:
 
     TestRunner(int &counter, std::string name, bool is_critical=true) : counter(counter), name(name), is_critical(is_critical) {}
 
-    virtual void run(int testindex) =0;
+    virtual void run(I input, ER expected_result) =0;
 
     void run_each()
     {
       for (size_t i = 0; i < this->expected_results.size(); i++) {
-        this->run(i);
+        this->run(this->input_data[i], this->expected_results[i]);
       }
     }
 
