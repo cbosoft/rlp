@@ -119,10 +119,14 @@ class VectorOrthoComponentTest : public virtual TestRunner<std::pair<Vec3, Vec3>
       : TestRunner(counter, "Vector test (orthogonal component)")
     {
       this->input_data = {
-        std::make_pair(Vec3({1.0, 0.0, 0.0}), Vec3({0.0, 1.0, 0.0}))
+        std::make_pair(Vec3({1.0, 0.0, 0.0}), Vec3({0.0, 1.0, 0.0})),
+        std::make_pair(Vec3({5.0, 3.0, 2.0}), Vec3({0.0, 1.0, 0.0})),
+        std::make_pair(Vec3({1.0, 1.0, 1.0}), Vec3({0.0, 0.0, 1.0}))
       };
       this->expected_results = {
-        Vec3({0.0, 0.0, 0.0})
+        Vec3({0.0, 0.0, 0.0}),
+        Vec3({0.0, 3.0, 0.0}),
+        Vec3({0.0, 0.0, 1.0})
       };
     }
 
