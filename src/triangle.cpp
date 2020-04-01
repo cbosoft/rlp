@@ -43,6 +43,12 @@ bool Triangle::check_interacts_with(const Particle *p)
 
 Vec3 Triangle::get_interaction_result(const Particle *p)
 {
+  Vec3 new_position;
+  if (this->trilaterate(p->get_radius(), new_position)) {
+    return new_position;
+  }
+
+  throw SettleError(Formatter() << "Particle (r=" << p->get_radius() << ") was asked to settle in triangle that cannot accomodate it (trilateration failed).");
 }
 
 double Triangle::get_sort_distance(const Particle *p)
