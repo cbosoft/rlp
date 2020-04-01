@@ -100,6 +100,7 @@ EXCEPTION(MathError, "MathError");
 EXCEPTION(IndexError, "IndexError");
 EXCEPTION(SettleError, "SettleError");
 EXCEPTION(RecursionError, "RecursionError");
+EXCEPTION(TestError, "TestError");
 
 
 
