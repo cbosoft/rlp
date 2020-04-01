@@ -188,6 +188,31 @@ class VecN {
 
       this->v[i] = v;
     }
+
+    template<int I>
+    VecN<I> restrict()
+    {
+      assert( I < N, "restricted size must be less than or equal to vector size." );
+      std::array<double, I> rv;
+      for (int i = 0; i < I; i++) {
+        rv[i] = this->v[i];
+      }
+      return VecN<I>(rv);
+    }
+
+    template<int I>
+    VecN<I> promote(double fill)
+    {
+      assert( I > N, "restricted size must be less than or equal to vector size." );
+      std::array<double, I> rv;
+      for (int i = 0; i < N; i++) {
+        rv[i] = this->v[i];
+      }
+      for (int i = N; i < I; i++) {
+        rv[i] = fill;
+      }
+      return VecN<I>(rv);
+    }
 };
 
 typedef VecN<3> Vec3;
