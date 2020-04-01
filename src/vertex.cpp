@@ -21,6 +21,7 @@ Vec3 Vertex::get_interaction_result(const Particle *p)
   return dr_unit * (this->particle->get_radius() + p->get_radius());
 }
 
+
 double Vertex::get_sort_distance(const Particle *p)
 {
   // don't take PBCinto account: need abs distance
