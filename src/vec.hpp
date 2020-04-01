@@ -84,7 +84,7 @@ class VecN {
     {
       double rv = 0.0;
       for (int i = 0; i < N; i++) {
-        rv += this->v[i] + v.v[i];
+        rv += this->v[i]*v.v[i];
       }
       return rv;
     }
