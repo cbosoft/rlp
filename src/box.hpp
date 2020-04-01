@@ -37,5 +37,7 @@ class PeriodicBox {
     void set_L(double L);
     double get_L();
     void add_particle(Particle *p);
+    int get_number_arrangements() const;
+
 
 };

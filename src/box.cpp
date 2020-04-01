@@ -31,6 +31,11 @@ void PeriodicBox::clear_arrangements()
   }
 }
 
+int PeriodicBox::get_number_arrangements() const
+{
+  return this->arrangements.size();
+}
+
 
 void PeriodicBox::set_L(double L)
 {
