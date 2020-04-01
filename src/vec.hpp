@@ -125,6 +125,13 @@ class VecN {
       return unit_other * other.dot(*this);
     }
 
+
+    double angle_between(const VecN<N> &other) const noexcept
+    {
+      double costheta = this->unit().dot(other.unit());
+      return std::acos(costheta);
+    }
+
     VecN<N> floor() const noexcept
     {
       VecN<N> rv;
