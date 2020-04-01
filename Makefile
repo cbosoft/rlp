@@ -11,7 +11,8 @@ OBJ = \
 			obj/vec.o \
 			obj/line.o \
 			obj/vertex.o \
-			obj/random.o
+			obj/random.o \
+			obj/test/run_tests.o
 HDR = src/vec.hpp \
 			src/particle.hpp \
 			src/box.hpp \

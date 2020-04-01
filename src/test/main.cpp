@@ -1,14 +1,6 @@
-#include "vec.hpp"
-#include "vertex.hpp"
+#include "run_tests.hpp"
 
 int main(void)
 {
-  int counter = 0;
-  VectorMagnitudeTest(counter).run_each();
-  VectorDotTest(counter).run_each();
-  VectorCrossTest(counter).run_each();
-  VectorOrthoComponentTest(counter).run_each();
-
-  // vertex tests
-  VertexInteractionTest(counter).run_each();
+  run_tests();
 }
