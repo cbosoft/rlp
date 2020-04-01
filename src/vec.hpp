@@ -202,7 +202,7 @@ class VecN {
 
     void set(int i, double v)
     {
-      if (i >= N)
+      if ((i >= N) or (i < 0))
         throw IndexError(Formatter() << "Index " << i << " invalid for vector of size " << N << ".");
 
       this->v[i] = v;
