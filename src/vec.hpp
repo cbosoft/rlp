@@ -6,6 +6,7 @@
 #include <array>
 
 #include "exception.hpp"
+#include "epsilon.hpp"
 
 template<int N>
 class VecN {
@@ -186,6 +187,20 @@ class VecN {
       for (int i = 0; i < N; i++) {
         this->v[i] -= d;
       }
+    }
+
+    bool operator==(const VecN<N> &other) const
+    {
+      for (int i = 0; i < N; i++) {
+        if (not FLOAT_EQ(this->v[i], other.v[i]))
+          return false;
+      }
+      return true;
+    }
+
+    bool operator!=(const VecN<N> &other) const
+    {
+      return not ((*this) == other);
     }
 
     void set(int i, double v)
