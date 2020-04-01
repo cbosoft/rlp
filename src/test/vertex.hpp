@@ -10,7 +10,7 @@ class VertexInteractionTest : public virtual TestRunner<Vec3, bool> {
 
 
   public:
-    VertexInteractionTest(int &counter) : TestRunner(counter, "Vertex Test (interaction)")
+    VertexInteractionTest(int &counter) : TestRunner(counter, "Vertex test (interaction)")
     {
       this->input_data = {
         Vec3({5.0, 5.0, 10.0}),
@@ -40,13 +40,17 @@ class VertexInteractionTest : public virtual TestRunner<Vec3, bool> {
 
 
       bool result = vertex.check_interacts_with(pj);
+      std::string n = expected_result ? "" : "n't", 
+        nn = expected_result ? "n't" : "";
 
       if (result != expected_result) {
         Vec3 ri = pi->get_position();
         Vec3 rj = pj->get_position();
         Vec3 rij = box.get_effective_separation(ri, rj);
         std::cerr << rij.magnitude2() << std::endl;
-        this->fail(Formatter() << "vertex/particle did not do as expected (" << ri.repr() << ", " << rj.repr() << " : " << rij.magnitude() << ")");
+        this->fail(Formatter() 
+            << "Particle " << pj->get_position() 
+            << " should" << n << " interact with Vertex " << pi->get_position() << ", but did" << nn << ".");
       }
       else {
         this->pass();
