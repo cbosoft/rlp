@@ -4,6 +4,8 @@
 #include "box.hpp"
 #include "vertex.hpp"
 #include "line.hpp"
+#include "triangle.hpp"
+
 
 void PeriodicBox::update_arrangements()
 {
@@ -31,8 +33,23 @@ void PeriodicBox::update_arrangements()
 
     this->arrangements.push_back(new Line(pi, pj, this));
 
-    // for (int k = 0; k < j; k++) {
-    //   Particle *pk = this->particles[j];
-    // }
+    for (int k = 0; k < j; k++) {
+      Particle *pk = this->particles[j];
+      Vec3 rik = this->get_effective_separation(pi->get_position(), pk->get_position());
+      if (rik.magnitude() > (pi->get_radius() + pj->get_radius() + 1.0)) {
+        // too wide
+        //std::cerr << "no because too wide" << std::endl;
+        continue;
+      }
+
+      double theta = rik.angle_between(Z_AXIS);
+      if ((theta < M_PI_4) or (theta > 3.0*M_PI_4)) {
+        // too steep
+        //std::cerr << "no because too steep" << std::endl;
+        continue;
+      }
+
+      this->arrangements.push_back(new Triangle(pi, pj, pk, this));
+    }
   }
 }
