@@ -9,6 +9,7 @@ OBJ = \
 			obj/config.o \
 			obj/config_generate.o \
 			obj/vec.o \
+			obj/line.o \
 			obj/vertex.o \
 			obj/random.o
 HDR = src/particle.hpp \
