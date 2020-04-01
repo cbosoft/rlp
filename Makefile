@@ -9,8 +9,9 @@ OBJ = \
 			obj/config.o \
 			obj/config_generate.o \
 			obj/vec.o \
-			obj/line.o \
 			obj/vertex.o \
+			obj/line.o \
+			obj/triangle.o \
 			obj/random.o \
 			obj/test/run_tests.o
 HDR = src/vec.hpp \
