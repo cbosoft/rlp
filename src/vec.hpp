@@ -42,6 +42,9 @@ class VecN {
     std::string to_csv() { return repr(false); }
     std::string to_yaml() { return repr(); }
 
+    template<int I>
+    friend std::ostream& operator <<(std::ostream &os, const VecN<I> v);
+
 
     VecN<N> add(const VecN<N> &v) const noexcept
     {
