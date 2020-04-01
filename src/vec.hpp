@@ -125,8 +125,9 @@ class VecN {
 
     VecN<N> component_along(const VecN<N> &other) const noexcept
     {
-      VecN<N> unit_other = other.unit();
-      return unit_other * other.dot(*this);
+      // component of vector this along vector other
+      double c = (other.dot(*this)/other.dot(other));
+      return other * c;
     }
 
 
