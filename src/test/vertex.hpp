@@ -6,6 +6,41 @@
 #include "../box.hpp"
 #include "../particle.hpp"
 
+
+class VertexCreationTest : public virtual TestRunner<Vec3, int> {
+
+
+  public:
+    VertexCreationTest(int &counter) : TestRunner(counter, "Vertex test (creation)")
+    {
+      this->input_data = {
+        Vec3({5.0, 5.0, 10.0})
+      };
+      this->expected_results = {
+        1
+      };
+    }
+
+    void run(Vec3 point, int expected_result) override
+    {
+      PeriodicBox box(10.0);
+      Particle *p = new Particle(1.0, point);
+      box.add_particle(p);
+
+      int result = box.get_number_arrangements();
+
+      if (result != expected_result) {
+        this->fail(Formatter() 
+            << "Particle " << p->get_position() 
+            << " should form "<< expected_result << "arrangements, but got " << result << " instead.");
+      }
+      else {
+        this->pass();
+      }
+
+    }
+};
+
 class VertexInteractionTest : public virtual TestRunner<Vec3, bool> {
 
 
@@ -38,7 +73,6 @@ class VertexInteractionTest : public virtual TestRunner<Vec3, bool> {
 
       Particle *pj = new Particle(1.0, Vec3({5.0, 5.0, 10.0}));
 
-
       bool result = vertex.check_interacts_with(pj);
       std::string n = expected_result ? "" : "n't", 
         nn = expected_result ? "n't" : "";
@@ -55,5 +89,7 @@ class VertexInteractionTest : public virtual TestRunner<Vec3, bool> {
       else {
         this->pass();
       }
+
+      delete pj;
     }
 };

@@ -13,6 +13,7 @@ void run_tests()
   VectorAngleBetweenTest(counter).run_each();
 
   // vertex tests
+  VertexCreationTest(counter).run_each();
   VertexInteractionTest(counter).run_each();
 
   // line tests
