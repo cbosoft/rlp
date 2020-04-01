@@ -158,9 +158,11 @@ class VectorAngleBetweenTest : public virtual TestRunner<std::pair<Vec3, Vec3>, 
     {
       this->input_data = {
         std::make_pair(Vec3({1.0, 0.0, 0.0}), Vec3({0.0, 1.0, 0.0})),
+        std::make_pair(Vec3({1.0, 1.0, 0.0}), Vec3({0.0, 1.0, 0.0})),
+        std::make_pair(Vec3({1.0, 0.0, 0.0}), Vec3({-1.0, 0.0, 0.0})),
       };
       this->expected_results = {
-        M_PI_2
+        M_PI_2, M_PI_4, M_PI
       };
     }
 
