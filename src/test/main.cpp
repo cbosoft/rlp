@@ -5,6 +5,7 @@ int main(void)
 {
   int counter = 0;
   VectorMagnitudeTest(counter).run_each();
+  VectorDotTest(counter).run_each();
   VectorCrossTest(counter).run_each();
   VectorOrthoComponentTest(counter).run_each();
 
