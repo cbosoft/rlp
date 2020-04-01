@@ -1,0 +1,19 @@
+#pragma once
+
+#include <array>
+#include "arrangement.hpp"
+
+
+class Line : public virtual ParticleArrangement {
+
+  private:
+    std::array<Particle *, 2> particles;
+
+  public:
+    Line(Particle *a, Particle *b);
+
+    bool check_interacts_with(const Particle *p) override;
+    Vec3 get_interaction_result(const Particle *p) override;
+    double get_sort_distance(const Particle *p) override;
+    bool is_final() override { return false; }
+};

@@ -3,3 +3,7 @@ tags
 *.csv
 *.pdf
 *log.txt
+gmon.out
+*vgcore
+rlp
+obj
