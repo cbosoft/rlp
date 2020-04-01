@@ -144,3 +144,37 @@ class VectorOrthoComponentTest : public virtual TestRunner<std::pair<Vec3, Vec3>
       }
     }
 };
+
+
+class VectorAngleBetweenTest : public virtual TestRunner<std::pair<Vec3, Vec3>, double> {
+
+  public:
+    VectorAngleBetweenTest(int &counter) 
+      : TestRunner(counter, "Vector test (angle between)")
+    {
+      this->input_data = {
+        std::make_pair(Vec3({1.0, 0.0, 0.0}), Vec3({0.0, 1.0, 0.0})),
+      };
+      this->expected_results = {
+        M_PI_2
+      };
+    }
+
+    void run(std::pair<Vec3, Vec3> pair, double expected_result) override
+    {
+      Vec3 left_vector = pair.first, right_vector = pair.second;
+
+      double result = left_vector.angle_between(right_vector);
+
+      if (FLOAT_EQ(result, expected_result)) {
+        this->pass();
+      }
+      else {
+        this->fail(Formatter()
+            << "Angle between " << left_vector
+            << " and " << right_vector
+            << " calculated as " << result
+            << " instead of " << expected_result << "." );
+      }
+    }
+};
