@@ -2,6 +2,7 @@
 #include "vec.hpp"
 #include "vertex.hpp"
 #include "line.hpp"
+#include "triangle.hpp"
 
 void run_tests()
 {
@@ -21,6 +22,9 @@ void run_tests()
   // line tests
   LineCreationTest(counter).run_each();
   LineInteractionTest(counter).run_each();
+
+  // triangle tests
+  TriangleTrilaterationTest(counter).run_each();
 
   if (counter)
     throw TestError(Formatter() << counter << " tests failed!");
