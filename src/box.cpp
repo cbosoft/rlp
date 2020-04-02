@@ -48,3 +48,8 @@ double PeriodicBox::get_L()
 {
   return this->L;
 }
+
+const std::vector<Particle *> PeriodicBox::get_particles() const
+{
+  return this->particles;
+}
