@@ -17,7 +17,7 @@ class Particle {
     Particle(double diameter, Vec3 position);
 
     void set_z(double z) noexcept;
-    void set_position(Vec3 position) noexcept;
+    void set_position(Vec3 position);
     Vec3 get_position() const noexcept;
 
 

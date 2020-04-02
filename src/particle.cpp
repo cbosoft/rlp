@@ -1,3 +1,4 @@
+#include "exception.hpp"
 #include "particle.hpp"
 
 // constructors, destructors, getters, setters
@@ -21,8 +22,12 @@ void Particle::set_z(double z) noexcept
   this->position.set(2, z);
 }
 
-void Particle::set_position(Vec3 position) noexcept
+void Particle::set_position(Vec3 position)
 {
+  if (position.has_nan()) {
+    throw MathError(Formatter() << "Particle position was set to a non-feasible vector: " << position << ".");
+  }
+
   this->position = position;
 }
 
