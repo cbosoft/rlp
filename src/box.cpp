@@ -4,10 +4,11 @@
 // Constructors, destructors, setters and getters for PeriodicBox
 
 
-PeriodicBox::PeriodicBox(double L)
+PeriodicBox::PeriodicBox(double L, int verbosity, const char *log_file_path)
 {
   this->set_L(L);
   this->lowest_surface_height = 0.0;
+  this->logger = Logger(log_file_path, verbosity);
 }
 
 
@@ -52,4 +53,9 @@ double PeriodicBox::get_L()
 const std::vector<Particle *> PeriodicBox::get_particles() const
 {
   return this->particles;
+}
+
+std::list<ParticleArrangement *> PeriodicBox::get_arrangements() const
+{
+  return this->arrangements;
 }
