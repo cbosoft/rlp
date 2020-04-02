@@ -4,6 +4,7 @@
 
 #include "vec.hpp"
 #include "particle.hpp"
+#include "exception.hpp"
 
 class ParticleArrangement {
 
@@ -45,4 +46,37 @@ class ArrangementComparator {
       return l->get_sort_distance(this->p) < r->get_sort_distance(this->p);
     }
 
+};
+
+
+class ArrangementByNameComparator {
+
+  public:
+
+    int arrnameindex(ParticleArrangement *p)
+    {
+      int pi;
+      std::string t = p->get_type();
+      const char *c = t.c_str();
+      if (strcmp(c, "Vertex") == 0) {
+        pi = 0;
+      }
+      else if (strcmp(c, "Line") == 0) {
+        pi = 1;
+      }
+      else if (strcmp(c, "Triangle") == 0) {
+        pi = 2;
+      }
+      else {
+        throw TypeError(Formatter() << "Unknown arrangement type: " << t << ".");
+      }
+
+      return pi;
+    }
+
+    bool operator()(ParticleArrangement *l, ParticleArrangement *r)
+    {
+      int li = this->arrnameindex(l), ri = this->arrnameindex(r);
+      return li<ri;
+    }
 };
