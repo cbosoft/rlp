@@ -5,6 +5,7 @@
 #include "vertex.hpp"
 #include "line.hpp"
 #include "triangle.hpp"
+#include "epsilon.hpp"
 
 
 void PeriodicBox::update_arrangements()
@@ -33,7 +34,6 @@ void PeriodicBox::update_arrangements()
 
     double theta = rij.angle_between(Z_AXIS);
     if ((theta < M_PI_4) or (theta > 3.0*M_PI_4)) {
-      // too steep
       //std::cerr << "no because too steep" << std::endl;
       continue;
     }
@@ -44,7 +44,12 @@ void PeriodicBox::update_arrangements()
       Particle *pk = this->particles[j];
       Vec3 rik = this->get_effective_separation(pi->get_position(), pk->get_position());
       if (rik.magnitude() > (pi->get_radius() + pj->get_radius() + 1.0)) {
-        // too wide
+        //std::cerr << "no because too wide" << std::endl;
+        continue;
+      }
+
+      Vec3 rjk = this->get_effective_separation(pj->get_position(), pk->get_position());
+      if (rjk.magnitude() > (pj->get_radius() + pj->get_radius() + 1.0)) {
         //std::cerr << "no because too wide" << std::endl;
         continue;
       }
