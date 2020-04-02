@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <list>
 
 #include "vec.hpp"
 #include "arrangement.hpp"
@@ -12,7 +13,8 @@ class PeriodicBox {
 
     double L, hL, invL;
     std::vector<Particle *> particles;
-    std::vector<ParticleArrangement *> arrangements;
+    std::list<ParticleArrangement *> arrangements;
+    double lowest_surface_height;
 
     void clear_particles();
     void clear_arrangements();
@@ -38,6 +40,9 @@ class PeriodicBox {
     double get_L();
     void add_particle(Particle *p);
     int get_number_arrangements() const;
+    double get_lowest_surface_height(double thresh=2.0);
+
+    const std::vector<Particle *> get_particles() const;
 
 
 };

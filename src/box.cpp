@@ -7,6 +7,7 @@
 PeriodicBox::PeriodicBox(double L)
 {
   this->set_L(L);
+  this->lowest_surface_height = 0.0;
 }
 
 

@@ -23,7 +23,7 @@ void PeriodicBox::add_particle(Particle *p)
 void PeriodicBox::settle_particle(Particle *p, int n, int recursion_limit)
 {
 
-  std::cerr << this->arrangements.size() << " " << p->get_position() << "-->";
+  std::cerr << this->arrangements.size() << " " << this->lowest_surface_height << " " << p->get_position() << "-->";
 
   if (n >= recursion_limit)
     throw RecursionError("Exceeded recursion depth!");
@@ -60,4 +60,40 @@ void PeriodicBox::settle_particle(Particle *p, int n, int recursion_limit)
   else {
     this->settle_particle(p, n+1, recursion_limit);
   }
+}
+
+
+double PeriodicBox::get_lowest_surface_height(double thresh)
+{
+
+  if (this->particles.size() == 0)
+    return -thresh;
+
+  const Particle *lowest_surface_particle = this->particles[0];
+  double lowest_surface_height = lowest_surface_particle->get_position().get(2);
+
+  for (const Particle *p : this->particles) {
+    double pz = p->get_position().get(2);
+    if (p->neighbours.size()) {
+      bool summit = true;
+      for (const Particle *neighbour : p->neighbours) {
+        if (neighbour->get_position().get(2) > pz) {
+          summit = false;
+          break;
+        }
+      }
+
+      if (!summit)
+        continue;
+    }
+
+    if (pz < lowest_surface_height) {
+      lowest_surface_particle = p;
+      lowest_surface_height = pz;
+    }
+
+  }
+
+  this->lowest_surface_height =  lowest_surface_height - thresh;
+  return this->lowest_surface_height;
 }

@@ -16,10 +16,17 @@ void PeriodicBox::update_arrangements()
 
   for (int j = 0; j < N-1; j++) {
     Particle *pj = this->particles[j];
-    Vec3 rij = this->get_effective_separation(pi->get_position(), pj->get_position());
 
-    if (rij.magnitude() > (pi->get_radius() + pj->get_radius() + 1.0)) {
-      // too wide
+    Vec3 rij = this->get_effective_separation(pi->get_position(), pj->get_position());
+    double dist_ij = rij.magnitude();
+
+    // check for, and add particle neighbours here - to be used to calculate top
+    // layer of particles, removing arrangements below this line.
+    if (FLOAT_EQ(dist_ij, (pi->get_radius() + pj->get_radius()) )) {
+      pi->add_neighbour(pj);
+      pj->add_neighbour(pi);
+    }
+    else if (dist_ij > (pi->get_radius() + pj->get_radius() + 1.0)) {
       //std::cerr << "no because too wide" << std::endl;
       continue;
     }
