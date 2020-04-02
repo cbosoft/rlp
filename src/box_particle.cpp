@@ -61,10 +61,10 @@ void PeriodicBox::settle_particle(Particle *p, int n, int recursion_limit)
       if (interacting_arrangement == arrangement)
         continue;
 
-      if (interacting_arrangement->covers(arrangement))
+      if (interacting_arrangement->covers(arrangement)) {
         this->arrangements.remove(arrangement);
-
-      delete arrangement;
+        delete arrangement;
+      }
     }
 
     this->arrangements.remove(interacting_arrangement);
