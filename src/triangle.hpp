@@ -22,6 +22,7 @@ class Triangle : public virtual ParticleArrangement {
     double get_z_position();
     bool covers(ParticleArrangement* arr);
     std::vector<Vec3> get_extents();
+    std::string repr() override;
 
     bool is_final() override { return true; }
     std::string get_type() override { return "Triangle"; }

@@ -19,6 +19,7 @@ class Vertex : public virtual ParticleArrangement {
     double get_z_position();
     bool covers(ParticleArrangement *arr) { (void)arr; return false; }
     std::vector<Vec3> get_extents();
+    std::string repr() override;
 
     bool is_final() override { return false; }
     std::string get_type() override { return "Vertex"; }

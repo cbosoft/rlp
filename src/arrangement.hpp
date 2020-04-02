@@ -21,6 +21,7 @@ class ParticleArrangement {
     virtual double get_z_position() =0;
     virtual bool covers(ParticleArrangement *arr) =0;
     virtual std::vector<Vec3> get_extents() =0;
+    virtual std::string repr() =0;
 
 
     virtual bool is_final() =0;

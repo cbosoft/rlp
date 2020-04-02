@@ -146,3 +146,13 @@ bool Triangle::covers(ParticleArrangement *arr)
 
   return false;
 }
+
+std::string Triangle::repr()
+{
+  std::stringstream ss;
+  ss << this->get_type() << "("
+    << this->particles[0]->get_position() << "-"
+    << this->particles[1]->get_position() << "-"
+    << this->particles[2]->get_position() << ")";
+  return ss.str();
+}

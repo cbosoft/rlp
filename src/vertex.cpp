@@ -48,3 +48,10 @@ std::vector<Vec3> Vertex::get_extents()
   rv.push_back(this->particle->get_position());
   return rv;
 }
+
+std::string Vertex::repr()
+{
+  std::stringstream ss;
+  ss << this->get_type() << "(" << this->particle->get_position() << ")";
+  return ss.str();
+}

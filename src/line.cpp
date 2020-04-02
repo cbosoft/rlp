@@ -54,6 +54,8 @@ bool Line::check_interacts_with(const Particle *p)
 Vec3 Line::get_interaction_result(const Particle *p)
 {
   Vec2 S0 = p->get_position().restrict<2>();
+
+start:
   Vec2 R1 = this->particles[0]->get_position().restrict<2>();
   Vec2 R2 = this->particles[1]->get_position().restrict<2>();
   Vec2 dS = this->box->get_effective_separation(S0, R1);
@@ -61,13 +63,29 @@ Vec3 Line::get_interaction_result(const Particle *p)
   double dRmag = dR.magnitude();
   Vec2 dRu = dR / dRmag;
   Vec2 TS = dS.component_along(dR);
-  Vec2 NS = S0 - TS; // or plus?
+  Vec2 NS = dS - TS; // or plus?
+  double NSmag = NS.magnitude();
+
+  if (FLOAT_EQ(NSmag, 0.0)) {
+    //throw MathError(Formatter() << "Divide by zero encountered in Line::get_intersection_result!");
+
+    // Math error, jiggle the start point and try again
+    S0 = S0 + vec2_urand(-1e-10, 1e-10);
+    goto start;
+  }
+
   Vec2 NSu = NS.unit();
   double a = dRmag;
   double b = this->particles[0]->get_radius() + p->get_radius();
   double c = this->particles[1]->get_radius() + p->get_radius();
   double costheta = (a*a + b*b - c*c) / (2*a*b);
+
+  if ((costheta > 1.0) or (costheta < -1.0)) {
+    throw MathError(Formatter() << "Invalid costheta value encountered in Line::get_intersection_result! (" << costheta << ").");
+  }
+
   double theta = std::acos(costheta);
+
   double t = b*costheta;
   Vec2 C = R1 + (dRu*t);
 
@@ -116,4 +134,13 @@ std::vector<Vec3> Line::get_extents()
   }
 
   return rv;
+}
+
+std::string Line::repr()
+{
+  std::stringstream ss;
+  ss << this->get_type() << "("
+    << this->particles[0]->get_position() << "-"
+    << this->particles[1]->get_position() << ")";
+  return ss.str();
 }
