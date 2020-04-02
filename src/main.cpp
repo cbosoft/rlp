@@ -4,6 +4,8 @@
 int main(void)
 {
 
+  // TODO argument parsing
+
   run_tests();
 
   ConfigGenerator cg = ConfigGenerator(10.0);
