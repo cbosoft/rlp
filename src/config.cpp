@@ -2,9 +2,9 @@
 
 #include "config.hpp"
 
-ConfigGenerator::ConfigGenerator(double L)
+ConfigGenerator::ConfigGenerator(double L, int verbosity)
 {
-  this->box = PeriodicBox(L);
+  this->box = PeriodicBox(L, verbosity);
 }
 
 

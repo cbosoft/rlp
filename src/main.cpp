@@ -13,6 +13,7 @@ int main(int argc, const char **argv)
     const char *output_path;
     // double mean;
     // double std;
+    int verbosity;
     bool run_tests;
   } args = {
     .number = 100,
@@ -20,7 +21,7 @@ int main(int argc, const char **argv)
     .output_path = "out.csv",
     // .mean = 1.0,
     // .std = 0.0,
-    .run_tests = true
+    .verbosity = 1,
   };
 
   argc--; argv++;
@@ -33,6 +34,12 @@ int main(int argc, const char **argv)
     }
     else if (EITHER("-o", "--output-path")) {
       args.output_path = argv[i];
+    }
+    else if (EITHER("-v", "--verbose")) {
+      args.verbosity ++;
+    }
+    else if (EITHER("-q", "--quiet")) {
+      args.verbosity --;
     }
     // else if (EITHER("-m", "--mean")) {
     //   args.mean = atof(argv[++i]);
@@ -51,7 +58,7 @@ int main(int argc, const char **argv)
   if (args.run_tests)
     run_tests();
 
-  ConfigGenerator cg = ConfigGenerator(args.length);
   cg.generate_particles(args.number);
   cg.output_configuration(args.output_path);
+  ConfigGenerator cg = ConfigGenerator(args.length, args.verbosity);
 }
