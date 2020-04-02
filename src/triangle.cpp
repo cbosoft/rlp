@@ -49,7 +49,8 @@ bool Triangle::check_interacts_with(const Particle *p)
     return false;
   }
 
-  return true;
+  Vec3 temp;
+  return this->trilaterate(p->get_radius(), temp);
 }
 
 Vec3 Triangle::get_interaction_result(const Particle *p)
