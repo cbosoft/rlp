@@ -29,12 +29,13 @@ void PeriodicBox::update_arrangements()
     }
     else if (dist_ij > (pi->get_radius() + pj->get_radius() + 1.0)) {
       //std::cerr << "no because too wide" << std::endl;
+      this->log("Line disallowed: too wide.", 2);
       continue;
     }
 
     double theta = rij.angle_between(Z_AXIS);
     if ((theta < M_PI_4) or (theta > 3.0*M_PI_4)) {
-      //std::cerr << "no because too steep" << std::endl;
+      this->log(Formatter() << "Line disallowed: too steep (" << theta << "<" << M_PI_4 << "|" << theta << ">" << (3.0*M_PI_4) << ")", 2);
       continue;
     }
 
@@ -44,20 +45,19 @@ void PeriodicBox::update_arrangements()
       Particle *pk = this->particles[j];
       Vec3 rik = this->get_effective_separation(pi->get_position(), pk->get_position());
       if (rik.magnitude() > (pi->get_radius() + pj->get_radius() + 1.0)) {
-        //std::cerr << "no because too wide" << std::endl;
+        this->log("Triangle disallowed: too wide", 2);
         continue;
       }
 
       Vec3 rjk = this->get_effective_separation(pj->get_position(), pk->get_position());
       if (rjk.magnitude() > (pj->get_radius() + pj->get_radius() + 1.0)) {
-        //std::cerr << "no because too wide" << std::endl;
+        this->log("Triangle disallowed: too wide", 2);
         continue;
       }
 
       double theta = rik.angle_between(Z_AXIS);
       if ((theta < M_PI_4) or (theta > 3.0*M_PI_4)) {
-        // too steep
-        //std::cerr << "no because too steep" << std::endl;
+        this->log("Triangle disallowed: too steep", 2);
         continue;
       }
 
