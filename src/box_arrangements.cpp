@@ -61,6 +61,16 @@ void PeriodicBox::update_arrangements()
         continue;
       }
 
+      theta = rik.angle_between(rij);
+      if (theta > M_PI_2) {
+        this->log("Triangle disallowed: reflex", 2);
+        continue;
+      }
+      else if (theta < (M_PI*0.1)) {
+        this->log("Triangle disallowed: ~parallel", 2);
+        continue;
+      }
+
       this->arrangements.push_back(new Triangle(pi, pj, pk, this));
     }
   }
