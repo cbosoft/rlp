@@ -50,7 +50,6 @@ Vec3 Triangle::get_interaction_result(const Particle *p)
 {
   Vec3 new_position;
   if (this->trilaterate(p->get_radius(), new_position)) {
-    // TODO: nans being returned from here?
     return new_position;
   }
 

@@ -56,8 +56,8 @@ Vec3 Line::get_interaction_result(const Particle *p)
   Vec2 S0 = p->get_position().restrict<2>();
   Vec2 R1 = this->particles[0]->get_position().restrict<2>();
   Vec2 R2 = this->particles[1]->get_position().restrict<2>();
-  Vec2 dS = S0 - R1;
-  Vec2 dR = R2 - R1;
+  Vec2 dS = this->box->get_effective_separation(S0, R1);
+  Vec2 dR = this->box->get_effective_separation(R2, R1);
   double dRmag = dR.magnitude();
   Vec2 dRu = dR / dRmag;
   Vec2 TS = dS.component_along(dR);
