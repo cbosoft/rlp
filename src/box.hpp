@@ -5,6 +5,7 @@
 
 #include "vec.hpp"
 #include "arrangement.hpp"
+#include "logger.hpp"
 
 class Particle;
 class PeriodicBox {
@@ -15,6 +16,7 @@ class PeriodicBox {
     std::vector<Particle *> particles;
     std::list<ParticleArrangement *> arrangements;
     double lowest_surface_height;
+    Logger logger;
 
     void clear_particles();
     void clear_arrangements();
@@ -24,7 +26,7 @@ class PeriodicBox {
   public:
 
     PeriodicBox() : PeriodicBox(0.0) {}
-    PeriodicBox(double L);
+    PeriodicBox(double L, int verbosity=1, const char *log_file_path=nullptr);
     ~PeriodicBox();
 
     template<int N>
@@ -40,9 +42,12 @@ class PeriodicBox {
     double get_L();
     void add_particle(Particle *p);
     int get_number_arrangements() const;
+    std::list<ParticleArrangement *> get_arrangements() const;
     double get_lowest_surface_height(double thresh=2.0);
 
     const std::vector<Particle *> get_particles() const;
+
+    void log(std::string s) { this->logger.log(s); }
 
 
 };
