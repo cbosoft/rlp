@@ -42,7 +42,7 @@ void PeriodicBox::update_arrangements()
     this->arrangements.push_back(new Line(pi, pj, this));
 
     for (int k = 0; k < j; k++) {
-      Particle *pk = this->particles[j];
+      Particle *pk = this->particles[k];
       Vec3 rik = this->get_effective_separation(pi->get_position(), pk->get_position());
       if (rik.magnitude() > (pi->get_radius() + pj->get_radius() + 1.0)) {
         this->log("Triangle disallowed: too wide", 2);
