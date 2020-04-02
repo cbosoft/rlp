@@ -83,12 +83,37 @@ Vec3 Line::get_interaction_result(const Particle *p)
 
 double Line::get_sort_distance(const Particle *p)
 {
-  double mindist = (p->get_position() - this->particles[0]->get_position()).magnitude();
+  double mindist = this->box->get_effective_separation(p->get_position(), this->particles[0]->get_position()).magnitude();
   for (size_t i = 1; i < this->particles.size(); i++) {
     // no PBC (abs distance only)
-    double dist = (p->get_position() - this->particles[i]->get_position()).magnitude();
+    double dist = this->box->get_effective_separation(p->get_position(), this->particles[i]->get_position()).magnitude();
     if (dist < mindist)
       mindist = dist;
   }
-  return mindist*100.0 + 1;
+  return mindist*100.0 + 0.0;
+}
+
+
+double Line::get_z_position()
+{
+  double maxh = this->box->get_effective_position(this->particles[0]->get_position()).get(2);
+  for (size_t i = 1; i < this->particles.size(); i++) {
+    // no PBC (abs distance only)
+    double h = this->box->get_effective_position(this->particles[i]->get_position()).get(2);
+    if (h > maxh)
+      maxh = h;
+  }
+  return maxh;
+}
+
+
+std::vector<Vec3> Line::get_extents()
+{
+  std::vector<Vec3> rv;
+
+  for (auto particle : this->particles) {
+    rv.push_back(particle->get_position());
+  }
+
+  return rv;
 }

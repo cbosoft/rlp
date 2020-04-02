@@ -9,6 +9,15 @@ Triangle::Triangle(Particle *a, Particle *b, Particle *c, PeriodicBox *box)
   this->box = box;
 
   // TODO precompute distances
+  for (size_t i = 0; i < this->particles.size(); i++) {
+    Particle *pi = this->particles[i];
+    int j = i+1 >= this->particles.size() ? 0 : i+1;
+    Particle *pj = this->particles[j];
+    Vec2 ipos = pi->get_position().restrict<2>();
+    Vec2 jpos = pj->get_position().restrict<2>();
+    double d_comp = this->box->get_effective_separation(ipos, jpos).magnitude();
+    this->edge_distances[i] = d_comp;
+  }
 }
 
 bool Triangle::check_interacts_with(const Particle *p)
@@ -19,22 +28,19 @@ bool Triangle::check_interacts_with(const Particle *p)
   Vec2 ppos = ppos3.restrict<2>();
   for (size_t i = 0; i < this->particles.size(); i++) {
     Particle *pi = this->particles[i];
-    int j = i+1 >= this->particles.size() ? 0 : i+1;
-    Particle *pj = this->particles[j];
-
-    Vec2 ipos = pi->get_position().restrict<2>();
-    Vec2 jpos = pj->get_position().restrict<2>();
-
-    double d = this->box->get_effective_separation(ppos, ipos).magnitude();
-    double d_comp = this->box->get_effective_separation(ipos, jpos).magnitude();
-    if (d < this->particles[i]->get_radius() + p->get_radius())
-      close_enough ++;
-
-    if (d > d_comp)
-      return false;
 
     if (ppos3.get(2) < pi->get_position().get(2))
       return false;
+
+    Vec2 ipos = pi->get_position().restrict<2>();
+
+    double d = this->box->get_effective_separation(ppos, ipos).magnitude();
+    if (d < this->particles[i]->get_radius() + p->get_radius())
+      close_enough ++;
+
+    if (d > edge_distances[i])
+      return false;
+
 
   }
 
@@ -58,10 +64,10 @@ Vec3 Triangle::get_interaction_result(const Particle *p)
 
 double Triangle::get_sort_distance(const Particle *p)
 {
-  double mindist = (p->get_position() - this->particles[0]->get_position()).magnitude();
+  double mindist = this->box->get_effective_separation(p->get_position(), this->particles[0]->get_position()).magnitude();
   for (size_t i = 1; i < this->particles.size(); i++) {
     // no PBC (abs distance only)
-    double dist = (p->get_position() - this->particles[i]->get_position()).magnitude();
+    double dist = this->box->get_effective_separation(p->get_position(), this->particles[i]->get_position()).magnitude();
     if (dist < mindist)
       mindist = dist;
   }
@@ -72,10 +78,10 @@ double Triangle::get_sort_distance(const Particle *p)
 bool Triangle::trilaterate(double radius, Vec3 &rv)
 {
   // https://stackoverflow.com/questions/1406375/finding-intersection-points-between-3-spheres/18654302#18654302
-  Vec3 r_ji = this->particles[1]->get_position() - this->particles[0]->get_position();
+  Vec3 r_ji = this->box->get_effective_separation(this->particles[1]->get_position(), this->particles[0]->get_position());
   double d = r_ji.magnitude();
   Vec3 e_x = r_ji / d;
-  Vec3 r_ki = this->particles[2]->get_position() - this->particles[0]->get_position();
+  Vec3 r_ki = this->box->get_effective_separation(this->particles[2]->get_position(), this->particles[0]->get_position());
   double i = e_x.dot(r_ki);
   Vec3 e_y = (r_ki - e_x*i).unit();
   Vec3 e_z = e_y.cross(e_x);
@@ -88,8 +94,9 @@ bool Triangle::trilaterate(double radius, Vec3 &rv)
     return false;
 
   double z = std::pow(z2, 0.5);
-  Vec3 solution_a = this->particles[0]->get_position() + e_x*x + e_y*y + e_z*z;
-  Vec3 solution_b = this->particles[0]->get_position() + e_x*x + e_y*y - e_z*z;
+  Vec3 effpos = this->box->get_effective_position(this->particles[0]->get_position());
+  Vec3 solution_a = effpos + e_x*x + e_y*y + e_z*z;
+  Vec3 solution_b = effpos + e_x*x + e_y*y - e_z*z;
 
   if (solution_a.get(2) > solution_b.get(2)) {
     rv = solution_a;
@@ -97,4 +104,44 @@ bool Triangle::trilaterate(double radius, Vec3 &rv)
   }
   rv = solution_b;
   return true;
+}
+
+
+double Triangle::get_z_position()
+{
+  double maxh = this->box->get_effective_position(this->particles[0]->get_position()).get(2);
+  for (size_t i = 1; i < this->particles.size(); i++) {
+    // no PBC (abs distance only)
+    double h = this->box->get_effective_position(this->particles[i]->get_position()).get(2);
+    if (h > maxh)
+      maxh = h;
+  }
+  return maxh;
+}
+
+
+std::vector<Vec3> Triangle::get_extents()
+{
+  std::vector<Vec3> rv;
+
+  for (auto particle : this->particles) {
+    rv.push_back(particle->get_position());
+  }
+
+  return rv;
+}
+
+bool Triangle::covers(ParticleArrangement *arr)
+{
+  std::vector<Vec3> points = arr->get_extents();
+
+  for (auto point : points) {
+    point.set(2, 1e9);
+    Particle *p = new Particle(1.0, point);
+    if (this->check_interacts_with(p))
+      return true;
+    delete p;
+  }
+
+  return false;
 }
