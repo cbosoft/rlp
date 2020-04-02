@@ -17,5 +17,6 @@ class Vertex : public virtual ParticleArrangement {
     Vec3 get_interaction_result(const Particle *p) override;
     double get_sort_distance(const Particle *p) override;
     bool is_final() override { return false; }
+    std::string get_type() override { return "Vertex"; }
     
 };

@@ -16,6 +16,7 @@ class ParticleArrangement {
     virtual Vec3 get_interaction_result(const Particle *p) =0;
     virtual double get_sort_distance(const Particle *p) =0;
     virtual bool is_final() =0;
+    virtual std::string get_type() =0;
 };
 
 

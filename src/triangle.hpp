@@ -19,6 +19,7 @@ class Triangle : public virtual ParticleArrangement {
     Vec3 get_interaction_result(const Particle *p) override;
     double get_sort_distance(const Particle *p) override;
     bool is_final() override { return true; }
+    std::string get_type() override { return "Triangle"; }
 
     friend class TriangleTrilaterationTest;
 };
