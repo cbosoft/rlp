@@ -48,6 +48,7 @@ class PeriodicBox {
     const std::vector<Particle *> get_particles() const;
 
     void log(std::string s) { this->logger.log(s); }
+    void log(std::string s, int minimum_verbosity) { this->logger.log(s, minimum_verbosity); }
 
 
 };
