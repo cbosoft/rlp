@@ -208,11 +208,20 @@ class VecN {
       this->v[i] = v;
     }
 
-    double get(int i)
+    double get(int i) const
     {
       if ((i >= N) or (i < 0))
         throw IndexError(Formatter() << "Index " << i << " invalid for vector of size " << N << ".");
       return this->v[i];
+    }
+
+    bool has_nan() const noexcept
+    {
+      for (double vi : this->v) {
+        if (std::isnan(vi))
+          return true;
+      }
+      return false;
     }
 
     template<int I>
