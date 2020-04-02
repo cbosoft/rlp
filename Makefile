@@ -22,6 +22,7 @@ HDR = src/vec.hpp \
 			src/arrangement.hpp \
 			src/triangle.hpp \
 			src/line.hpp \
+			src/logger.hpp \
 			src/vertex.hpp \
 			src/colour.hpp
 TEST_HDR = $(shell ls src/test/*.hpp)
