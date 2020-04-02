@@ -8,3 +8,5 @@ gmon.out
 rlp
 obj
 tests
+analysis.txt
+d.dot
