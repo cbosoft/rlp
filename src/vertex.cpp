@@ -10,6 +10,9 @@ Vertex::Vertex(Particle *p, PeriodicBox *box)
 
 bool Vertex::check_interacts_with(const Particle *p)
 {
+  if (p->get_position().get(2) <= this->particle->get_position().get(2))
+    return false;
+
   Vec3 dr = this->box->get_effective_separation(this->particle->get_position(), p->get_position());
   return (dr.magnitude() < (this->particle->get_radius() + p->get_radius()));
 }

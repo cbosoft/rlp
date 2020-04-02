@@ -21,7 +21,8 @@ bool Line::check_interacts_with(const Particle *p)
 
   // is the particle close enough to either line point?
   int close_enough = 0;
-  Vec2 ppos = p->get_position().restrict<2>();
+  Vec3 ppos3 = p->get_position();
+  Vec2 ppos = ppos3.restrict<2>();
   for (size_t i = 0; i < this->particles.size(); i++) {
     Vec2 vpos = this->particles[i]->get_position().restrict<2>();
     double d = this->box->get_effective_separation(ppos, vpos).magnitude();
@@ -35,6 +36,9 @@ bool Line::check_interacts_with(const Particle *p)
     // check particle hits at all
     if (d < this->particles[i]->get_radius() + p->get_radius())
       close_enough ++;
+
+    if (ppos3.get(2) <= this->particles[i]->get_position().get(2))
+      return false;
 
   }
 

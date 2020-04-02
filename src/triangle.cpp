@@ -13,8 +13,10 @@ Triangle::Triangle(Particle *a, Particle *b, Particle *c, PeriodicBox *box)
 
 bool Triangle::check_interacts_with(const Particle *p)
 {
+
   int close_enough = 0;
-  Vec2 ppos = p->get_position().restrict<2>();
+  Vec3 ppos3 = p->get_position();
+  Vec2 ppos = ppos3.restrict<2>();
   for (size_t i = 0; i < this->particles.size(); i++) {
     Particle *pi = this->particles[i];
     int j = i+1 >= this->particles.size() ? 0 : i+1;
@@ -29,6 +31,9 @@ bool Triangle::check_interacts_with(const Particle *p)
       close_enough ++;
 
     if (d > d_comp)
+      return false;
+
+    if (ppos3.get(2) < pi->get_position().get(2))
       return false;
 
   }
