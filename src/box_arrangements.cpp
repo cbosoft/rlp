@@ -28,14 +28,13 @@ void PeriodicBox::update_arrangements()
       pj->add_neighbour(pi);
     }
     else if (dist_ij > (pi->get_radius() + pj->get_radius() + 1.0)) {
-      //std::cerr << "no because too wide" << std::endl;
-      this->log("Line disallowed: too wide.", 2);
+      this->log("Line disallowed: too wide.\n", 2);
       continue;
     }
 
     double theta = rij.angle_between(Z_AXIS);
     if ((theta < M_PI_4) or (theta > 3.0*M_PI_4)) {
-      this->log(Formatter() << "Line disallowed: too steep (" << theta << "<" << M_PI_4 << "|" << theta << ">" << (3.0*M_PI_4) << ")", 2);
+      this->log(Formatter() << "Line disallowed: too steep (" << theta << "<" << M_PI_4 << "|" << theta << ">" << (3.0*M_PI_4) << ")\n", 2);
       continue;
     }
 
@@ -45,29 +44,29 @@ void PeriodicBox::update_arrangements()
       Particle *pk = this->particles[k];
       Vec3 rik = this->get_effective_separation(pi->get_position(), pk->get_position());
       if (rik.magnitude() > (pi->get_radius() + pj->get_radius() + 1.0)) {
-        this->log("Triangle disallowed: too wide", 2);
+        this->log("Triangle disallowed: too wide.\n", 2);
         continue;
       }
 
       Vec3 rjk = this->get_effective_separation(pj->get_position(), pk->get_position());
       if (rjk.magnitude() > (pj->get_radius() + pj->get_radius() + 1.0)) {
-        this->log("Triangle disallowed: too wide", 2);
+        this->log("Triangle disallowed: too wide.\n", 2);
         continue;
       }
 
       double theta = rik.angle_between(Z_AXIS);
       if ((theta < M_PI_4) or (theta > 3.0*M_PI_4)) {
-        this->log("Triangle disallowed: too steep", 2);
+        this->log("Triangle disallowed: too steep.\n", 2);
         continue;
       }
 
       theta = rik.angle_between(rij);
       if (theta > M_PI_2) {
-        this->log("Triangle disallowed: reflex", 2);
+        this->log("Triangle disallowed: reflex.\n", 2);
         continue;
       }
       else if (theta < (M_PI*0.1)) {
-        this->log("Triangle disallowed: ~parallel", 2);
+        this->log("Triangle disallowed: ~parallel.\n", 2);
         continue;
       }
 

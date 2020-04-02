@@ -28,7 +28,7 @@ class Logger {
     void log(std::string s, int minimum_verbosity=1)
     {
       if (this->verbosity >= minimum_verbosity) {
-        std::cerr << s << std::endl;
+        std::cerr << s;
       }
 
       if (this->file_logging) {
