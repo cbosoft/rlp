@@ -70,7 +70,10 @@ Vec3 Line::get_interaction_result(const Particle *p)
   double l = b*std::sin(theta);
   Vec2 S = C + (NSu*l);
 
-  return S.promote<3>(10.0);
+  double h1 = this->particles[0]->get_position().get(2);
+  double h2 = this->particles[2]->get_position().get(2);
+
+  return S.promote<3>( (h1>h2)?h2:h1);
 }
 
 
