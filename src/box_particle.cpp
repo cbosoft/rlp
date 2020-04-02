@@ -53,9 +53,22 @@ void PeriodicBox::settle_particle(Particle *p, int n, int recursion_limit)
   p->set_position(new_position);
 
   if (interacting_arrangement->is_final()) {
-    // TODO remove this arrangement from main list of
     std::cerr << p->get_position() << "!" << std::endl;
     p->set_settled();
+
+    for (auto arrangement : interacting_arrangements) {
+
+      if (interacting_arrangement == arrangement)
+        continue;
+
+      if (interacting_arrangement->covers(arrangement))
+        this->arrangements.remove(arrangement);
+
+      delete arrangement;
+    }
+
+    this->arrangements.remove(interacting_arrangement);
+    delete interacting_arrangement;
   }
   else {
     this->settle_particle(p, n+1, recursion_limit);
