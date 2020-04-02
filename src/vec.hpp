@@ -253,5 +253,7 @@ class VecN {
 typedef VecN<3> Vec3;
 typedef VecN<2> Vec2;
 
-Vec3 vec_urand(double min, double max);
-Vec3 vec_nrand(double mean, double std);
+Vec3 vec3_urand(double min, double max);
+Vec3 vec3_nrand(double mean, double std);
+Vec2 vec2_urand(double min, double max);
+Vec2 vec2_nrand(double mean, double std);
