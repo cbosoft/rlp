@@ -65,3 +65,8 @@ void Particle::set_frictional(bool v) noexcept
 {
   this->frictional = v;
 }
+
+void Particle::add_neighbour(const Particle *p) noexcept
+{
+  this->neighbours.push_back(p);
+}
