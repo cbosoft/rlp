@@ -99,6 +99,7 @@ EXCEPTION(IOError, "IOError");
 EXCEPTION(MathError, "MathError");
 EXCEPTION(IndexError, "IndexError");
 EXCEPTION(SettleError, "SettleError");
+EXCEPTION(IntersectionError, "IntersectionError");
 EXCEPTION(RecursionError, "RecursionError");
 EXCEPTION(TestError, "TestError");
 

@@ -6,6 +6,7 @@
 #include "line.hpp"
 #include "triangle.hpp"
 #include "epsilon.hpp"
+#include "exception.hpp"
 
 
 void PeriodicBox::update_arrangements()
@@ -30,6 +31,12 @@ void PeriodicBox::update_arrangements()
     else if (dist_ij > (pi->get_radius() + pj->get_radius() + 1.0)) {
       this->log("Line disallowed: too wide.\n", 2);
       continue;
+    }
+    else if (dist_ij < (pi->get_radius() + pj->get_radius())) {
+      throw IntersectionError(Formatter() << "Particle seperation less than total radii: "
+          << pi->get_position() << " (" << pi->get_radius() << ") and "
+          << pj->get_position() << " (" << pj->get_radius() << "): "
+          << dist_ij << "<" << (pi->get_radius() + pj->get_radius()) << ".");
     }
 
     double theta = rij.angle_between(Z_AXIS);
