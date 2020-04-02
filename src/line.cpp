@@ -79,10 +79,12 @@ Vec3 Line::get_interaction_result(const Particle *p)
 
 double Line::get_sort_distance(const Particle *p)
 {
-  double totdist = 0.0;
-  for (size_t i = 0; i < this->particles.size(); i++) {
+  double mindist = (p->get_position() - this->particles[0]->get_position()).magnitude();
+  for (size_t i = 1; i < this->particles.size(); i++) {
     // no PBC (abs distance only)
-    totdist += (p->get_position() - this->particles[i]->get_position()).magnitude();
+    double dist = (p->get_position() - this->particles[i]->get_position()).magnitude();
+    if (dist < mindist)
+      mindist = dist;
   }
-  return totdist / double(this->particles.size());
+  return mindist*100.0 + 1;
 }

@@ -26,5 +26,5 @@ double Vertex::get_sort_distance(const Particle *p)
 {
   // don't take PBCinto account: need abs distance
   double dp = (p->get_position() - this->particle->get_position()).magnitude();
-  return dp;
+  return dp * 100.0 + 3.0;
 }
