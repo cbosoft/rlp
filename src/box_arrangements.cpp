@@ -33,6 +33,9 @@ void PeriodicBox::update_arrangements()
       continue;
     }
     else if (dist_ij < (pi->get_radius() + pj->get_radius())) {
+
+      this->particles.pop_back();
+
       throw IntersectionError(Formatter() << "Particle seperation less than total radii: "
           << pi->get_position() << " (" << pi->get_radius() << ") and "
           << pj->get_position() << " (" << pj->get_radius() << "): "
