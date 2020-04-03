@@ -37,7 +37,7 @@ void PeriodicBox::check_particle_set_settled(Particle *p)
 
     Vec3 dr = this->get_effective_separation(position, particle->get_position());
     double dist = dr.magnitude();
-    if (dist < (particle->get_radius() + p->get_radius()))  {
+    if (dist+EPSILON < (particle->get_radius() + p->get_radius()))  {
       intersected = true;
       break;
     }
