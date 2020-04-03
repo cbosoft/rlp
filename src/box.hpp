@@ -12,6 +12,7 @@ class PeriodicBox {
 
   private:
 
+    int verbosity;
     double L, hL, invL;
     std::vector<Particle *> particles;
     std::list<ParticleArrangement *> arrangements;

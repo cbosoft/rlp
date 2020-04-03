@@ -9,6 +9,7 @@ PeriodicBox::PeriodicBox(double L, int verbosity, const char *log_file_path)
   this->set_L(L);
   this->lowest_surface_height = 0.0;
   this->logger = Logger(log_file_path, verbosity);
+  this->verbosity = verbosity;
 }
 
 
