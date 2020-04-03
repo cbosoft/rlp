@@ -89,8 +89,15 @@ void PeriodicBox::update_arrangements()
 
 ParticleArrangement *PeriodicBox::sort_and_filter_arrangements(std::list<ParticleArrangement *> &arrangements, const Particle *p) const
 {
+
   // Filter by closest.
   ParticleArrangement *mindist = (*std::min_element(arrangements.begin(), arrangements.end(), ArrangementByMinDistanceComparator(p)));
+
+  if (mindist == nullptr) {
+    throw AuthorError(Formatter() << "Empty arrangements passed to sort_and_filter!");
+  }
+
+
   double mindist_value = mindist->get_min_distance(p);
   std::list<ParticleArrangement *> arrangements_mindist;
   for (auto arrangement : arrangements) {
