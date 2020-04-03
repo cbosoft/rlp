@@ -215,6 +215,10 @@ class VecN {
       return this->v[i];
     }
 
+    double X() const { return this->get(0); }
+    double Y() const { return this->get(1); }
+    double Z() const { return this->get(2); }
+
     bool has_nan() const noexcept
     {
       for (double vi : this->v) {
