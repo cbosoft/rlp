@@ -23,6 +23,8 @@ class PeriodicBox {
     void settle_particle(Particle *p, int n=0, int recursion_limit=100);
     void update_arrangements();
 
+    double get_volume_particle(const Particle *p, std::array<std::array<double, 2>, 3> limits) const;
+
   public:
 
     PeriodicBox() : PeriodicBox(0.0) {}
@@ -44,6 +46,8 @@ class PeriodicBox {
     int get_number_arrangements() const;
     std::list<ParticleArrangement *> get_arrangements() const;
     double get_lowest_surface_height(double thresh=2.0);
+    int get_number_particles() const;
+    double get_volume_fraction() const;
 
     const std::vector<Particle *> get_particles() const;
 
