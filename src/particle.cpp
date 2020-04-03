@@ -9,6 +9,7 @@ Particle::Particle(double diameter, Vec3 position)
   this->set_position(position);
   this->settled = false;
   this->frictional = false;
+  this->previous_interaction = nullptr;
 }
 
 void Particle::set_diameter(double diameter)
@@ -76,4 +77,14 @@ std::string Particle::repr() const noexcept
   std::stringstream ss;
   ss << "Particle (" << this->diameter << "," << this->position << ")";
   return ss.str();
+}
+
+void Particle::set_previous_interacting(ParticleArrangement *arr) noexcept
+{
+  this->previous_interaction = arr;
+}
+
+ParticleArrangement *Particle::get_previous_interacting() const noexcept
+{
+  return this->previous_interaction;
 }

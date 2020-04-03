@@ -4,6 +4,7 @@
 
 #include "vec.hpp"
 
+class ParticleArrangement;
 class Particle {
 
   private:
@@ -11,6 +12,7 @@ class Particle {
     Vec3 position;
     double diameter, radius;
     bool settled, frictional;
+    ParticleArrangement *previous_interaction;
 
     void set_diameter(double d);
 
@@ -31,6 +33,8 @@ class Particle {
     void set_settled(bool v=true) noexcept;
     bool is_frictional() const noexcept;
     void set_frictional(bool v=true) noexcept;
+    void set_previous_interacting(ParticleArrangement *arr) noexcept;
+    ParticleArrangement *get_previous_interacting() const noexcept;
 
     void add_neighbour(const Particle *) noexcept;
 };
