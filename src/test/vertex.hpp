@@ -23,7 +23,7 @@ class VertexCreationTest : public virtual TestRunner<Vec3, int> {
 
     void run(Vec3 point, int expected_result) override
     {
-      PeriodicBox box(10.0);
+      PeriodicBox box(10.0, 0);
       Particle *p = new Particle(1.0, point);
       box.add_particle(p);
 
@@ -63,7 +63,7 @@ class VertexInteractionTest : public virtual TestRunner<Vec3, bool> {
 
     void run(Vec3 point, bool expected_result) override
     {
-      PeriodicBox box(10.0);
+      PeriodicBox box(10.0, 0);
       Particle *pi = new Particle(1.0, point);
       Vertex vertex(pi, &box);
       box.add_particle(pi);
