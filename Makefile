@@ -1,5 +1,5 @@
 CXX = g++
-CFLAGS = -g -pg -Wall -Wextra -Werror -std=c++17 -O0
+CFLAGS = -g -pg -Wall -Wextra -Werror -std=c++17 -O2
 OBJ = \
 			obj/particle.o \
 			obj/box.o \
