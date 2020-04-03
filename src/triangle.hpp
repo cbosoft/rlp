@@ -14,6 +14,7 @@ class Triangle : public virtual ParticleArrangement {
     PeriodicBox *box;
 
     bool trilaterate(double radius, Vec3 &v);
+    int get_closest_particle_index(const Particle *p);
 
   public:
     Triangle(Particle *a, Particle *b, Particle *c, PeriodicBox *box);

@@ -117,24 +117,31 @@ double Line::get_sort_distance(const Particle *p)
 
 double Line::get_max_distance(const Particle *p)
 {
-  double maxdist = this->box->get_effective_separation(p->get_position(), this->particles[0]->get_position()).magnitude();
-  for (size_t i = 1; i < this->particles.size(); i++) {
-    double dist = this->box->get_effective_separation(p->get_position(), this->particles[i]->get_position()).magnitude();
-    if (dist > maxdist)
-      maxdist = dist;
+  (void)p;
+  double total = 0.0;
+  for (size_t i = 0; i < this->particles.size(); i++) {
+    total += this->box->get_effective_separation(this->particles[i]->get_position().restrict<2>(), p->get_position().restrict<2>()).magnitude();
   }
-  return maxdist;
+  return total/double(this->particles.size());
 }
 
 double Line::get_min_distance(const Particle *p)
 {
-  double mindist = this->box->get_effective_separation(p->get_position(), this->particles[0]->get_position()).magnitude();
+  // distance of falling particle to particle closest in xy within arrangement
+
+  Vec3 position = p->get_position();
+  Vec2 position_xy = position.restrict<2>();
+  Vec3 closest = this->particles[0]->get_position();
+  double min_dist_xy = this->box->get_effective_separation(closest.restrict<2>(), position_xy).magnitude();
   for (size_t i = 1; i < this->particles.size(); i++) {
-    double dist = this->box->get_effective_separation(p->get_position(), this->particles[i]->get_position()).magnitude();
-    if (dist < mindist)
-      mindist = dist;
+    double dist_xy = this->box->get_effective_separation(position_xy, this->particles[i]->get_position().restrict<2>()).magnitude();
+    if (dist_xy < min_dist_xy) {
+      closest = this->particles[i]->get_position();
+      min_dist_xy = dist_xy;
+    }
   }
-  return mindist;
+
+  return this->box->get_effective_separation(closest, position).magnitude();
 }
 
 
