@@ -9,6 +9,8 @@
 void ConfigGenerator::generate_particles(int n)
 {
 
+  this->box.reserve(n);
+
   double generation_duration = -1;
   for (int i = 0; i < n; i++) {
     std::cerr << "(" << generation_duration << ") " << i << " ";

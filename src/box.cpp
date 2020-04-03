@@ -59,3 +59,8 @@ std::list<ParticleArrangement *> PeriodicBox::get_arrangements() const
 {
   return this->arrangements;
 }
+
+void PeriodicBox::reserve(int n)
+{
+  this->particles.reserve(n);
+}

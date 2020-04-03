@@ -31,6 +31,8 @@ class PeriodicBox {
     PeriodicBox(double L, int verbosity=1, const char *log_file_path=nullptr);
     ~PeriodicBox();
 
+    void reserve(int n);
+
     template<int N>
     VecN<N> get_effective_separation(const VecN<N> &a, const VecN<N> &b) const noexcept;
     Vec3 get_effective_separation(const Vec3 &a, const Vec3 &b) const noexcept;
