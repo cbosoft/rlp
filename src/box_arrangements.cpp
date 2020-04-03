@@ -37,11 +37,6 @@ void PeriodicBox::update_arrangements()
 
     //   //this->particles.pop_back();
 
-    double theta = rij.angle_between(Z_AXIS);
-    if ((theta < M_PI_4) or (theta > 3.0*M_PI_4)) {
-      this->log(Formatter() << "Line disallowed: too steep (" << theta << "<" << M_PI_4 << "|" << theta << ">" << (3.0*M_PI_4) << ")\n", 2);
-      continue;
-    }
     //   std::string s = Formatter() << "Particle seperation less than total radii: "
     //       << pi->get_position() << " (" << pi->get_radius() << ") and "
     //       << pj->get_position() << " (" << pj->get_radius() << "): "
@@ -49,6 +44,12 @@ void PeriodicBox::update_arrangements()
     //       << dist_ij << " < " << (pi->get_radius() + pj->get_radius()) << ".";
     //   this->log(s, 2);
     //   throw IntersectionError(s);
+    // }
+
+    // double theta = rij.angle_between(Z_AXIS);
+    // if ((theta < M_PI_4) or (theta > 3.0*M_PI_4)) {
+    //   this->log(Formatter() << "Line disallowed: too steep (" << theta << "<" << M_PI_4 << "|" << theta << ">" << (3.0*M_PI_4) << ")\n", 3);
+    //   continue;
     // }
 
     this->arrangements.push_back(new Line(pi, pj, this));
@@ -68,10 +69,10 @@ void PeriodicBox::update_arrangements()
       }
 
       double theta = rik.angle_between(Z_AXIS);
-      if ((theta < M_PI_4) or (theta > 3.0*M_PI_4)) {
-        this->log("Triangle disallowed: too steep.\n", 2);
-        continue;
-      }
+      // if ((theta < M_PI_4) or (theta > 3.0*M_PI_4)) {
+      //   this->log("Triangle disallowed: too steep.\n", 3);
+      //   continue;
+      // }
 
       theta = rik.angle_between(rij);
       if (theta > M_PI_2) {
@@ -86,6 +87,7 @@ void PeriodicBox::update_arrangements()
       this->arrangements.push_back(new Triangle(pi, pj, pk, this));
     }
   }
+
 }
 
 
