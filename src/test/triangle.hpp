@@ -107,7 +107,7 @@ class TriangleCreationTest : public virtual TestRunner<std::array<Vec3, 3>, std:
 
     void run(std::array<Vec3, 3> points, std::vector<std::string> expected_result) override
     {
-      PeriodicBox box(10.0);
+      PeriodicBox box(10.0, 0);
       Particle *pi = new Particle(1.0, points[0]),
         *pj = new Particle(1.0, points[1]),
         *pk = new Particle(1.0, points[2]);
@@ -129,8 +129,8 @@ class TriangleCreationTest : public virtual TestRunner<std::array<Vec3, 3>, std:
       }
       else {
         this->fail(Formatter() 
-            << "Unexpected arrangements. Expected " 
-            << this->repr_strvec(expected_result) << ", but got " 
+            << "Unexpected arrangements. Expected "
+            << this->repr_strvec(expected_result) << ", but got "
             << this->repr_strvec(result) << ".");
       }
     }

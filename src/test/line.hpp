@@ -19,7 +19,7 @@ class LineCreationTest : public virtual TestRunner<std::pair<Vec3, Vec3>, int> {
 
     void run(std::pair<Vec3, Vec3> pair, int expected_result) override
     {
-      PeriodicBox box(10.0);
+      PeriodicBox box(10.0, 0);
       Particle *pi = new Particle(1.0, pair.first),
         *pj = new Particle(1.0, pair.second);
       box.add_particle(pi);
@@ -56,9 +56,9 @@ class LineInteractionTest : public virtual TestRunner<std::pair<Vec3, Vec3>, std
 
     void run(std::pair<Vec3, Vec3> pair, std::pair<bool, int> result_pair) override
     {
-      PeriodicBox box(10.0);
       Particle *pi = new Particle(1.0, pair.first),
         *pj = new Particle(1.0, pair.second);
+      PeriodicBox box(10.0, 0);
       Line line(pi, pj, &box);
       box.add_particle(pi);
       box.add_particle(pj);
