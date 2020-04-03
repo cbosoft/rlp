@@ -91,21 +91,23 @@ void PeriodicBox::settle_particle(Particle *p, int n, int recursion_limit)
 
   if (interacting_arrangement->is_final()) {
 
+
     this->check_particle_set_settled(p);
 
-    for (auto arrangement : interacting_arrangements) {
 
-      if (interacting_arrangement == arrangement)
-        continue;
+    // for (auto arrangement : interacting_arrangements) {
 
-      if (interacting_arrangement->covers(arrangement)) {
-        this->arrangements.remove(arrangement);
-        delete arrangement;
-      }
-    }
+    //   if (interacting_arrangement == arrangement)
+    //     continue;
 
-    this->arrangements.remove(interacting_arrangement);
-    delete interacting_arrangement;
+    //   if (interacting_arrangement->covers(arrangement)) {
+    //     this->arrangements.remove(arrangement);
+    //     delete arrangement;
+    //   }
+    // }
+
+    // this->arrangements.remove(interacting_arrangement);
+    // delete interacting_arrangement;
   }
   else {
     this->settle_particle(p, n+1, recursion_limit);
