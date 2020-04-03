@@ -24,6 +24,7 @@ class ParticleArrangement {
     virtual bool covers(ParticleArrangement *arr) =0;
     virtual std::vector<Vec3> get_extents() =0;
     virtual std::string repr() =0;
+    virtual Vec3 get_centre() const =0;
 
     virtual bool is_final() =0;
     virtual std::string get_type() =0;

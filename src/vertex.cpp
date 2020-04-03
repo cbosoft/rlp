@@ -73,3 +73,8 @@ std::string Vertex::repr()
   ss << this->get_type() << "(" << this->particle->get_position() << ")";
   return ss.str();
 }
+
+Vec3 Vertex::get_centre() const
+{
+  return this->particle->get_position();
+}

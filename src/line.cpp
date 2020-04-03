@@ -177,3 +177,13 @@ std::string Line::repr()
     << this->particles[1]->get_position() << ")";
   return ss.str();
 }
+
+Vec3 Line::get_centre() const
+{
+  Vec3 total;
+  for (size_t i = 0; i < this->particles.size(); i++) {
+    total = total + this->particles[i]->get_position();
+  }
+  total = total / double(this->particles.size());
+  return total;
+}

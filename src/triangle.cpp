@@ -223,3 +223,13 @@ int Triangle::get_closest_particle_index(const Particle *p)
 
   return index;
 }
+
+Vec3 Triangle::get_centre() const
+{
+  Vec3 total;
+  for (size_t i = 0; i < this->particles.size(); i++) {
+    total = total + this->particles[i]->get_position();
+  }
+  total = total / double(this->particles.size());
+  return total;
+}
