@@ -9,6 +9,7 @@ class ConfigGenerator {
   private:
 
     PeriodicBox box;
+    int verbosity;
 
   public:
 

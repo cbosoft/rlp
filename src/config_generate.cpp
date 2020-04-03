@@ -14,6 +14,9 @@ void ConfigGenerator::generate_particles(int n)
   double generation_duration = -1;
   for (int i = 0; i < n; i++) {
     std::cerr << "(" << generation_duration << ") " << i << " ";
+    if (this->verbosity < 1) {
+      std::cerr << std::endl;
+    }
     auto before = CLOCK::now();
     this->generate_particle();
     auto after = CLOCK::now();

@@ -5,6 +5,7 @@
 ConfigGenerator::ConfigGenerator(double L, int verbosity)
 {
   this->box = PeriodicBox(L, verbosity);
+  this->verbosity = verbosity;
 }
 
 
