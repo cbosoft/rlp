@@ -6,6 +6,7 @@ OBJ = \
 			obj/box_bounds.o \
 			obj/box_arrangements.o \
 			obj/box_particle.o \
+			obj/box_volume.o \
 			obj/config.o \
 			obj/config_generate.o \
 			obj/vec.o \

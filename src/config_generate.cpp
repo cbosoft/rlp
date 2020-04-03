@@ -40,6 +40,8 @@ void ConfigGenerator::generate_particles(int n, int error_tolerance)
     auto after = CLOCK::now();
     generation_duration = static_cast<double>((after - before).count()) * CLOCK::duration::period::num / CLOCK::duration::period::den;
   }
+
+  std::cerr << BG_BLUE << this->box.get_volume_fraction() << RESET << std::endl;
 }
 
 void ConfigGenerator::generate_particle()
