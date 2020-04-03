@@ -70,3 +70,10 @@ void Particle::add_neighbour(const Particle *p) noexcept
 {
   this->neighbours.push_back(p);
 }
+
+std::string Particle::repr() const noexcept
+{
+  std::stringstream ss;
+  ss << "Particle (" << this->diameter << "," << this->position << ")";
+  return ss.str();
+}
