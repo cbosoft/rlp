@@ -88,6 +88,7 @@ void PeriodicBox::settle_particle(Particle *p, int n, int recursion_limit)
   Vec3 new_position = interacting_arrangement->get_interaction_result(p);
   new_position = this->get_effective_position(new_position);
   p->set_position(new_position);
+  p->set_previous_interacting(interacting_arrangement);
 
   if (interacting_arrangement->is_final()) {
 
