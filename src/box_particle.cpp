@@ -2,20 +2,31 @@
 
 #include "box.hpp"
 #include "exception.hpp"
+#include "random.hpp"
 
 void PeriodicBox::add_particle(Particle *p)
 {
+
   this->settle_particle(p);
 
-  // TODO check OOB
-  // TODO check intersection
+  if (p->is_settled()) {
+    this->particles.push_back(p);
+    this->update_arrangements();
 
-  if (not p->is_settled()) {
-    throw SettleError("Particle settle failed.");
+    ParticleArrangement *arr = (*select_randomly<>(this->arrangements.begin(), this->arrangements.end())); //(*std::max_element(this->arrangements.begin(), this->arrangements.end(), ArrangementByComplexityComparator()));
+    Vec3 arr_centre = arr->get_centre();
+    std::cerr << arr->repr() << " centre " << arr_centre << std::endl;
+    arr_centre.set(2, 10.0);
+    this->add_particle(new Particle(1.0, arr_centre));
+
+
+  }
+  else {
+    delete p;
   }
 
-  this->particles.push_back(p);
-  this->update_arrangements();
+
+}
 
 void PeriodicBox::check_particle_set_settled(Particle *p)
 {
