@@ -50,13 +50,13 @@ void PeriodicBox::check_particle_set_settled(Particle *p)
   }
   else {
     this->log(BG_RED "INTERSECTED" RESET "\n");
-  }
-    this->arrangements.remove(p->get_previous_interacting());
-    delete p->get_previous_interacting();
-    p->set_previous_interacting(nullptr);
-  }
-  else {
-    p->set_settled();
+
+    auto parr = p->get_previous_interacting();
+    if ((parr != nullptr) and (parr->get_complexity() == 3)) {
+      this->arrangements.remove(p->get_previous_interacting());
+      delete p->get_previous_interacting();
+      p->set_previous_interacting(nullptr);
+    }
   }
 }
 
