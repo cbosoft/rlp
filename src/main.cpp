@@ -74,4 +74,6 @@ int main(int argc, const char **argv)
       cg.output_configuration(args.output_path);
     throw e;
   }
+
+  cg.output_configuration(args.output_path);
 }
