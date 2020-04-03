@@ -6,9 +6,10 @@ from matplotlib import pyplot as plt
 
 class Particle:
 
-    def __init__(self, d, x, y, z):
+    def __init__(self, d, x, y, z, i):
         self.diameter = d
         self.position = np.array([x, y, z], dtype=np.float64)
+        self.i = i
 
 def read_csv(path):
     with open(path) as csvf:
@@ -18,7 +19,7 @@ def read_csv(path):
     particles = list()
     for line in lines[1:]:
         data = (float(v) for v in line.split(','))
-        particles.append(Particle(*data))
+        particles.append(Particle(*data, len(particles)))
     return L, particles
 
 
@@ -31,7 +32,8 @@ if __name__ == "__main__":
     assert len(args) == 2
 
     L, particles = read_csv(args[0])
-    print(len(particles))
+    last = len(particles)-1
+    print(last)
 
     fig, axes = plt.subplots(nrows=3)
     cmap = cm.get_cmap('viridis', 12)
@@ -44,6 +46,9 @@ if __name__ == "__main__":
         for particle in particles:
             xy = list(particle.position)
             z = xy.pop(i)
-            ax.add_patch(plt.Circle(xy, particle.diameter/2.0, ec='black', fc=cmap(z/L)))
+            c = cmap(z/L)
+            if particle.i == last:
+                c= 'magenta'
+            ax.add_patch(plt.Circle(xy, particle.diameter/2.0, ec='black', fc=c))
     plt.savefig(args[1])
 
