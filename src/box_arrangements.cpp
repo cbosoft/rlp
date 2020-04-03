@@ -12,6 +12,17 @@
 
 void PeriodicBox::update_arrangements()
 {
+
+  // first remove arrangements which are now blocked
+  // double lowest_surface_height = this->get_lowest_surface_height();
+  // for (auto it = this->arrangements.begin(); it != this->arrangements.end(); it++) {
+  //   ParticleArrangement *arrangement = (*it);
+  //   if (arrangement->get_z_position() <= lowest_surface_height)
+  //     this->arrangements.erase(it++);
+  // }
+  
+
+
   int N = this->particles.size();
   Particle *pi = this->particles[N-1];
 
