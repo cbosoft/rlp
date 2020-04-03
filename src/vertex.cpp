@@ -23,8 +23,11 @@ bool Vertex::check_interacts_with(const Particle *p)
 
 Vec3 Vertex::get_interaction_result(const Particle *p)
 {
-  Vec2 dr_unit = (this->box->get_effective_separation(this->particle->get_position().restrict<2>(), p->get_position().restrict<2>())).unit();
-  return (dr_unit * (this->particle->get_radius() + p->get_radius())).promote<3>(this->particle->get_position().get(2)) ;
+  Vec2 dr = (p->get_position().restrict<2>() - this->particle->get_position().restrict<2>());
+  Vec2 dr_unit = dr.unit();
+  Vec3 result_dr = (dr_unit * (this->particle->get_radius() + p->get_radius())).promote<3>(this->particle->get_position().get(2));
+  Vec3 rv = result_dr + p->get_position();
+  return this->box->get_effective_position(rv);
 }
 
 
