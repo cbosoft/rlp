@@ -30,7 +30,7 @@ void PeriodicBox::update_arrangements()
       pj->add_neighbour(pi);
     }
     else if (dist_ij > (pi->get_radius() + pj->get_radius() + 1.0)) {
-      this->log("Line disallowed: too wide.\n", 2);
+      this->log("Line disallowed: too wide.\n", 3);
       continue;
     }
     else if (dist_ij < (pi->get_radius() + pj->get_radius())) {
@@ -55,13 +55,13 @@ void PeriodicBox::update_arrangements()
       Particle *pk = this->particles[k];
       Vec3 rik = this->get_effective_separation(pi->get_position(), pk->get_position());
       if (rik.magnitude() > (pi->get_radius() + pj->get_radius() + 1.0)) {
-        this->log("Triangle disallowed: too wide.\n", 2);
+        this->log("Triangle disallowed: too wide.\n", 3);
         continue;
       }
 
       Vec3 rjk = this->get_effective_separation(pj->get_position(), pk->get_position());
       if (rjk.magnitude() > (pj->get_radius() + pj->get_radius() + 1.0)) {
-        this->log("Triangle disallowed: too wide.\n", 2);
+        this->log("Triangle disallowed: too wide.\n", 3);
         continue;
       }
 
@@ -73,11 +73,11 @@ void PeriodicBox::update_arrangements()
 
       theta = rik.angle_between(rij);
       if (theta > M_PI_2) {
-        this->log("Triangle disallowed: reflex.\n", 2);
+        this->log(Formatter() << "Triangle disallowed: reflex (" << theta << ").\n", 3);
         continue;
       }
       else if (theta < (M_PI*0.1)) {
-        this->log("Triangle disallowed: ~parallel.\n", 2);
+        this->log("Triangle disallowed: ~parallel.\n", 3);
         continue;
       }
 
