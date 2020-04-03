@@ -42,6 +42,7 @@ void ConfigGenerator::generate_particles(int n, int error_tolerance)
   }
 
   std::cerr << BG_BLUE << this->box.get_volume_fraction() << RESET << std::endl;
+  std::cerr << BG_BLUE << this->box.get_lowest_surface_height() << RESET << std::endl;
 }
 
 void ConfigGenerator::generate_particle()
