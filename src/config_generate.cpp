@@ -25,6 +25,9 @@ void ConfigGenerator::generate_particles(int n, int error_tolerance)
     try {
       this->generate_particle();
     }
+    catch (const SettleError& e) {
+      i--;
+    }
     catch (const Exception& e) {
 
       if ( (error_tolerance < 0) or (errors < error_tolerance) ) {
