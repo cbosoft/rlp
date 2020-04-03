@@ -14,7 +14,8 @@ void ConfigGenerator::generate_particles(int n, int error_tolerance)
 
   int errors = 0;
   double generation_duration = -1;
-  for (int i = 0; i < n; i++) {
+  int i = 0;
+  while ((i = this->box.get_number_particles()) < n) {
     std::cerr << BG_BLUE "(" << generation_duration << ") (" << errors << "/" << error_tolerance << ") ("  << this->box.get_number_particles() << ") (" << i << ")" RESET " ";
     if (this->verbosity < 1) {
       std::cerr << std::endl;
@@ -26,12 +27,11 @@ void ConfigGenerator::generate_particles(int n, int error_tolerance)
       this->generate_particle();
     }
     catch (const SettleError& e) {
-      i--;
+      // do nothing
     }
     catch (const Exception& e) {
 
       if ( (error_tolerance < 0) or (errors < error_tolerance) ) {
-        i--;
         errors ++;
       }
       else {
