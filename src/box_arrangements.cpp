@@ -33,21 +33,23 @@ void PeriodicBox::update_arrangements()
       this->log("Line disallowed: too wide.\n", 3);
       continue;
     }
-    else if (dist_ij < (pi->get_radius() + pj->get_radius())) {
+    // else if (dist_ij < (pi->get_radius() + pj->get_radius())) {
 
-      this->particles.pop_back();
-
-      throw IntersectionError(Formatter() << "Particle seperation less than total radii: "
-          << pi->get_position() << " (" << pi->get_radius() << ") and "
-          << pj->get_position() << " (" << pj->get_radius() << "): "
-          << dist_ij << "<" << (pi->get_radius() + pj->get_radius()) << ".");
-    }
+    //   //this->particles.pop_back();
 
     double theta = rij.angle_between(Z_AXIS);
     if ((theta < M_PI_4) or (theta > 3.0*M_PI_4)) {
       this->log(Formatter() << "Line disallowed: too steep (" << theta << "<" << M_PI_4 << "|" << theta << ">" << (3.0*M_PI_4) << ")\n", 2);
       continue;
     }
+    //   std::string s = Formatter() << "Particle seperation less than total radii: "
+    //       << pi->get_position() << " (" << pi->get_radius() << ") and "
+    //       << pj->get_position() << " (" << pj->get_radius() << "): "
+    //       << (pi->get_position() - pj->get_position()).magnitude() << " "
+    //       << dist_ij << " < " << (pi->get_radius() + pj->get_radius()) << ".";
+    //   this->log(s, 2);
+    //   throw IntersectionError(s);
+    // }
 
     this->arrangements.push_back(new Line(pi, pj, this));
 
