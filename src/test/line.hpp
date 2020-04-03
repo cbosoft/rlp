@@ -1,6 +1,7 @@
 #include "test.hpp"
 #include "../line.hpp"
 #include "../vec.hpp"
+#include "../random.hpp"
 
 class LineCreationTest : public virtual TestRunner<std::pair<Vec3, Vec3>, int> {
 
@@ -39,7 +40,7 @@ class LineCreationTest : public virtual TestRunner<std::pair<Vec3, Vec3>, int> {
 };
 
 
-class LineInteractionTest : public virtual TestRunner<std::pair<Vec3, Vec3>, std::pair<bool, int>> {
+class LineInteractionTest : public virtual TestRunner<Vec3, Vec3> {
 
   public:
     
@@ -47,45 +48,48 @@ class LineInteractionTest : public virtual TestRunner<std::pair<Vec3, Vec3>, std
       : TestRunner(counter, "Line test (interaction)")
     {
       this->input_data = {
-        std::make_pair(Vec3({4.5, 5.0, 0.0}), Vec3({5.5, 5.0, 0.0}))
+        Vec3({5.0, 5.1, 10.0}),
+        Vec3({5.0, 4.9, 10.0}),
+        Vec3({5.0, 5.0, 10.0}) // this lands exactly on the line, it should handle it and shoogle the point randomly (it ends up going down, the seed is set in test)
       };
       this->expected_results = {
-        std::make_pair(true, 3)
+        Vec3({5.0, 5.8660254037844383745, 0.0}),
+        Vec3({5.0, 4.1339745962155616255, 0.0}),
+        Vec3({5.0, 4.1339745962155616255, 0.0})
       };
     }
 
-    void run(std::pair<Vec3, Vec3> pair, std::pair<bool, int> result_pair) override
+    void run(Vec3 point, Vec3 expected_result) override
     {
-      Particle *pi = new Particle(1.0, pair.first),
-        *pj = new Particle(1.0, pair.second);
       PeriodicBox box(10.0, 0);
+      Particle *pi = new Particle(1.0, Vec3({4.5, 5.0, 0.0})),
+        *pj = new Particle(1.0, Vec3({5.5, 5.0, 0.0}));
       Line line(pi, pj, &box);
       box.add_particle(pi);
       box.add_particle(pj);
 
-      if (box.get_number_arrangements() != result_pair.second)
-        this->fail(Formatter() << "Incorrect number of arrangments. Got " << box.get_number_arrangements() << ", expected " << result_pair.second << ".");
+      seed(1);
 
-      Particle *pk = new Particle(1.0, Vec3({5.0, 5.0, 10.0}));
-      bool result = line.check_interacts_with(pk);
-      bool expected_result = result_pair.first;
-      std::string n = expected_result ? "" : "n't", 
-        nn = expected_result ? "n't" : "";
+      if (box.get_number_arrangements() != 3)
+        this->fail(Formatter() << "Incorrect number of arrangments. Got " << box.get_number_arrangements() << ", expected 3.");
+
+      Particle *pk = new Particle(1.0, point);
+      bool interacts = line.check_interacts_with(pk);
+      if (!interacts) {
+        this->fail(Formatter() 
+            << "Particle " << pk->get_position() 
+            << " should interact with Line " << line.repr() << ", but didn't.");
+      }
+
+      box.add_particle(pk);
+      Vec3 result = pk->get_position();
 
       if (result == expected_result) {
         this->pass();
       }
       else {
-        Vec3 ri = pi->get_position();
-        Vec3 rj = pj->get_position();
-        Vec3 rij = box.get_effective_separation(ri, rj);
-        std::cerr << rij.magnitude2() << std::endl;
-        this->fail(Formatter() 
-            << "Particle " << pj->get_position() 
-            << " should" << n << " interact with Line " << pi->get_position() << "--" << pj->get_position() << ", but did" << nn << ".");
+        this->fail(Formatter() << "Particle's final position was not " << expected_result << " as expected, but was " << result << ".");
       }
-
-      delete pk;
 
     }
 };
