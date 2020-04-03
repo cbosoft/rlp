@@ -3,6 +3,7 @@
 #include "vertex.hpp"
 #include "line.hpp"
 #include "triangle.hpp"
+#include "multi.hpp"
 
 void run_tests()
 {
@@ -26,6 +27,9 @@ void run_tests()
   // triangle tests
   TriangleTrilaterationTest(counter).run_each();
   TriangleCreationTest(counter).run_each();
+
+  // multi
+  MultiInteractionTest(counter).run_each();
 
   if (counter)
     throw TestError(Formatter() << counter << " tests failed!");
