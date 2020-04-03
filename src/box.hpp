@@ -19,6 +19,7 @@ class PeriodicBox {
     double lowest_surface_height;
     Logger logger;
 
+    void check_particle_set_settled(Particle *p);
     void clear_particles();
     void clear_arrangements();
     void settle_particle(Particle *p, int n=0, int recursion_limit=100);

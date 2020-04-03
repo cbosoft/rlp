@@ -17,6 +17,30 @@ void PeriodicBox::add_particle(Particle *p)
   this->particles.push_back(p);
   this->update_arrangements();
 
+void PeriodicBox::check_particle_set_settled(Particle *p)
+{
+  Vec3 position = p->get_position();
+  bool intersected = false;
+  for (auto it = this->particles.rbegin(); it != this->particles.rend(); it++) {
+    auto particle = *it;
+
+    Vec3 dr = this->get_effective_separation(position, particle->get_position());
+    double dist = dr.magnitude();
+    if (dist < (particle->get_radius() + p->get_radius()))  {
+      intersected = true;
+      break;
+    }
+
+  }
+
+  if (intersected) {
+    this->arrangements.remove(p->get_previous_interacting());
+    delete p->get_previous_interacting();
+    p->set_previous_interacting(nullptr);
+  }
+  else {
+    p->set_settled();
+  }
 }
 
 
@@ -36,7 +60,7 @@ void PeriodicBox::settle_particle(Particle *p, int n, int recursion_limit)
 
   if (interacting_arrangements.size() == 0) {
     p->set_z(0.0);
-    p->set_settled();
+    this->check_particle_set_settled(p);
     this->log(Formatter() << p->get_position() << "(FLOOR)!\n");
     return;
   }
@@ -50,8 +74,9 @@ void PeriodicBox::settle_particle(Particle *p, int n, int recursion_limit)
   p->set_position(new_position);
 
   if (interacting_arrangement->is_final()) {
+
+    this->check_particle_set_settled(p);
     this->log(Formatter() << p->get_position() << "!\n");
-    p->set_settled();
 
     for (auto arrangement : interacting_arrangements) {
 
