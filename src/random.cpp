@@ -2,6 +2,11 @@
 
 static std::mt19937 e;
 
+void seed(int i)
+{
+  seed(std::seed_seq{i});
+}
+
 void seed(std::seed_seq s)
 {
   e = std::mt19937(s);
