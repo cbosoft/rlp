@@ -14,6 +14,7 @@ int main(int argc, const char **argv)
     // double mean;
     // double std;
     int verbosity;
+    int error_tolerance;
     bool run_tests;
     bool output_on_error;
   } args = {
@@ -23,6 +24,7 @@ int main(int argc, const char **argv)
     // .mean = 1.0,
     // .std = 0.0,
     .verbosity = 1,
+    .error_tolerance = 0,
     .run_tests = true,
     .output_on_error = false
   };
@@ -50,6 +52,12 @@ int main(int argc, const char **argv)
     // else if (EITHER("-s", "--std")) {
     //   args.std = atof(argv[++i]);
     // }
+    else if (strcmp("--error-tolerance", argv[i]) == 0) {
+      args.error_tolerance = atoi(argv[++i]);
+    }
+    else if (strcmp("--infinitely-tolerate-errors", argv[i]) == 0) {
+      args.error_tolerance = -1;
+    }
     else if (strcmp("--dont-run-tests", argv[i]) == 0) {
       args.run_tests = false;
     }
@@ -67,7 +75,7 @@ int main(int argc, const char **argv)
   ConfigGenerator cg = ConfigGenerator(args.length, args.verbosity);
 
   try {
-    cg.generate_particles(args.number);
+    cg.generate_particles(args.number, args.error_tolerance);
   }
   catch (const Exception &e) {
     if (args.output_on_error)

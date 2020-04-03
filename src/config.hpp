@@ -15,7 +15,7 @@ class ConfigGenerator {
 
     ConfigGenerator(double L, int verbosity);
 
-    void generate_particles(int n);
+    void generate_particles(int n, int error_tolerance);
     void generate_particle();
     void output_configuration(std::string filepath);
 
