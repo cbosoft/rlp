@@ -30,8 +30,8 @@ void PeriodicBox::add_particle(Particle *p)
 
 void PeriodicBox::check_particle_set_settled(Particle *p)
 {
-  Vec3 position = p->get_position();
   bool intersected = false;
+  Vec3 position = p->get_position();
   for (auto it = this->particles.rbegin(); it != this->particles.rend(); it++) {
     auto particle = *it;
 
@@ -44,7 +44,13 @@ void PeriodicBox::check_particle_set_settled(Particle *p)
 
   }
 
-  if (intersected) {
+  if (!intersected) {
+    p->set_settled();
+    this->log(Formatter() << p->get_position() << FG_GREEN "SETTLED!" RESET "\n");
+  }
+  else {
+    this->log(BG_RED "INTERSECTED" RESET "\n");
+  }
     this->arrangements.remove(p->get_previous_interacting());
     delete p->get_previous_interacting();
     p->set_previous_interacting(nullptr);
@@ -72,7 +78,6 @@ void PeriodicBox::settle_particle(Particle *p, int n, int recursion_limit)
   if (interacting_arrangements.size() == 0) {
     p->set_z(0.0);
     this->check_particle_set_settled(p);
-    this->log(Formatter() << p->get_position() << "(FLOOR)!\n");
     return;
   }
 
@@ -87,7 +92,6 @@ void PeriodicBox::settle_particle(Particle *p, int n, int recursion_limit)
   if (interacting_arrangement->is_final()) {
 
     this->check_particle_set_settled(p);
-    this->log(Formatter() << p->get_position() << "!\n");
 
     for (auto arrangement : interacting_arrangements) {
 
