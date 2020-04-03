@@ -19,13 +19,15 @@ class ParticleArrangement {
     virtual Vec3 get_interaction_result(const Particle *p) =0;
     virtual double get_sort_distance(const Particle *p) =0;
     virtual double get_z_position() =0;
+    virtual double get_max_distance(const Particle *p) =0;
+    virtual double get_min_distance(const Particle *p) =0;
     virtual bool covers(ParticleArrangement *arr) =0;
     virtual std::vector<Vec3> get_extents() =0;
     virtual std::string repr() =0;
 
-
     virtual bool is_final() =0;
     virtual std::string get_type() =0;
+    virtual int get_complexity() = 0;
 };
 
 
@@ -33,11 +35,11 @@ class ArrangementComparator {
 
   private:
 
-    Particle *p;
+    const Particle *p;
 
   public:
 
-    ArrangementComparator(Particle *p)
+    ArrangementComparator(const Particle *p)
     {
       this->p = p;
     }
@@ -45,6 +47,66 @@ class ArrangementComparator {
     bool operator()(ParticleArrangement *l, ParticleArrangement *r)
     {
       return l->get_sort_distance(this->p) < r->get_sort_distance(this->p);
+    }
+
+};
+
+class ArrangementByComplexityComparator {
+
+  public:
+
+    bool operator()(ParticleArrangement *l, ParticleArrangement *r)
+    {
+      return l->get_complexity() < r->get_complexity();
+    }
+};
+
+class ArrangementByZPositionComparator {
+
+  public:
+
+    bool operator()(ParticleArrangement *l, ParticleArrangement *r)
+    {
+      return l->get_z_position() < r->get_z_position();
+    }
+};
+
+class ArrangementByMaxDistanceComparator {
+
+  private:
+
+    const Particle *p;
+
+  public:
+
+    ArrangementByMaxDistanceComparator(const Particle *p)
+    {
+      this->p = p;
+    }
+
+    bool operator()(ParticleArrangement *l, ParticleArrangement *r)
+    {
+      return l->get_max_distance(this->p) < r->get_max_distance(this->p);
+    }
+
+};
+
+class ArrangementByMinDistanceComparator {
+
+  private:
+
+    const Particle *p;
+
+  public:
+
+    ArrangementByMinDistanceComparator(const Particle *p)
+    {
+      this->p = p;
+    }
+
+    bool operator()(ParticleArrangement *l, ParticleArrangement *r)
+    {
+      return l->get_min_distance(this->p) < r->get_min_distance(this->p);
     }
 
 };

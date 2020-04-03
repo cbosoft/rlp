@@ -95,20 +95,46 @@ start:
   double h1 = this->particles[0]->get_position().get(2);
   double h2 = this->particles[2]->get_position().get(2);
 
-  return S.promote<3>( (h1>h2)?h2:h1);
+  return S.promote<3>( (h1>h2) ? h2 : h1 );
 }
 
 
 double Line::get_sort_distance(const Particle *p)
 {
   double mindist = this->box->get_effective_separation(p->get_position(), this->particles[0]->get_position()).magnitude();
+  double maxdist = mindist;
   for (size_t i = 1; i < this->particles.size(); i++) {
     // no PBC (abs distance only)
     double dist = this->box->get_effective_separation(p->get_position(), this->particles[i]->get_position()).magnitude();
     if (dist < mindist)
       mindist = dist;
+    if (dist > maxdist)
+      maxdist = dist;
   }
-  return mindist*100.0 + 0.0;
+  return mindist*100.0 + maxdist + 1.0;
+}
+
+
+double Line::get_max_distance(const Particle *p)
+{
+  double maxdist = this->box->get_effective_separation(p->get_position(), this->particles[0]->get_position()).magnitude();
+  for (size_t i = 1; i < this->particles.size(); i++) {
+    double dist = this->box->get_effective_separation(p->get_position(), this->particles[i]->get_position()).magnitude();
+    if (dist > maxdist)
+      maxdist = dist;
+  }
+  return maxdist;
+}
+
+double Line::get_min_distance(const Particle *p)
+{
+  double mindist = this->box->get_effective_separation(p->get_position(), this->particles[0]->get_position()).magnitude();
+  for (size_t i = 1; i < this->particles.size(); i++) {
+    double dist = this->box->get_effective_separation(p->get_position(), this->particles[i]->get_position()).magnitude();
+    if (dist < mindist)
+      mindist = dist;
+  }
+  return mindist;
 }
 
 

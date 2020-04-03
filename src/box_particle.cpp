@@ -41,10 +41,7 @@ void PeriodicBox::settle_particle(Particle *p, int n, int recursion_limit)
     return;
   }
 
-  ArrangementComparator comparator(p);
-  interacting_arrangements.sort(comparator);
-
-  ParticleArrangement *interacting_arrangement = interacting_arrangements.front();
+  ParticleArrangement *interacting_arrangement = this->sort_and_filter_arrangements(interacting_arrangements, p);
 
   this->log(Formatter() << interacting_arrangement->repr() << "->");
 

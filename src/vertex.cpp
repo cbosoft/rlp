@@ -33,10 +33,24 @@ Vec3 Vertex::get_interaction_result(const Particle *p)
 
 double Vertex::get_sort_distance(const Particle *p)
 {
-  // don't take PBCinto account: need abs distance
   double dp = this->box->get_effective_separation(p->get_position(), this->particle->get_position()).magnitude();
-  return dp * 100.0 + 3.0;
+  return dp * 101.0 + 3.0;
 }
+
+
+double Vertex::get_max_distance(const Particle *p)
+{
+  double dp = this->box->get_effective_separation(p->get_position(), this->particle->get_position()).magnitude();
+  return dp;
+}
+
+
+double Vertex::get_min_distance(const Particle *p)
+{
+  double dp = this->box->get_effective_separation(p->get_position(), this->particle->get_position()).magnitude();
+  return dp;
+}
+
 
 double Vertex::get_z_position()
 {
@@ -44,6 +58,7 @@ double Vertex::get_z_position()
   // heights
   return this->particle->get_position().get(2);
 }
+
 
 std::vector<Vec3> Vertex::get_extents()
 {

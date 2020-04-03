@@ -22,6 +22,7 @@ class PeriodicBox {
     void clear_arrangements();
     void settle_particle(Particle *p, int n=0, int recursion_limit=100);
     void update_arrangements();
+    ParticleArrangement *sort_and_filter_arrangements(std::list<ParticleArrangement *> &arrangements, const Particle *particle) const;
 
     double get_volume_particle(const Particle *p, std::array<std::array<double, 2>, 3> limits) const;
 

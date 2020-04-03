@@ -11,12 +11,22 @@ Triangle::Triangle(Particle *a, Particle *b, Particle *c, PeriodicBox *box)
   // TODO precompute distances
   for (size_t i = 0; i < this->particles.size(); i++) {
     Particle *pi = this->particles[i];
-    int j = i+1 >= this->particles.size() ? 0 : i+1;
-    Particle *pj = this->particles[j];
     Vec2 ipos = pi->get_position().restrict<2>();
+    
+    int j = (i+1)%3;
+    Particle *pj = this->particles[j];
     Vec2 jpos = pj->get_position().restrict<2>();
-    double d_comp = this->box->get_effective_separation(ipos, jpos).magnitude();
-    this->edge_distances[i] = d_comp;
+
+    int k = (i+2)%3;
+    Particle *pk = this->particles[k];
+    Vec2 kpos = pk->get_position().restrict<2>();
+
+    Vec2 r_ij = this->box->get_effective_separation(jpos, ipos);
+    Vec2 r_ik = this->box->get_effective_separation(kpos, ipos);
+
+    this->edges[i] = r_ij;
+    this->edge_distances[i] = this->edges[i].magnitude();
+    this->internal_angles[i] = r_ij.angle_between(r_ik);
   }
 }
 
@@ -29,16 +39,23 @@ bool Triangle::check_interacts_with(const Particle *p)
   for (size_t i = 0; i < this->particles.size(); i++) {
     Particle *pi = this->particles[i];
 
-    if (ppos3.get(2) < pi->get_position().get(2))
+    if (ppos3.get(2) < pi->get_position().get(2)) {
       return false;
+    }
 
     Vec2 ipos = pi->get_position().restrict<2>();
+    Vec2 r_ip = this->box->get_effective_separation(ppos, ipos);
 
-    double d = this->box->get_effective_separation(ppos, ipos).magnitude();
+    double d = r_ip.magnitude();
     if (d < this->particles[i]->get_radius() + p->get_radius())
       close_enough ++;
 
-    if (d > edge_distances[i])
+    // if (d > edge_distances[i]) {
+    //   return false;
+    // }
+    
+    double theta = r_ip.angle_between(this->edges[i]);
+    if (theta > this->internal_angles[i])
       return false;
 
 
@@ -66,13 +83,38 @@ Vec3 Triangle::get_interaction_result(const Particle *p)
 double Triangle::get_sort_distance(const Particle *p)
 {
   double mindist = this->box->get_effective_separation(p->get_position(), this->particles[0]->get_position()).magnitude();
+  double maxdist = mindist;
   for (size_t i = 1; i < this->particles.size(); i++) {
     // no PBC (abs distance only)
     double dist = this->box->get_effective_separation(p->get_position(), this->particles[i]->get_position()).magnitude();
     if (dist < mindist)
       mindist = dist;
+    if (dist > maxdist)
+      maxdist = dist;
   }
-  return mindist*100.0 + 0.0;
+  return mindist*100.0 + maxdist + 0.0;
+}
+
+double Triangle::get_max_distance(const Particle *p)
+{
+  double maxdist = this->box->get_effective_separation(p->get_position(), this->particles[0]->get_position()).magnitude();
+  for (size_t i = 1; i < this->particles.size(); i++) {
+    double dist = this->box->get_effective_separation(p->get_position(), this->particles[i]->get_position()).magnitude();
+    if (dist > maxdist)
+      maxdist = dist;
+  }
+  return maxdist;
+}
+
+double Triangle::get_min_distance(const Particle *p)
+{
+  double mindist = this->box->get_effective_separation(p->get_position(), this->particles[0]->get_position()).magnitude();
+  for (size_t i = 1; i < this->particles.size(); i++) {
+    double dist = this->box->get_effective_separation(p->get_position(), this->particles[i]->get_position()).magnitude();
+    if (dist < mindist)
+      mindist = dist;
+  }
+  return mindist;
 }
 
 

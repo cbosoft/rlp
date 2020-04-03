@@ -1,4 +1,5 @@
 #include <cmath>
+#include <algorithm>
 
 #include "coords.hpp"
 #include "box.hpp"
@@ -83,4 +84,32 @@ void PeriodicBox::update_arrangements()
       this->arrangements.push_back(new Triangle(pi, pj, pk, this));
     }
   }
+}
+
+
+ParticleArrangement *PeriodicBox::sort_and_filter_arrangements(std::list<ParticleArrangement *> &arrangements, const Particle *p) const
+{
+  // Filter by closest.
+  ParticleArrangement *mindist = (*std::min_element(arrangements.begin(), arrangements.end(), ArrangementByMinDistanceComparator(p)));
+  double mindist_value = mindist->get_min_distance(p);
+  std::list<ParticleArrangement *> arrangements_mindist;
+  for (auto arrangement : arrangements) {
+    if (arrangement->get_min_distance(p) == mindist_value) {
+      arrangements_mindist.push_back(arrangement);
+    }
+  }
+
+  // Filter for most complex.
+  ParticleArrangement *maxcomplexity = (*std::max_element(arrangements_mindist.begin(), arrangements_mindist.end(), ArrangementByComplexityComparator()));
+  int max_complexity = maxcomplexity->get_complexity();
+  std::list<ParticleArrangement *> arrangements_maxcomplexity;
+  for (auto arrangement : arrangements_mindist) {
+    if (arrangement->get_complexity() == max_complexity) {
+      arrangements_maxcomplexity.push_back(arrangement);
+    }
+  }
+
+  // Finally, filter for closest at extremes.
+  ParticleArrangement *minextremes = (*std::min_element(arrangements_maxcomplexity.begin(), arrangements_maxcomplexity.end(), ArrangementByMaxDistanceComparator(p)));
+  return minextremes;
 }
