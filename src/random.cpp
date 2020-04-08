@@ -23,3 +23,9 @@ double nrand(double mean, double std)
   std::normal_distribution nd(mean, std);
   return nd(e);
 }
+
+int urand(int min, int max)
+{
+  std::uniform_int_distribution uid(min, max);
+  return uid(e);
+}
