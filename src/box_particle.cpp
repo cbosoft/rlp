@@ -117,37 +117,41 @@ void PeriodicBox::settle_particle(Particle *p, int n, int recursion_limit)
 }
 
 
-double PeriodicBox::get_lowest_surface_height(double thresh)
+double PeriodicBox::get_lowest_surface_height(int n) const
 {
 
-  if (this->particles.size() == 0)
-    return -thresh;
+  double dL = this->L / double(n);
+  double **mesh = new double*[n];
+  for (int i = 0; i < n; i++)
+    mesh[i] = new double[n];
 
-  const Particle *lowest_surface_particle = this->particles[0];
-  double lowest_surface_height = lowest_surface_particle->get_position().get(2);
+  for (auto particle : this->particles) {
+    Vec3 v = particle->get_position();
+    double px = v.X();
+    double py = v.Y();
+    double pz = v.Z();
 
-  for (const Particle *p : this->particles) {
-    double pz = p->get_position().get(2);
-    if (p->neighbours.size()) {
-      bool summit = true;
-      for (const Particle *neighbour : p->neighbours) {
-        if (neighbour->get_position().get(2) > pz) {
-          summit = false;
-          break;
-        }
-      }
+    int ix = int(px/dL);
+    int iy = int(py/dL);
 
-      if (!summit)
-        continue;
-    }
+    if ((ix > (n-1)) or (iy > (n-1)))
+      throw MathError("Index error in get_lowest_surface_height");
 
-    if (pz < lowest_surface_height) {
-      lowest_surface_particle = p;
-      lowest_surface_height = pz;
-    }
-
+    if (pz > mesh[ix][iy])
+      mesh[ix][iy] = pz;
   }
 
-  this->lowest_surface_height =  lowest_surface_height - thresh;
-  return this->lowest_surface_height;
+  double lowest = mesh[0][0];
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < n; j++) {
+      if (mesh[i][j] < lowest)
+        lowest = mesh[i][j];
+    }
+  }
+
+  for (int i = 0; i < n; i++)
+    delete mesh[i];
+  delete mesh;
+
+  return lowest;
 }

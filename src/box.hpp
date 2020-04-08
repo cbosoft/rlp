@@ -16,7 +16,6 @@ class PeriodicBox {
     double L, hL, invL;
     std::vector<Particle *> particles;
     std::list<ParticleArrangement *> arrangements;
-    double lowest_surface_height;
     Logger logger;
     bool particles_are_seed;
 
@@ -28,6 +27,7 @@ class PeriodicBox {
     ParticleArrangement *sort_and_filter_arrangements(std::list<ParticleArrangement *> &arrangements, const Particle *particle) const;
 
     double get_volume_particle(const Particle *p, std::array<std::array<double, 2>, 3> limits) const;
+    double get_lowest_surface_height(int n=4) const;
 
   public:
 
@@ -51,7 +51,6 @@ class PeriodicBox {
     void add_particle(Particle *p);
     int get_number_arrangements() const;
     std::list<ParticleArrangement *> get_arrangements() const;
-    double get_lowest_surface_height(double thresh=2.0);
     int get_number_particles() const;
     double get_volume_fraction() const;
 
