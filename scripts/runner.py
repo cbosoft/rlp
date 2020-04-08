@@ -27,7 +27,7 @@ for run_id, (n, l, d, s) in enumerate(product(number, length, dist, seed)):
                     continue
                 else:
                     if rc:
-                        print(run_id_f, 'FAILED :', process.stderr.read().decode())
+                        print(run_id_f, 'FAILED!')
                     else:
                         print(run_id_f, 'FINISHED')
                     done += 1
@@ -43,7 +43,7 @@ for run_id, (n, l, d, s) in enumerate(product(number, length, dist, seed)):
 for run_id, process in processes:
     rc = process.wait()
     if rc:
-        print(run_id, 'FAILED :', process.stderr.read().decode())
+        print(run_id, 'FAILED!')
     else:
         print(run_id, 'FINISHED')
 
