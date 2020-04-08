@@ -7,6 +7,7 @@ ConfigGenerator::ConfigGenerator(double L, int verbosity, bool particles_are_see
   this->box = PeriodicBox(L, verbosity);
   this->verbosity = verbosity;
   this->box.set_particles_are_seed(particles_are_seed);
+  this->sieve = new MonoSieve();
 }
 
 
@@ -21,4 +22,10 @@ void ConfigGenerator::output_configuration(std::string file_path)
   }
 
 
+}
+
+void ConfigGenerator::set_sieve(Sieve *s)
+{
+  delete this->sieve;
+  this->sieve = s;
 }

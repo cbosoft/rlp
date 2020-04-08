@@ -2,6 +2,7 @@
 #include "test/run_tests.hpp"
 #include "exception.hpp"
 #include "random.hpp"
+#include "sieve.hpp"
 
 #define EITHER(A,B) ((strcmp(argv[i], A) == 0) || (strcmp(argv[i], B) == 0))
 
@@ -12,6 +13,7 @@ int main(int argc, const char **argv)
     int number;
     double length;
     const char *output_path;
+    const char *disperse;
     // double mean;
     // double std;
     int seed;
@@ -24,6 +26,7 @@ int main(int argc, const char **argv)
     .number = 100,
     .length = 10.0,
     .output_path = "out.csv",
+    .disperse = "mono",
     // .mean = 1.0,
     // .std = 0.0,
     .seed = 1,
@@ -50,6 +53,9 @@ int main(int argc, const char **argv)
     }
     else if (EITHER("-q", "--quiet")) {
       args.verbosity --;
+    }
+    else if (strcmp(argv[i], "--disperse") == 0) {
+      args.disperse = argv[++i];
     }
     // else if (EITHER("-m", "--mean")) {
     //   args.mean = atof(argv[++i]);
@@ -84,6 +90,20 @@ int main(int argc, const char **argv)
     run_tests();
 
   ConfigGenerator cg = ConfigGenerator(args.length, args.verbosity, args.particles_are_seed);
+
+  if (strcmp(args.disperse, "mono") == 0) {
+    cg.set_sieve(new MonoSieve());
+  }
+  else if (strcmp(args.disperse, "bi") == 0) {
+    cg.set_sieve(new BiSieve());
+  }
+  else if (strcmp(args.disperse, "altbi") == 0) {
+    cg.set_sieve(new AlternatingBiSieve());
+  }
+  else {
+    throw ArgumentError(Formatter() << "Unrecognised dispersion type \"" << args.disperse << "\".");
+  }
+
 
   seed(args.seed);
 

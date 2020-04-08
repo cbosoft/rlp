@@ -29,6 +29,9 @@ void ConfigGenerator::generate_particles(int n, int error_tolerance)
     catch (const SettleError& e) {
       // do nothing
     }
+    catch (const MathError& e) {
+      // also do nothing
+    }
     catch (const Exception& e) {
 
       if ( (error_tolerance < 0) or (errors < error_tolerance) ) {
@@ -50,7 +53,8 @@ void ConfigGenerator::generate_particles(int n, int error_tolerance)
 void ConfigGenerator::generate_particle()
 {
   Vec3 position = vec3_urand(0.0, this->box.get_L());
+  double d = this->sieve->get_size();
   position.set(2, this->box.get_L());
-  Particle *p = new Particle(1.0, position);
+  Particle *p = new Particle(d, position);
   this->box.add_particle(p);
 }
