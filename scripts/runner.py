@@ -7,24 +7,42 @@ number = [300]
 length = [10]
 seed = list(range(10))
 
-monitor = -1
+nthreads = 3
 processes = list()
-for i, (n, l, s) in enumerate(product(number, length, seed)):
+
+done = 0
+for run_id, (n, l, s) in enumerate(product(number, length, seed)):
     output_path = f'data/rlp_{n}_{l}_{s}.csv'
 
     command = f'./rlp --number {n} --length {l} --seed {s} --output-path {output_path}'
-    if i != monitor:
-        command += ' &> /dev/null'
-    print(i, 'STARTED')
+    command += ' &> /dev/null'
+
+    if len(processes) >= nthreads:
+        waiting = True
+        while waiting:
+            for i, (run_id_f, process) in enumerate(processes):
+                rc = process.poll()
+                if rc is None:
+                    continue
+                else:
+                    if rc:
+                        print(run_id_f, 'FAILED :', process.stderr.read().decode())
+                    else:
+                        print(run_id_f, 'FINISHED')
+                    done += 1
+                    processes.pop(i)
+                    waiting = False
+                    break
 
     process = sp.Popen(command, shell=True)
-    processes.append(process)
+    processes.append([run_id, process])
+    print(run_id, 'STARTED')
 
 
-for i, process in enumerate(processes):
+for run_id, process in processes:
     rc = process.wait()
     if rc:
-        print(i, 'FAILED :', process.stderr.read().decode())
+        print(run_id, 'FAILED :', process.stderr.read().decode())
     else:
-        print(i, 'FINISHED')
+        print(run_id, 'FINISHED')
 
