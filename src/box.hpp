@@ -18,6 +18,7 @@ class PeriodicBox {
     std::list<ParticleArrangement *> arrangements;
     double lowest_surface_height;
     Logger logger;
+    bool particles_are_seed;
 
     void check_particle_set_settled(Particle *p);
     void clear_particles();
@@ -55,6 +56,8 @@ class PeriodicBox {
     double get_volume_fraction() const;
 
     const std::vector<Particle *> get_particles() const;
+
+    void set_particles_are_seed(bool value=true);
 
     void log(std::string s) { this->logger.log(s); }
     void log(std::string s, int minimum_verbosity) { this->logger.log(s, minimum_verbosity); }

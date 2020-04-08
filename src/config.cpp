@@ -2,10 +2,11 @@
 
 #include "config.hpp"
 
-ConfigGenerator::ConfigGenerator(double L, int verbosity)
+ConfigGenerator::ConfigGenerator(double L, int verbosity, bool particles_are_seed)
 {
   this->box = PeriodicBox(L, verbosity);
   this->verbosity = verbosity;
+  this->box.set_particles_are_seed(particles_are_seed);
 }
 
 

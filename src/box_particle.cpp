@@ -13,11 +13,12 @@ void PeriodicBox::add_particle(Particle *p)
     this->particles.push_back(p);
     this->update_arrangements();
 
-    ParticleArrangement *arr = (*select_randomly<>(this->arrangements.begin(), this->arrangements.end())); //(*std::max_element(this->arrangements.begin(), this->arrangements.end(), ArrangementByComplexityComparator()));
-    Vec3 arr_centre = arr->get_centre();
-    std::cerr << arr->repr() << " centre " << arr_centre << std::endl;
-    arr_centre.set(2, 10.0);
-    this->add_particle(new Particle(1.0, arr_centre));
+    if (this->particles_are_seed) {
+      ParticleArrangement *arr = (*select_randomly<>(this->arrangements.begin(), this->arrangements.end())); //(*std::max_element(this->arrangements.begin(), this->arrangements.end(), ArrangementByComplexityComparator()));
+      Vec3 arr_centre = arr->get_centre();
+      arr_centre.set(2, 10.0);
+      this->add_particle(new Particle(1.0, arr_centre));
+    }
 
 
   }

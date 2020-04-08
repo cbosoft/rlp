@@ -13,7 +13,7 @@ class ConfigGenerator {
 
   public:
 
-    ConfigGenerator(double L, int verbosity);
+    ConfigGenerator(double L, int verbosity, bool particles_are_seed);
 
     void generate_particles(int n, int error_tolerance);
     void generate_particle();

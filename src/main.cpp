@@ -17,6 +17,7 @@ int main(int argc, const char **argv)
     int error_tolerance;
     bool run_tests;
     bool output_on_error;
+    bool particles_are_seed;
   } args = {
     .number = 100,
     .length = 10.0,
@@ -26,7 +27,8 @@ int main(int argc, const char **argv)
     .verbosity = 1,
     .error_tolerance = 0,
     .run_tests = true,
-    .output_on_error = false
+    .output_on_error = false,
+    .particles_are_seed = false
   };
 
   argc--; argv++;
@@ -58,6 +60,9 @@ int main(int argc, const char **argv)
     else if (strcmp("--infinitely-tolerate-errors", argv[i]) == 0) {
       args.error_tolerance = -1;
     }
+    else if (strcmp("--particles-are-seed", argv[i]) == 0) {
+      args.particles_are_seed = true;
+    }
     else if (strcmp("--dont-run-tests", argv[i]) == 0) {
       args.run_tests = false;
     }
@@ -72,7 +77,7 @@ int main(int argc, const char **argv)
   if (args.run_tests)
     run_tests();
 
-  ConfigGenerator cg = ConfigGenerator(args.length, args.verbosity);
+  ConfigGenerator cg = ConfigGenerator(args.length, args.verbosity, args.particles_are_seed);
 
   try {
     cg.generate_particles(args.number, args.error_tolerance);

@@ -10,6 +10,7 @@ PeriodicBox::PeriodicBox(double L, int verbosity, const char *log_file_path)
   this->lowest_surface_height = 0.0;
   this->logger = Logger(log_file_path, verbosity);
   this->verbosity = verbosity;
+  this->particles_are_seed = false;
 }
 
 
@@ -69,4 +70,9 @@ int PeriodicBox::get_number_particles() const
 void PeriodicBox::reserve(int n)
 {
   this->particles.reserve(n);
+}
+
+void PeriodicBox::set_particles_are_seed(bool value)
+{
+  this->particles_are_seed = value;
 }
