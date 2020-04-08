@@ -22,6 +22,7 @@ int main(int argc, const char **argv)
     bool run_tests;
     bool output_on_error;
     bool particles_are_seed;
+    double friction_thresh;
   } args = {
     .number = 100,
     .length = 10.0,
@@ -34,7 +35,8 @@ int main(int argc, const char **argv)
     .error_tolerance = 0,
     .run_tests = true,
     .output_on_error = false,
-    .particles_are_seed = false
+    .particles_are_seed = false,
+    .friction_thresh = 2.0
   };
 
   argc--; argv++;
@@ -57,6 +59,8 @@ int main(int argc, const char **argv)
     else if (strcmp(argv[i], "--disperse") == 0) {
       args.disperse = argv[++i];
     }
+    else if (EITHER("-f", "--friction-thresh")) {
+      args.friction_thresh = std::atof(argv[++i]);
     // else if (EITHER("-m", "--mean")) {
     //   args.mean = atof(argv[++i]);
     // }
@@ -89,7 +93,7 @@ int main(int argc, const char **argv)
   if (args.run_tests)
     run_tests();
 
-  ConfigGenerator cg = ConfigGenerator(args.length, args.verbosity, args.particles_are_seed);
+  ConfigGenerator cg = ConfigGenerator(args.length, args.verbosity, args.particles_are_seed, args.friction_thresh);
 
   if (strcmp(args.disperse, "mono") == 0) {
     cg.set_sieve(new MonoSieve());

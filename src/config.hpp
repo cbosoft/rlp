@@ -15,7 +15,7 @@ class ConfigGenerator {
 
   public:
 
-    ConfigGenerator(double L, int verbosity, bool particles_are_seed);
+    ConfigGenerator(double L, int verbosity, bool particles_are_seed, double friction_thresh);
 
     void generate_particles(int n, int error_tolerance);
     void generate_particle();
