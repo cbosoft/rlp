@@ -34,7 +34,7 @@ int main(int argc, const char **argv)
     .verbosity = 1,
     .error_tolerance = 0,
     .run_tests = true,
-    .output_on_error = false,
+    .output_on_error = true,
     .particles_are_seed = false,
     .friction_thresh = 2.0
   };
@@ -61,6 +61,7 @@ int main(int argc, const char **argv)
     }
     else if (EITHER("-f", "--friction-thresh")) {
       args.friction_thresh = std::atof(argv[++i]);
+    }
     // else if (EITHER("-m", "--mean")) {
     //   args.mean = atof(argv[++i]);
     // }
@@ -82,8 +83,8 @@ int main(int argc, const char **argv)
     else if (strcmp("--dont-run-tests", argv[i]) == 0) {
       args.run_tests = false;
     }
-    else if (strcmp("--output-on-error", argv[i]) == 0) {
-      args.output_on_error = true;
+    else if (strcmp("--dont-output-on-error", argv[i]) == 0) {
+      args.output_on_error = false;
     }
     else {
       throw ArgumentError(Formatter() << "Unrecognised argument \"" << argv[i] << "\".");
