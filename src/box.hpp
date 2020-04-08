@@ -26,7 +26,7 @@ class PeriodicBox {
     void update_arrangements();
     ParticleArrangement *sort_and_filter_arrangements(std::list<ParticleArrangement *> &arrangements, const Particle *particle) const;
 
-    double get_volume_particle(const Particle *p, std::array<std::array<double, 2>, 3> limits) const;
+    double get_volume_particle(const Particle *p, double bottom, double top) const;
     double get_lowest_surface_height(int n=4) const;
 
   public:
