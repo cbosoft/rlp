@@ -1,6 +1,7 @@
 #include "config.hpp"
 #include "test/run_tests.hpp"
 #include "exception.hpp"
+#include "random.hpp"
 
 #define EITHER(A,B) ((strcmp(argv[i], A) == 0) || (strcmp(argv[i], B) == 0))
 
@@ -13,6 +14,7 @@ int main(int argc, const char **argv)
     const char *output_path;
     // double mean;
     // double std;
+    int seed;
     int verbosity;
     int error_tolerance;
     bool run_tests;
@@ -24,6 +26,7 @@ int main(int argc, const char **argv)
     .output_path = "out.csv",
     // .mean = 1.0,
     // .std = 0.0,
+    .seed = 1,
     .verbosity = 1,
     .error_tolerance = 0,
     .run_tests = true,
@@ -40,7 +43,7 @@ int main(int argc, const char **argv)
       args.length = std::atof(argv[++i]);
     }
     else if (EITHER("-o", "--output-path")) {
-      args.output_path = argv[i];
+      args.output_path = argv[++i];
     }
     else if (EITHER("-v", "--verbose")) {
       args.verbosity ++;
@@ -54,6 +57,9 @@ int main(int argc, const char **argv)
     // else if (EITHER("-s", "--std")) {
     //   args.std = atof(argv[++i]);
     // }
+    else if (strcmp(argv[i], "--seed") == 0) {
+      args.seed = atof(argv[++i]);
+    }
     else if (strcmp("--error-tolerance", argv[i]) == 0) {
       args.error_tolerance = atoi(argv[++i]);
     }
@@ -78,6 +84,8 @@ int main(int argc, const char **argv)
     run_tests();
 
   ConfigGenerator cg = ConfigGenerator(args.length, args.verbosity, args.particles_are_seed);
+
+  seed(args.seed);
 
   try {
     cg.generate_particles(args.number, args.error_tolerance);
