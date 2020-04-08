@@ -15,12 +15,12 @@ def read_csv(path):
     with open(path) as csvf:
         lines = csvf.readlines()
 
-    L = float(lines[0])
+    L, vf = (float(v) for v in lines[0].split(','))
     particles = list()
     for line in lines[1:]:
         data = (float(v) for v in line.split(','))
         particles.append(Particle(*data, len(particles)))
-    return L, particles
+    return L, vf, particles
 
 def dr(p1, p2):
     dr = np.subtract(p1, p2)
@@ -36,9 +36,10 @@ if __name__ == "__main__":
 
     assert len(args) == 2
 
-    L, particles = read_csv(args[0])
-    last = len(particles)-1
-    print(last)
+    L, vf, particles = read_csv(args[0])
+    n = len(particles)
+    last = n-1
+    print(n)
     interested_particle = particles[last]
     interested_position = interested_particle.position
     particles.append(Particle(1.0, 3.07002, 9.87032-10.0, 0, 1000))
@@ -82,5 +83,6 @@ if __name__ == "__main__":
     # x.append(x[0])
     # y.append(y[0])
     # plt.plot(x, y)
+    plt.text(0.5, 0.9, f'Configuration of {n} particles, $\\phi = {vf:.3f}$', transform=fig.transFigure, ha='center', size='xx-large')
     plt.savefig(args[1])
 
