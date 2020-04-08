@@ -6,15 +6,16 @@ import subprocess as sp
 number = [300]
 length = [10]
 seed = list(range(10))
+dist = ['mono', 'bi']
 
 nthreads = 3
 processes = list()
 
 done = 0
-for run_id, (n, l, s) in enumerate(product(number, length, seed)):
-    output_path = f'data/rlp_{n}_{l}_{s}.csv'
+for run_id, (n, l, d, s) in enumerate(product(number, length, dist, seed)):
+    output_path = f'data/rlp_{n}_{l}_{d}_{s}.csv'
 
-    command = f'./rlp --number {n} --length {l} --seed {s} --output-path {output_path}'
+    command = f'./rlp --number {n} --length {l} --seed {s} --output-path {output_path} --disperse {d}'
     command += ' &> /dev/null'
 
     if len(processes) >= nthreads:
