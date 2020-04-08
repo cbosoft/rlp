@@ -80,6 +80,28 @@ Vec3 Triangle::get_interaction_result(const Particle *p)
   throw SettleError(Formatter() << "Particle (r=" << p->get_radius() << ") was asked to settle in triangle that cannot accomodate it (trilateration failed).");
 }
 
+Vec3 Triangle::get_frictional_interaction_result(const Particle *p)
+{
+  double time = 0.0, result_time = 1e9;
+  Vec3 position, result_position;
+ 
+  bool interacts = false;
+  for (auto particle : this->particles) { 
+    bool res = this->get_two_particle_frictional_interaction(p, particle, time, position);
+
+    interacts |= res;
+
+    if (time < result_time)
+      result_position = position;
+
+  }
+
+  if (not interacts)
+    throw IntersectionError("Intersection failed (triangle)");
+
+  return result_position;
+}
+
 double Triangle::get_sort_distance(const Particle *p)
 {
   double mindist = this->box->get_effective_separation(p->get_position(), this->particles[0]->get_position()).magnitude();

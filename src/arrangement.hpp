@@ -8,7 +8,49 @@
 
 class ParticleArrangement {
 
-  private:
+  protected:
+
+    bool get_two_particle_frictional_interaction(const Particle *settling, const Particle *settled, double &time, Vec3 &final_position) const
+    {
+      Vec3 dV = Vec3({0, 0, 1});
+      Vec3 dP = settled->get_position() - settling->get_position();
+      double A = dV.dot(dV);
+      double B = 2.0*dV.dot(dP);
+      double C = dP.dot(dP) - settled->get_radius() - settling->get_radius();
+    
+      double discriminant = (B*B) - (4.0*A*C);
+      if (discriminant > 0.0) {
+        double discriminant_root = std::pow(discriminant, 0.5);
+    
+        double bigsol = (-B + discriminant_root) / (2.0 * A);
+        double lilsol = (-B - discriminant_root) / (2.0 * A);
+        if ((bigsol > 1e-7) or (lilsol > 1e-7)) {
+          // if results are not both approximately zero...
+    
+          if (lilsol < 0.0) {
+            if (bigsol > 0.0) {
+              time = bigsol;
+            }
+          }
+          else {
+            if (bigsol < 0.0) {
+              time = lilsol;
+            }
+            else {
+              time = lilsol;
+              if (bigsol < lilsol) {
+                time = bigsol;
+              }
+            }
+          }
+        }
+
+        final_position = settling->get_position() + (Vec3({0, 0, -1})*time);
+        return true;
+      }
+   
+     return false;
+    }
 
   public:
 
@@ -17,6 +59,7 @@ class ParticleArrangement {
 
     virtual bool check_interacts_with(const Particle *p) =0;
     virtual Vec3 get_interaction_result(const Particle *p) =0;
+    virtual Vec3 get_frictional_interaction_result(const Particle *p) =0;
     virtual double get_sort_distance(const Particle *p) =0;
     virtual double get_z_position() =0;
     virtual double get_max_distance(const Particle *p) =0;
