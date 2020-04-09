@@ -4,6 +4,7 @@
 #include "../util/random.hpp"
 #include "../util/vec.hpp"
 #include "../util/exception.hpp"
+#include "../util/progress.hpp"
 
 #define CLOCK std::chrono::steady_clock
 
@@ -26,18 +27,24 @@ void ConfigGenerator::generate_particles(int n, int error_tolerance)
   int i = 0;
   auto last_print = CLOCK::now();
   double time_since_print_duration = 100;
-  int previous_number = 0, count_same = 0;
+  int previous_number = 0, count_same = 0, inaction_thresh = 10000;
+  ProgressBar pb = ProgressBar({"Inaction", "Errors", "Number"}, {inaction_thresh, error_tolerance, n});
   while ((i = this->box.get_number_particles()) < n) {
 
     auto before = CLOCK::now();
     time_since_print_duration = static_cast<double>((before - last_print).count()) * CLOCK::duration::period::num / CLOCK::duration::period::den;
     if (time_since_print_duration > 1.0) {
 
-      last_print = CLOCK::now();
-      std::cerr << BG_BLUE << "(" << this->box.get_number_particles() << "/" << n << ") (" << generation_duration << ") (" << errors << "/" << error_tolerance << ")" RESET " ";
-
-      if (this->verbosity < 1) {
-        std::cerr << std::endl;
+      if (verbosity <= 0) {
+        last_print = CLOCK::now();
+        pb.set_values({count_same, errors, i});
+        pb.draw();
+      }
+      else {
+        std::cerr << BG_BLUE << "(" << this->box.get_number_particles() << "/" << n << ") (" << generation_duration << ") (" << errors << "/" << error_tolerance << ")" RESET " ";
+        if (this->verbosity < 1) {
+          std::cerr << std::endl;
+        }
       }
     }
 
@@ -67,8 +74,12 @@ void ConfigGenerator::generate_particles(int n, int error_tolerance)
 
     if (i == previous_number)
       count_same ++;
+    else {
+      previous_number = i;
+      count_same = 0;
+    }
 
-    if (count_same >= 100) {
+    if (count_same >= inaction_thresh) {
       if (not this->box.stable_sites_remaining())
         throw NoSitesRemainError("No sites remaining!");
     }
