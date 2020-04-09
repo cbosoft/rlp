@@ -45,31 +45,28 @@ TEST = \
 HDR = $(shell ls src/**/*.hpp)
 OBJ = $(PARTICLE) $(UTIL) $(CONFIG) $(BOX) $(ARRANGEMENT) $(TEST)
 LINK =
-EXE = rlp
 DEFS =
 
 .SECONDARY:
 
 obj/%.o: src/%.cpp $(HDR)
 	@echo -e "\u001b[33mASSEMBLING OBJECT $@\u001b[0m"
-	mkdir -p `dirname $@`
-	$(CXX) $(CFLAGS) $(DEFS) $< -c -o $@
+	@mkdir -p `dirname $@`
+	@$(CXX) $(CFLAGS) $(DEFS) $< -c -o $@
 
 obj/test/%.o: src/test/%.cpp $(HDR)
 	@echo -e "\u001b[33mASSEMBLING OBJECT $@\u001b[0m"
-	mkdir -p `dirname $@`
-	$(CXX) $(CFLAGS) $(DEFS) $< -c -o $@
+	@mkdir -p `dirname $@`
+	@$(CXX) $(CFLAGS) $(DEFS) $< -c -o $@
 
 
-.PHONY: exe
-
-exe: obj/main.o $(OBJ) $(HDR)
+rlp: obj/main.o $(OBJ) $(HDR)
 	@echo -e "\u001b[34mLINKING OBJECTS TO EXECUTABLE $@\u001b[0m"
-	$(CXX) $(CFLAGS) $(DEFS) obj/main.o $(OBJ) -o $(EXE) $(LINK)
+	@$(CXX) $(CFLAGS) $(DEFS) obj/main.o $(OBJ) -o rlp $(LINK)
 
 tests: src/test/main.cpp $(OBJ) $(HDR)
 	@echo -e "\u001b[34mLINKING OBJECTS TO EXECUTABLE $@\u001b[0m"
-	$(CXX) $(CFLAGS) $(DEFS) src/test/main.cpp $(OBJ) -o $@ $(LINK)
+	@$(CXX) $(CFLAGS) $(DEFS) src/test/main.cpp $(OBJ) -o $@ $(LINK)
 
 prof_pdf:
 	gprof $(EXE) gmon.out > analysis.txt
@@ -77,4 +74,4 @@ prof_pdf:
 	dot -Tpdf d.dot > prof.pdf
 
 clean:
-	rm -rf obj $(EXE) tests
+	rm -rf obj rlp tests
