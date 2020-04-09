@@ -129,7 +129,7 @@ int main(int argc, const char **argv)
 
     .output_path = "out.csv",
     .seed = 1,
-    .verbosity = 1,
+    .verbosity = 0,
     .error_tolerance = 0,
     .run_tests = true,
     .output_on_error = true,
