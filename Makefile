@@ -25,7 +25,22 @@ ARRANGEMENT = \
 							obj/arrangement/triangle.o
 
 TEST = \
-			 obj/test/run_tests.o
+			 obj/test/run_tests.o \
+			 obj/test/line/creation.o \
+			 obj/test/line/interaction.o \
+			 obj/test/vec/angle.o \
+			 obj/test/vec/cross.o \
+			 obj/test/vec/dot.o \
+			 obj/test/vec/mag.o \
+			 obj/test/vec/ortho.o \
+			 obj/test/vertex/creation.o \
+			 obj/test/vertex/interaction.o \
+			 obj/test/multi/1.o \
+			 obj/test/triangle/creation.o \
+			 obj/test/triangle/trilateration.o \
+			 obj/test/volume/basic.o \
+			 obj/test/volume/cap.o \
+			 obj/test/volume/wall.o \
 
 HDR = $(shell ls src/**/*.hpp)
 OBJ = $(PARTICLE) $(UTIL) $(CONFIG) $(BOX) $(ARRANGEMENT) $(TEST)

@@ -27,19 +27,20 @@ class TestRunner {
 
     virtual void run(I input, ER expected_result) =0;
 
+
     void run_each()
     {
-
       if (this->input_data.size() != this->expected_results.size()) {
         throw TestError(Formatter() << "Malformed test! Input data size (" << this->input_data.size() 
             << ") does not match expected results size (" << this->expected_results.size() << ").");
       }
-
+    
       for (size_t i = 0; i < this->expected_results.size(); i++) {
         this->curidx = i;
         this->run(this->input_data[i], this->expected_results[i]);
       }
     }
+
 
     void pass()
     {
@@ -47,8 +48,10 @@ class TestRunner {
         std::cerr << this->name << "[" << this->curidx+1 << "/" << this->input_data.size() << "] " FG_GREEN "PASSED" RESET << std::endl;
     }
 
+
     void fail(std::string reason)
     {
       throw TestError(Formatter() << this->name << " " BG_RED "FAILED" RESET " " << reason);
     }
+
 };

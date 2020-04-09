@@ -1,10 +1,10 @@
 #include "run_tests.hpp"
-#include "vec.hpp"
-#include "vertex.hpp"
-#include "line.hpp"
-#include "triangle.hpp"
-#include "multi.hpp"
-#include "volume.hpp"
+#include "vec/vec.hpp"
+#include "vertex/vertex.hpp"
+#include "line/line.hpp"
+#include "triangle/triangle.hpp"
+#include "multi/multi.hpp"
+#include "volume/volume.hpp"
 
 void run_tests(bool quiet)
 {
