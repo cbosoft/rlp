@@ -1,3 +1,3 @@
 #pragma once
 
-void run_tests();
+void run_tests(bool quiet);

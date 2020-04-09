@@ -11,7 +11,8 @@ class VertexCreationTest : public virtual TestRunner<Vec3, int> {
 
 
   public:
-    VertexCreationTest(int &counter) : TestRunner(counter, "Vertex test (creation)")
+    VertexCreationTest(bool is_quiet)
+      : TestRunner("Vertex test (creation)", is_quiet)
     {
       this->input_data = {
         Vec3({5.0, 5.0, 10.0})
@@ -23,7 +24,7 @@ class VertexCreationTest : public virtual TestRunner<Vec3, int> {
 
     void run(Vec3 point, int expected_result) override
     {
-      PeriodicBox box(10.0, 0);
+      PeriodicBox box(10.0, this->is_quiet?-10:0);
       Particle *p = new Particle(1.0, point);
       box.add_particle(p);
 
@@ -45,7 +46,8 @@ class VertexInteractionTest : public virtual TestRunner<Vec3, bool> {
 
 
   public:
-    VertexInteractionTest(int &counter) : TestRunner(counter, "Vertex test (interaction)")
+    VertexInteractionTest(bool is_quiet)
+      : TestRunner("Vertex test (interaction)", is_quiet)
     {
       this->input_data = {
         Vec3({5.0, 5.0, 10.0}),
@@ -63,7 +65,7 @@ class VertexInteractionTest : public virtual TestRunner<Vec3, bool> {
 
     void run(Vec3 point, bool expected_result) override
     {
-      PeriodicBox box(10.0, 0);
+      PeriodicBox box(10.0, this->is_quiet?-10:0);
       Particle *pi = new Particle(1.0, point);
       Vertex vertex(pi, &box);
       box.add_particle(pi);

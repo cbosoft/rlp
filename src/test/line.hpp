@@ -7,8 +7,8 @@ class LineCreationTest : public virtual TestRunner<std::pair<Vec3, Vec3>, int> {
 
   public:
     
-    LineCreationTest(int &counter) 
-      : TestRunner(counter, "Line test (creation)")
+    LineCreationTest(bool is_quiet) 
+      : TestRunner("Line test (creation)", is_quiet)
     {
       this->input_data = {
         std::make_pair(Vec3({4.5, 5.0, 0.0}), Vec3({5.5, 5.0, 0.0}))
@@ -20,7 +20,7 @@ class LineCreationTest : public virtual TestRunner<std::pair<Vec3, Vec3>, int> {
 
     void run(std::pair<Vec3, Vec3> pair, int expected_result) override
     {
-      PeriodicBox box(10.0, 0);
+      PeriodicBox box(10.0, this->is_quiet?-10:0);
       Particle *pi = new Particle(1.0, pair.first),
         *pj = new Particle(1.0, pair.second);
       box.add_particle(pi);
@@ -44,8 +44,8 @@ class LineInteractionTest : public virtual TestRunner<Vec3, Vec3> {
 
   public:
     
-    LineInteractionTest(int &counter) 
-      : TestRunner(counter, "Line test (interaction)")
+    LineInteractionTest(bool is_quiet) 
+      : TestRunner("Line test (interaction)", is_quiet)
     {
       this->input_data = {
         Vec3({5.0, 5.1, 10.0}),
@@ -61,7 +61,7 @@ class LineInteractionTest : public virtual TestRunner<Vec3, Vec3> {
 
     void run(Vec3 point, Vec3 expected_result) override
     {
-      PeriodicBox box(10.0, 0);
+      PeriodicBox box(10.0, this->is_quiet?-10:0);
       Particle *pi = new Particle(1.0, Vec3({4.5, 5.0, 0.0})),
         *pj = new Particle(1.0, Vec3({5.5, 5.0, 0.0}));
       Line line(pi, pj, &box);

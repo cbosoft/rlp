@@ -7,8 +7,8 @@
 class VectorMagnitudeTest : public virtual TestRunner<Vec3, double> {
 
   public:
-    VectorMagnitudeTest(int &counter) 
-      : TestRunner(counter, "Vector test (magnitude)")
+    VectorMagnitudeTest(bool is_quiet) 
+      : TestRunner("Vector test (magnitude)", is_quiet)
     {
       this->input_data = {
         Vec3({1.0, 0.0, 0.0}),
@@ -41,8 +41,8 @@ class VectorMagnitudeTest : public virtual TestRunner<Vec3, double> {
 class VectorDotTest : public virtual TestRunner<std::pair<Vec3, Vec3>, double> {
 
   public:
-    VectorDotTest(int &counter) 
-      : TestRunner(counter, "Vector test (scalar multiplication)")
+    VectorDotTest(bool is_quiet) 
+      : TestRunner("Vector test (scalar multiplication)", is_quiet)
     {
       this->input_data = {
         std::make_pair(Vec3({1.0, 0.0, 0.0}), Vec3({0.0, 0.0, 0.0})),
@@ -77,8 +77,8 @@ class VectorDotTest : public virtual TestRunner<std::pair<Vec3, Vec3>, double> {
 class VectorCrossTest : public virtual TestRunner<std::pair<Vec3, Vec3>, Vec3> {
 
   public:
-    VectorCrossTest(int &counter) 
-      : TestRunner(counter, "Vector test (cross multiplication)")
+    VectorCrossTest(bool is_quiet) 
+      : TestRunner("Vector test (cross multiplication)", is_quiet)
     {
       this->input_data = {
         std::make_pair(Vec3({1.0, 0.0, 0.0}), Vec3({0.0, 0.0, 0.0})),
@@ -115,8 +115,8 @@ class VectorCrossTest : public virtual TestRunner<std::pair<Vec3, Vec3>, Vec3> {
 class VectorOrthoComponentTest : public virtual TestRunner<std::pair<Vec3, Vec3>, Vec3> {
 
   public:
-    VectorOrthoComponentTest(int &counter) 
-      : TestRunner(counter, "Vector test (orthogonal component)")
+    VectorOrthoComponentTest(bool is_quiet) 
+      : TestRunner("Vector test (orthogonal component)", is_quiet)
     {
       this->input_data = {
         std::make_pair(Vec3({1.0, 0.0, 0.0}), Vec3({0.0, 1.0, 0.0})),
@@ -153,8 +153,8 @@ class VectorOrthoComponentTest : public virtual TestRunner<std::pair<Vec3, Vec3>
 class VectorAngleBetweenTest : public virtual TestRunner<std::pair<Vec3, Vec3>, double> {
 
   public:
-    VectorAngleBetweenTest(int &counter) 
-      : TestRunner(counter, "Vector test (angle between)")
+    VectorAngleBetweenTest(bool is_quiet) 
+      : TestRunner("Vector test (angle between)", is_quiet)
     {
       this->input_data = {
         std::make_pair(Vec3({1.0, 0.0, 0.0}), Vec3({0.0, 1.0, 0.0})),

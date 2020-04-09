@@ -162,7 +162,7 @@ int main(int argc, const char **argv)
   }
 
   if (args.run_tests)
-    run_tests();
+    run_tests(args.verbosity < 1);
 
   ConfigGenerator cg = ConfigGenerator(args.length, args.verbosity, args.particles_are_seed, args.friction_thresh, args.output_path);
 

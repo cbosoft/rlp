@@ -10,8 +10,8 @@ class TriangleTrilaterationTest : public virtual TestRunner<std::pair<std::array
 
   public:
 
-    TriangleTrilaterationTest(int &counter)
-      : TestRunner(counter, "Triangle test (trilateration)")
+    TriangleTrilaterationTest(bool is_quiet)
+      : TestRunner("Triangle test (trilateration)", is_quiet)
     {
       this->input_data = {
         std::make_pair(std::array<Vec3, 3>({Vec3({0.0, 0.0, 0.0}), Vec3({1.0, 0.0, 0.0}), Vec3({0.0, 1.0, 0.0})}), 0.5),
@@ -29,7 +29,7 @@ class TriangleTrilaterationTest : public virtual TestRunner<std::pair<std::array
     {
       auto points = points_and_radius.first;
       double radius = points_and_radius.second;
-      PeriodicBox box(10.0);
+      PeriodicBox box(10.0, this->is_quiet?-10:0);
       Particle *pi = new Particle(1.0, points[0]),
         *pj = new Particle(1.0, points[1]),
         *pk = new Particle(1.0, points[2]);
@@ -79,8 +79,8 @@ class TriangleCreationTest : public virtual TestRunner<std::array<Vec3, 3>, std:
 
   public:
 
-    TriangleCreationTest(int &counter)
-      : TestRunner(counter, "Triangle test (creation)")
+    TriangleCreationTest(bool is_quiet)
+      : TestRunner("Triangle test (creation)", is_quiet)
     {
       this->input_data = {
         std::array<Vec3, 3>({Vec3({0.0, 0.0, 0.0}), Vec3({1.0, 0.0, 0.0}), Vec3({0.0, 1.0, 0.0})}),
@@ -107,7 +107,7 @@ class TriangleCreationTest : public virtual TestRunner<std::array<Vec3, 3>, std:
 
     void run(std::array<Vec3, 3> points, std::vector<std::string> expected_result) override
     {
-      PeriodicBox box(10.0, 0);
+      PeriodicBox box(10.0, this->is_quiet?-10:0);
       Particle *pi = new Particle(1.0, points[0]),
         *pj = new Particle(1.0, points[1]),
         *pk = new Particle(1.0, points[2]);

@@ -12,18 +12,18 @@ class TestRunner {
 
   private:
 
-    int &counter, curidx;
+    int curidx;
     std::string name;
-    bool is_critical;
 
   protected:
 
+    bool is_quiet;
     std::vector<I> input_data;
     std::vector<ER> expected_results;
 
   public:
 
-    TestRunner(int &counter, std::string name, bool is_critical=true) : counter(counter), name(name), is_critical(is_critical) {}
+    TestRunner(std::string name, bool is_quiet) : name(name), is_quiet(is_quiet) {}
 
     virtual void run(I input, ER expected_result) =0;
 
@@ -43,20 +43,12 @@ class TestRunner {
 
     void pass()
     {
-      std::cerr << this->name << "[" << this->curidx+1 << "/" << this->input_data.size() << "] " FG_GREEN "PASSED" RESET << std::endl;
+      if (not this->is_quiet)
+        std::cerr << this->name << "[" << this->curidx+1 << "/" << this->input_data.size() << "] " FG_GREEN "PASSED" RESET << std::endl;
     }
 
     void fail(std::string reason)
     {
-      this->counter ++;
-
-      std::stringstream ss;
-      ss << this->name << " " BG_RED "FAILED" RESET " " << reason;
-      if (this->is_critical) {
-        throw TestError(ss.str());
-      }
-      else {
-        std::cerr << ss.str() << std::endl;
-      }
+      throw TestError(Formatter() << this->name << " " BG_RED "FAILED" RESET " " << reason);
     }
 };

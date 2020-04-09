@@ -11,8 +11,8 @@ class MultiInteractionTest : public virtual TestRunner<Vec3, Vec3> {
 
   public:
     
-    MultiInteractionTest(int &counter) 
-      : TestRunner(counter, "Line test (interaction)")
+    MultiInteractionTest(bool is_quiet) 
+      : TestRunner("Line test (interaction)", is_quiet)
     {
       this->input_data = {
         Vec3({5.0, 5.1, 10.0})
@@ -25,7 +25,7 @@ class MultiInteractionTest : public virtual TestRunner<Vec3, Vec3> {
     void run(Vec3 point, Vec3 expected_result) override
     {
 
-      PeriodicBox box(10.0, 10);
+      PeriodicBox box(10.0, this->is_quiet?-10:0);
       Particle *pi = new Particle(1.0, Vec3({4.71171, 0.118055, 10.0}));
       box.add_particle(pi);
       pi->set_position(Vec3({4.71171, 0.118055, 0.363677}));

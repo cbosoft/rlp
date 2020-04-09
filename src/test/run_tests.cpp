@@ -5,32 +5,27 @@
 #include "triangle.hpp"
 #include "multi.hpp"
 
-void run_tests()
+void run_tests(bool quiet)
 {
-  int counter = 0;
-
   // vector tests
-  VectorMagnitudeTest(counter).run_each();
-  VectorDotTest(counter).run_each();
-  VectorCrossTest(counter).run_each();
-  VectorOrthoComponentTest(counter).run_each();
-  VectorAngleBetweenTest(counter).run_each();
+  VectorMagnitudeTest(quiet).run_each();
+  VectorDotTest(quiet).run_each();
+  VectorCrossTest(quiet).run_each();
+  VectorOrthoComponentTest(quiet).run_each();
+  VectorAngleBetweenTest(quiet).run_each();
 
   // vertex tests
-  VertexCreationTest(counter).run_each();
-  VertexInteractionTest(counter).run_each();
+  VertexCreationTest(quiet).run_each();
+  VertexInteractionTest(quiet).run_each();
 
   // line tests
-  LineCreationTest(counter).run_each();
-  LineInteractionTest(counter).run_each();
+  LineCreationTest(quiet).run_each();
+  LineInteractionTest(quiet).run_each();
 
   // triangle tests
-  TriangleTrilaterationTest(counter).run_each();
-  TriangleCreationTest(counter).run_each();
+  TriangleTrilaterationTest(quiet).run_each();
+  TriangleCreationTest(quiet).run_each();
 
   // multi
-  MultiInteractionTest(counter).run_each();
-
-  if (counter)
-    throw TestError(Formatter() << counter << " tests failed!");
+  MultiInteractionTest(quiet).run_each();
 }

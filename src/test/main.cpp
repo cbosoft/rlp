@@ -2,5 +2,5 @@
 
 int main(void)
 {
-  run_tests();
+  run_tests(false);
 }
