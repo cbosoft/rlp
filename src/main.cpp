@@ -47,9 +47,11 @@ void show_help_and_exit()
     << "    --error-tolerance <val>  Set the number of allowable errors to <v>. This\n"
     << "                    will make the config generator ignore a number of errors.\n"
     << "                    Set to 0 to not ignore errors, set to -1 to ignore all\n"
-    << "                    errors. Default: 0.\n"
+    << "                    errors. Can also be set to 'all' to ignore all, or set\n"
+    << "                    to 'most' to ignore errors until it becomes ridiculous.\n"
+    << "                    Default: 0.\n"
     << "\n"
-    << "    --infinitely-tolerate-errors <val>  Same as '--error-tolerance -1'\n"
+    << "    --infinitely-tolerate-errors <val>  Same as '--error-tolerance all'\n"
     << "\n"
     << "    --friction-thresh <val>  Sets the size threshold for deciding if a particle\n"
     << "                    interacts frictionally. Large particles will act with friction\n"
@@ -165,7 +167,8 @@ int main(int argc, const char **argv)
   for (int i = 0; i < argc; i++) {
     if (ARGEQ("--number")) {
 
-      if (strcmp(argv[++i], "recommended") == 0)
+      i++;
+      if (ARGEQ("recommended"))
         args.number = -1;
       else
         args.number = std::atoi(argv[i]);
@@ -205,7 +208,15 @@ int main(int argc, const char **argv)
       args.seed = atof(argv[++i]);
     }
     else if (ARGEQ("--error-tolerance")) {
-      args.error_tolerance = atoi(argv[++i]);
+
+      i++;
+      if (ARGEQ("all"))
+        args.error_tolerance = -1;
+      else if (ARGEQ("most"))
+        args.error_tolerance = -2;
+      else
+        args.error_tolerance = atoi(argv[++i]);
+
     }
     else if (ARGEQ("--infinitely-tolerate-errors")) {
       args.error_tolerance = -1;
@@ -255,6 +266,10 @@ int main(int argc, const char **argv)
   if (args.number < 0) {
     double n_per_l = args.length / mean_diameter;
     args.number = int(1.5*n_per_l*n_per_l*n_per_l);
+  }
+
+  if (args.error_tolerance == -2) {
+    args.error_tolerance = args.number;
   }
 
   if (args.verbosity >= 0) {
