@@ -5,7 +5,7 @@
 #include "sieve/sieve.hpp"
 #include "version.hpp"
 
-#define EITHER(A,B) ((strcmp(argv[i], A) == 0) || (strcmp(argv[i], B) == 0))
+#define ARGEQ(S) (strcmp(argv[i], S) == 0)
 
 void show_help_and_exit()
 {
@@ -35,7 +35,8 @@ void show_help_and_exit()
     << "    --seive <val>   Particles can be created with different sizes. The config\n"
     << "                    generator chooses the size according to a distribution,\n"
     << "                    defined by a 'sieve'. Valid values are 'mono', 'bi', \n"
-    << "                    and 'altbi'. See 'Sieve Options' below. Default: 'mono'.\n"
+    << "                    'altbi', 'normal', and 'uniform'. \n"
+    << "                    See 'Sieve Options' below. Default: 'mono'.\n"
     << "\n"
     << "    --seed <val>    Seed the random number generator with an integer. Default: 1.\n"
     << "\n"
@@ -73,10 +74,10 @@ void show_help_and_exit()
     << "\n"
     << "  " BOLD "Sieve Options" RESET "\n"
     << "\n"
-    << "    " BOLD "Monodisperse" RESET"\n"
+    << "    " BOLD "Monodisperse" RESET " ('mono')\n"
     << "      Mono disperse sieve has no options; all particles are given the same size.\n"
     << "\n"
-    << "    " BOLD "Bidisperse" RESET"\n"
+    << "    " BOLD "Bidisperse" RESET " ('bi')\n"
     << "      Bidisperse sieve produces particles of one of two sizes. There is always a\n"
     << "      particle of size 1.0, as this is the scale. The smaller size is speficied\n"
     << "      by a ratio of smallest diameter to largest. (Although, as the large\n"
@@ -84,14 +85,33 @@ void show_help_and_exit()
     << "      is decided based on a probability of being large or small.\n"
     << "\n"
     << "      --bi-ratio    Ratio of small diameter to small diameter or, equivalently,\n"
-    << "                    the size of the small diameter in units of large diamter."
+    << "                    the size of the small diameter in units of large diamter.\n"
+    << "                    Default: 0.5.\n"
     << "\n"
     << "      --bi-probability    Probability of a particle having the larger diameter.\n"
+    << "                    Default: 0.5.\n"
     << "\n"
-    << "    " BOLD "Bidisperse (alternating)" RESET"\n"
+    << "    " BOLD "Bidisperse (alternating)" RESET " ('altbi')\n"
     << "      Alternating bidisperse chooses a particle size based on a ratio as for\n"
     << "      plain bidisperse, but instead of a probability it simply alternates\n"
     << "      between large and small. See '--bi-ratio' above.\n"
+    << "\n"
+    << "    " BOLD "Polydisperse (normal)" RESET " ('normal')\n"
+    << "      This sieve generates sizes according to a normal distribution. The\n"
+    << "      standard deviation is used to decide the width of the distribution\n"
+    << "      (i.e. the variety of sizes) as well as the mean. Most (99.7%) of values\n"
+    << "      are within 6 standard deviations, so the mean is taken to be 1.0 - 3*std,\n"
+    << "      to enforce 1.0 as the maximum particle size.\n"
+    << "\n"
+    << "      --normal-std <val>  Standard deviation in sizes of particles. Default: 0.1\n"
+    << "\n"
+    << "    " BOLD "Polydisperse (uniform)" RESET " ('uniform')\n"
+    << "      A uniform distribution of particle sizes is generated using this sieve.\n"
+    << "      This means that there is equal probability of a size being chosen between\n"
+    << "      two limits. The upper limit is 1.0, and the lower is user configurable."
+    << "\n"
+    << "      --uniform-min <val>  Minimum size. Default: 0.5.\n"
+    << "\n"
     ;
 
   exit(0);
@@ -109,7 +129,8 @@ int main(int argc, const char **argv)
     const char *sieve_type;
     double bi_ratio;
     double bi_probability;
-    //double normal_std;
+    double normal_std;
+    double uniform_min;
 
     // run
     const char *output_path;
@@ -127,6 +148,8 @@ int main(int argc, const char **argv)
     .sieve_type = "mono",
     .bi_ratio = 0.5,
     .bi_probability = 0.5,
+    .normal_std = 0.1,
+    .uniform_min = 0.5,
 
     .output_path = "out.csv",
     .seed = 1,
@@ -140,7 +163,7 @@ int main(int argc, const char **argv)
 
   argc--; argv++;
   for (int i = 0; i < argc; i++) {
-    if (EITHER("-n", "--number")) {
+    if (ARGEQ("--number")) {
 
       if (strcmp(argv[++i], "recommended") == 0)
         args.number = -1;
@@ -148,52 +171,55 @@ int main(int argc, const char **argv)
         args.number = std::atoi(argv[i]);
 
     }
-    else if (EITHER("-l", "--length")) {
+    else if (ARGEQ("--length")) {
       args.length = std::atof(argv[++i]);
     }
-    else if (EITHER("-o", "--output-path")) {
+    else if (ARGEQ("--output-path")) {
       args.output_path = argv[++i];
     }
-    else if (strcmp(argv[i], "--bi-ratio") == 0) {
+    else if (ARGEQ("--bi-ratio")) {
       args.bi_ratio = std::atof(argv[++i]);
     }
-    else if (strcmp(argv[i], "--bi-probability") == 0) {
+    else if (ARGEQ("--bi-probability")) {
       args.bi_probability = std::atof(argv[++i]);
     }
-    else if (EITHER("-v", "--verbose")) {
+    else if (ARGEQ("--verbose")) {
       args.verbosity ++;
     }
-    else if (EITHER("-q", "--quiet")) {
+    else if (ARGEQ("--quiet")) {
       args.verbosity --;
     }
-    else if (strcmp(argv[i], "--sieve") == 0) {
+    else if (ARGEQ("--sieve")) {
       args.sieve_type = argv[++i];
     }
-    else if (EITHER("-f", "--friction-thresh")) {
+    else if (ARGEQ("--friction-thresh")) {
       args.friction_thresh = std::atof(argv[++i]);
     }
-    // else if (EITHER("-s", "--std")) {
-    //   args.std = atof(argv[++i]);
-    // }
-    else if (strcmp(argv[i], "--seed") == 0) {
+    else if (ARGEQ("--normal-std")) {
+      args.normal_std = atof(argv[++i]);
+    }
+    else if (ARGEQ("--uniform-min")) {
+      args.uniform_min = atof(argv[++i]);
+    }
+    else if (ARGEQ("--seed")) {
       args.seed = atof(argv[++i]);
     }
-    else if (strcmp("--error-tolerance", argv[i]) == 0) {
+    else if (ARGEQ("--error-tolerance")) {
       args.error_tolerance = atoi(argv[++i]);
     }
-    else if (strcmp("--infinitely-tolerate-errors", argv[i]) == 0) {
+    else if (ARGEQ("--infinitely-tolerate-errors")) {
       args.error_tolerance = -1;
     }
-    else if (strcmp("--particles-are-seed", argv[i]) == 0) {
+    else if (ARGEQ("--particles-are-seed")) {
       args.particles_are_seed = true;
     }
-    else if (strcmp("--dont-run-tests", argv[i]) == 0) {
+    else if (ARGEQ("--dont-run-tests")) {
       args.run_tests = false;
     }
-    else if (strcmp("--dont-output-on-error", argv[i]) == 0) {
+    else if (ARGEQ("--dont-output-on-error")) {
       args.output_on_error = false;
     }
-    else if (strcmp("--help", argv[i]) == 0) {
+    else if (ARGEQ("--help")) {
       show_help_and_exit();
     }
     else {
@@ -215,14 +241,20 @@ int main(int argc, const char **argv)
   else if (strcmp(args.sieve_type, "altbi") == 0) {
     cg.set_sieve(new AlternatingBiSieve(args.bi_ratio));
   }
+  else if (strcmp(args.sieve_type, "normal") == 0) {
+    cg.set_sieve(new NormalSieve(args.normal_std));
+  }
+  else if (strcmp(args.sieve_type, "uniform") == 0) {
+    cg.set_sieve(new UniformSieve(args.uniform_min));
+  }
   else {
     throw ArgumentError(Formatter() << "Unrecognised sieve type \"" << args.sieve_type << "\".");
   }
   double mean_diameter = cg.get_sieve()->get_mean();
 
   if (args.number < 0) {
-    double rho1d = args.length / mean_diameter;
-    args.number = int(1.5*rho1d*rho1d*rho1d);
+    double n_per_l = args.length / mean_diameter;
+    args.number = int(1.5*n_per_l*n_per_l*n_per_l);
   }
 
   if (args.verbosity >= 0) {
@@ -241,6 +273,16 @@ int main(int argc, const char **argv)
     else if (strcmp(args.sieve_type, "altbi") == 0) {
       std::cerr << "Particles are bi-disperse (alternating). Diameter will alternate between 1.0 and " << args.bi_ratio
         << ". Mean diameter is " << mean_diameter << "." << std::endl;
+    }
+    else if (strcmp(args.sieve_type, "normal") == 0) {
+      std::cerr 
+        << "Particles are polydisperse (normally distributed). Diameter will be chosen from\n"
+        << "a normal distribution of mean " << mean_diameter << " and standard deviation " << args.normal_std << "." << std::endl;
+    }
+    else if (strcmp(args.sieve_type, "uniform") == 0) {
+      std::cerr 
+        << "Particles are polydisperse (uniformly distributed). Diameter will be chosen from\n"
+        << "a uniform distribution between " << args.uniform_min << " and 1.0. Mean diameter: " << mean_diameter << "." << std::endl;
     }
 
     std::cerr << "Config file will be written to " << args.output_path << std::endl;

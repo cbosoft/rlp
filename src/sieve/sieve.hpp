@@ -56,3 +56,35 @@ class AlternatingBiSieve : virtual public Sieve {
     double get_mean() const;
 
 };
+
+
+
+class NormalSieve : virtual public Sieve {
+
+  private:
+
+    double std, mean;
+
+  public:
+
+    NormalSieve(double stddev);
+    double get_size() const;
+    double get_mean() const;
+
+};
+
+
+
+class UniformSieve : virtual public Sieve {
+
+  private:
+
+    double min;
+
+  public:
+
+    UniformSieve(double min);
+    double get_size() const;
+    double get_mean() const;
+
+};

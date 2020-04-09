@@ -27,6 +27,8 @@ ARRANGEMENT = \
 SIEVE = \
 				obj/sieve/mono.o \
 				obj/sieve/bi.o \
+				obj/sieve/normal.o \
+				obj/sieve/uniform.o \
 				obj/sieve/altbi.o
 
 TEST = \
