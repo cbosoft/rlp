@@ -187,7 +187,7 @@ int main(int argc, const char **argv)
   }
   catch (const Exception &e) {
     if (args.output_on_error)
-      cg.output_configuration();
+      cg.output_configuration(true);
     throw e;
   }
 

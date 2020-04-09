@@ -22,7 +22,7 @@ class ConfigGenerator {
 
     void generate_particles(int n, int error_tolerance);
     void generate_particle();
-    void output_configuration();
+    void output_configuration(bool fail=false);
     void set_sieve(Sieve *s);
 
 };
