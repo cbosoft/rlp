@@ -25,6 +25,5 @@ hence the thresholding method.
 
 # TODO
 
-  - [ ] Add more particle size distribution (normal, uniform, exponential,
-    power-law...)
   - [ ] Add tests for frictional interaction
+  - [ ] Detect recursion depth in intersection/settling loop
