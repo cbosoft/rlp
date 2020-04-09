@@ -31,9 +31,10 @@ void show_help_and_exit()
     << "    --output-path <val>  Path to output csv containing the particle\n"
     << "                    configuration. Default: 'out.csv'\n"
     << "\n"
-    << "    --disperse <val>  Particles can be created with different sizes. The config\n"
-    << "                    generator chooses the size according to a distribution. Valid\n"
-    << "                    values are 'mono', 'bi', 'altbi'. Default: 'mono'.\n"
+    << "    --seive <val>   Particles can be created with different sizes. The config\n"
+    << "                    generator chooses the size according to a distribution,\n"
+    << "                    defined by a 'sieve'. Valid values are 'mono', 'bi', \n"
+    << "                    and 'altbi'. See 'Sieve Options' below. Default: 'mono'.\n"
     << "\n"
     << "    --seed <val>    Seed the random number generator with an integer. Default: 1.\n"
     << "\n"
@@ -68,6 +69,28 @@ void show_help_and_exit()
     << "                    tests from being run before the config generator starts.\n"
     << "\n"
     << "    --help          Show this information and exit.\n"
+    << "\n"
+    << "  " BOLD "Sieve Options" RESET "\n"
+    << "\n"
+    << "    " BOLD "Monodisperse" RESET"\n"
+    << "      Mono disperse sieve has no options; all particles are given the same size.\n"
+    << "\n"
+    << "    " BOLD "Bidisperse" RESET"\n"
+    << "      Bidisperse sieve produces particles of one of two sizes. There is always a\n"
+    << "      particle of size 1.0, as this is the scale. The smaller size is speficied\n"
+    << "      by a ratio of smallest diameter to largest. (Although, as the large\n"
+    << "      diameter is 1, the small diameter is the same as the ratio.) Finally, size\n"
+    << "      is decided based on a probability of being large or small.\n"
+    << "\n"
+    << "      --bi-ratio    Ratio of small diameter to small diameter or, equivalently,\n"
+    << "                    the size of the small diameter in units of large diamter."
+    << "\n"
+    << "      --bi-probability    Probability of a particle having the larger diameter.\n"
+    << "\n"
+    << "    " BOLD "Bidisperse (alternating)" RESET"\n"
+    << "      Alternating bidisperse chooses a particle size based on a ratio as for\n"
+    << "      plain bidisperse, but instead of a probability it simply alternates\n"
+    << "      between large and small. See '--bi-ratio' above.\n"
     ;
 
   exit(0);
@@ -79,10 +102,15 @@ int main(int argc, const char **argv)
   struct {
     int number;
     double length;
+
+    // dispersity
+    const char *sieve_type;
+    double bi_ratio;
+    double bi_probability;
+    //double normal_std;
+
+    // run
     const char *output_path;
-    const char *disperse;
-    // double mean;
-    // double std;
     int seed;
     int verbosity;
     int error_tolerance;
@@ -93,10 +121,12 @@ int main(int argc, const char **argv)
   } args = {
     .number = 100,
     .length = 10.0,
+    
+    .sieve_type = "mono",
+    .bi_ratio = 0.5,
+    .bi_probability = 0.5,
+
     .output_path = "out.csv",
-    .disperse = "mono",
-    // .mean = 1.0,
-    // .std = 0.0,
     .seed = 1,
     .verbosity = 1,
     .error_tolerance = 0,
@@ -117,21 +147,24 @@ int main(int argc, const char **argv)
     else if (EITHER("-o", "--output-path")) {
       args.output_path = argv[++i];
     }
+    else if (strcmp(argv[i], "--bi-ratio") == 0) {
+      args.bi_ratio = std::atof(argv[++i]);
+    }
+    else if (strcmp(argv[i], "--bi-probability") == 0) {
+      args.bi_probability = std::atof(argv[++i]);
+    }
     else if (EITHER("-v", "--verbose")) {
       args.verbosity ++;
     }
     else if (EITHER("-q", "--quiet")) {
       args.verbosity --;
     }
-    else if (strcmp(argv[i], "--disperse") == 0) {
-      args.disperse = argv[++i];
+    else if (strcmp(argv[i], "--sieve") == 0) {
+      args.sieve_type = argv[++i];
     }
     else if (EITHER("-f", "--friction-thresh")) {
       args.friction_thresh = std::atof(argv[++i]);
     }
-    // else if (EITHER("-m", "--mean")) {
-    //   args.mean = atof(argv[++i]);
-    // }
     // else if (EITHER("-s", "--std")) {
     //   args.std = atof(argv[++i]);
     // }
@@ -166,17 +199,17 @@ int main(int argc, const char **argv)
 
   ConfigGenerator cg = ConfigGenerator(args.length, args.verbosity, args.particles_are_seed, args.friction_thresh, args.output_path);
 
-  if (strcmp(args.disperse, "mono") == 0) {
+  if (strcmp(args.sieve_type, "mono") == 0) {
     cg.set_sieve(new MonoSieve());
   }
-  else if (strcmp(args.disperse, "bi") == 0) {
-    cg.set_sieve(new BiSieve());
+  else if (strcmp(args.sieve_type, "bi") == 0) {
+    cg.set_sieve(new BiSieve(args.bi_ratio, args.bi_probability));
   }
-  else if (strcmp(args.disperse, "altbi") == 0) {
-    cg.set_sieve(new AlternatingBiSieve());
+  else if (strcmp(args.sieve_type, "altbi") == 0) {
+    cg.set_sieve(new AlternatingBiSieve(args.bi_ratio));
   }
   else {
-    throw ArgumentError(Formatter() << "Unrecognised dispersion type \"" << args.disperse << "\".");
+    throw ArgumentError(Formatter() << "Unrecognised sieve type \"" << args.sieve_type << "\".");
   }
 
 
