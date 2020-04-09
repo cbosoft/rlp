@@ -1,8 +1,9 @@
 #pragma once
 
 #include <array>
+
 #include "arrangement.hpp"
-#include "box.hpp"
+#include "../box/box.hpp"
 
 class Triangle : public virtual ParticleArrangement {
 

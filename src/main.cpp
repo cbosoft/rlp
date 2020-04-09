@@ -1,8 +1,8 @@
-#include "config.hpp"
+#include "config/config.hpp"
 #include "test/run_tests.hpp"
-#include "exception.hpp"
-#include "random.hpp"
-#include "sieve.hpp"
+#include "util/exception.hpp"
+#include "util/random.hpp"
+#include "sieve/sieve.hpp"
 #include "version.hpp"
 
 #define EITHER(A,B) ((strcmp(argv[i], A) == 0) || (strcmp(argv[i], B) == 0))

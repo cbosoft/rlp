@@ -1,17 +1,20 @@
 #pragma once
 
-#include "box.hpp"
-#include "arrangement.hpp"
+#include <array>
 
-class Vertex : public virtual ParticleArrangement {
+#include "arrangement.hpp"
+#include "../box/box.hpp"
+
+
+class Line : public virtual ParticleArrangement {
 
   private:
-    Particle *particle;
+    double dist, supportable_size;
+    std::array<Particle *, 2> particles;
     PeriodicBox *box;
 
   public:
-    Vertex(Particle *p, PeriodicBox *box);
-    ~Vertex() {}
+    Line(Particle *a, Particle *b, PeriodicBox *box);
 
     bool check_interacts_with(const Particle *p) override;
     Vec3 get_interaction_result(const Particle *p) override;
@@ -26,7 +29,6 @@ class Vertex : public virtual ParticleArrangement {
     Vec3 get_centre() const override;
 
     bool is_final() override { return false; }
-    std::string get_type() override { return "Vertex"; }
-    int get_complexity() override { return 1; }
-
+    std::string get_type() override { return "Line"; }
+    int get_complexity() override { return 2; }
 };

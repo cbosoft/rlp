@@ -1,5 +1,6 @@
-#include "exception.hpp"
 #include "particle.hpp"
+
+#include "../util/exception.hpp"
 
 // constructors, destructors, getters, setters
 

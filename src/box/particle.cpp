@@ -1,8 +1,8 @@
 #include <list>
 
 #include "box.hpp"
-#include "exception.hpp"
-#include "random.hpp"
+#include "../util/exception.hpp"
+#include "../util/random.hpp"
 
 void PeriodicBox::add_particle(Particle *p)
 {

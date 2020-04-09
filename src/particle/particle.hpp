@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "vec.hpp"
+#include "../util/vec.hpp"
 
 class ParticleArrangement;
 class Particle {

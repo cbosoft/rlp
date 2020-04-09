@@ -1,13 +1,13 @@
 #include <cmath>
 #include <algorithm>
 
-#include "coords.hpp"
 #include "box.hpp"
-#include "vertex.hpp"
-#include "line.hpp"
-#include "triangle.hpp"
-#include "epsilon.hpp"
-#include "exception.hpp"
+#include "../arrangement/vertex.hpp"
+#include "../arrangement/line.hpp"
+#include "../arrangement/triangle.hpp"
+#include "../util/coords.hpp"
+#include "../util/epsilon.hpp"
+#include "../util/exception.hpp"
 
 
 void PeriodicBox::update_arrangements()

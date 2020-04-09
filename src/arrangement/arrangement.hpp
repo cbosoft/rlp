@@ -2,9 +2,9 @@
 
 #include <vector>
 
-#include "vec.hpp"
-#include "particle.hpp"
-#include "exception.hpp"
+#include "../util/vec.hpp"
+#include "../particle/particle.hpp"
+#include "../util/exception.hpp"
 
 class ParticleArrangement {
 

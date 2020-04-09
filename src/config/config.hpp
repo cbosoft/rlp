@@ -1,9 +1,9 @@
 #pragma once
 
-#include "vec.hpp"
-#include "particle.hpp"
-#include "box.hpp"
-#include "sieve.hpp"
+#include "../util/vec.hpp"
+#include "../particle/particle.hpp"
+#include "../box/box.hpp"
+#include "../sieve/sieve.hpp"
 
 class ConfigGenerator {
 

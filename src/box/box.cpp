@@ -1,5 +1,5 @@
 #include "box.hpp"
-#include "particle.hpp"
+#include "../particle/particle.hpp"
 
 // Constructors, destructors, setters and getters for PeriodicBox
 

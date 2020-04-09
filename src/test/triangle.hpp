@@ -1,9 +1,9 @@
 #pragma once
 
 #include "test.hpp"
-#include "../box.hpp"
-#include "../triangle.hpp"
-#include "../epsilon.hpp"
+#include "../box/box.hpp"
+#include "../arrangement/triangle.hpp"
+#include "../util/epsilon.hpp"
 
 
 class TriangleTrilaterationTest : public virtual TestRunner<std::pair<std::array<Vec3, 3>, double>, std::pair<bool, Vec3>> {

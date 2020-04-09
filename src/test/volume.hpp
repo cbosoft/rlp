@@ -1,10 +1,10 @@
 #pragma once
 
 #include "test.hpp"
-#include "../vec.hpp"
-#include "../particle.hpp"
-#include "../box.hpp"
-#include "../epsilon.hpp"
+#include "../particle/particle.hpp"
+#include "../box/box.hpp"
+#include "../util/vec.hpp"
+#include "../util/epsilon.hpp"
 
 class VolumeBasicTest : public virtual TestRunner<std::vector<Vec3>, double> {
 

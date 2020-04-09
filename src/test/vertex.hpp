@@ -1,10 +1,10 @@
 #pragma once
 
 #include "test.hpp"
-#include "../vec.hpp"
-#include "../vertex.hpp"
-#include "../box.hpp"
-#include "../particle.hpp"
+#include "../util/vec.hpp"
+#include "../arrangement/vertex.hpp"
+#include "../box/box.hpp"
+#include "../particle/particle.hpp"
 
 
 class VertexCreationTest : public virtual TestRunner<Vec3, int> {

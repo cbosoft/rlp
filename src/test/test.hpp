@@ -4,8 +4,8 @@
 #include <array>
 #include <iomanip>
 
-#include "../colour.hpp"
-#include "../exception.hpp"
+#include "../util/colour.hpp"
+#include "../util/exception.hpp"
 
 template<typename I, typename ER>
 class TestRunner {

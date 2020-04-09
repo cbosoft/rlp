@@ -1,7 +1,7 @@
 #include <fstream>
 
 #include "config.hpp"
-#include "exception.hpp"
+#include "../util/exception.hpp"
 
 ConfigGenerator::ConfigGenerator(double L, int verbosity, bool particles_are_seed, double friction_thresh, std::string output_file_path)
 {

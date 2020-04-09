@@ -1,8 +1,8 @@
 #pragma once
 
 #include "test.hpp"
-#include "../vec.hpp"
-#include "../epsilon.hpp"
+#include "../util/vec.hpp"
+#include "../util/epsilon.hpp"
 
 class VectorMagnitudeTest : public virtual TestRunner<Vec3, double> {
 

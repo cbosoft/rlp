@@ -3,9 +3,9 @@
 #include <vector>
 #include <list>
 
-#include "vec.hpp"
-#include "arrangement.hpp"
-#include "logger.hpp"
+#include "../arrangement/arrangement.hpp"
+#include "../util/vec.hpp"
+#include "../util/logger.hpp"
 
 class Particle;
 class PeriodicBox {

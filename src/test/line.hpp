@@ -1,7 +1,7 @@
 #include "test.hpp"
-#include "../line.hpp"
-#include "../vec.hpp"
-#include "../random.hpp"
+#include "../arrangement/line.hpp"
+#include "../util/vec.hpp"
+#include "../util/random.hpp"
 
 class LineCreationTest : public virtual TestRunner<std::pair<Vec3, Vec3>, int> {
 

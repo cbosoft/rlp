@@ -1,6 +1,7 @@
 #pragma once
-#include "random.hpp"
-#include "exception.hpp"
+
+#include "../util/random.hpp"
+#include "../util/exception.hpp"
 
 class Sieve {
 

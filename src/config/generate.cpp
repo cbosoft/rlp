@@ -1,9 +1,9 @@
 #include <chrono>
 
-#include "random.hpp"
-#include "vec.hpp"
 #include "config.hpp"
-#include "exception.hpp"
+#include "../util/random.hpp"
+#include "../util/vec.hpp"
+#include "../util/exception.hpp"
 
 #define CLOCK std::chrono::steady_clock
 
