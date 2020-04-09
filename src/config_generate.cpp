@@ -24,13 +24,23 @@ void ConfigGenerator::generate_particles(int n, int error_tolerance)
   int errors = 0;
   double generation_duration = -1;
   int i = 0;
+  auto last_print = CLOCK::now();
+  double time_since_print_duration = 100;
   while ((i = this->box.get_number_particles()) < n) {
-    std::cerr << BG_BLUE << "(" << this->box.get_number_particles() << ") (" << generation_duration << ") (" << errors << "/" << error_tolerance << ")" RESET " ";
-    if (this->verbosity < 1) {
-      std::cerr << std::endl;
-    }
 
     auto before = CLOCK::now();
+    time_since_print_duration = static_cast<double>((before - last_print).count()) * CLOCK::duration::period::num / CLOCK::duration::period::den;
+    if (time_since_print_duration > 1.0) {
+
+      last_print = CLOCK::now();
+      std::cerr << BG_BLUE << "(" << this->box.get_number_particles() << "/" << n << ") (" << generation_duration << ") (" << errors << "/" << error_tolerance << ")" RESET " ";
+
+      if (this->verbosity < 1) {
+        std::cerr << std::endl;
+      }
+    }
+
+    before = CLOCK::now();
 
     try {
       this->generate_particle();
