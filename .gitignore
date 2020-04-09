@@ -10,3 +10,4 @@ obj
 tests
 analysis.txt
 d.dot
+*/.*.un~
