@@ -215,7 +215,7 @@ int main(int argc, const char **argv)
       else if (ARGEQ("most"))
         args.error_tolerance = -2;
       else
-        args.error_tolerance = atoi(argv[++i]);
+        args.error_tolerance = atoi(argv[i]);
 
     }
     else if (ARGEQ("--infinitely-tolerate-errors")) {
