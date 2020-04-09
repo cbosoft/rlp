@@ -1,19 +1,22 @@
 from itertools import product
 import subprocess as sp
 
+from pb import ProgressBar, FG_GREEN, FG_RED, RESET
 
 
-number = [1000]
+number = [200]
 length = [10]
 seed = list(range(10))
 dist = ['mono', 'bi']
 
-nthreads = 10
+nthreads = 3
 processes = list()
 monitored = None
 
-done = 0
-for run_id, (n, l, d, s) in enumerate(product(number, length, dist, seed)):
+parameter_combinations = list(product(number, length, dist, seed))
+
+pb = ProgressBar(len(parameter_combinations))
+for run_id, (n, l, d, s) in enumerate(parameter_combinations):
     output_path = f'data/rlp_{n}_{l}_{d}_{s}.csv'
 
     command = f'./rlp -q --number {n} --length {l} --seed {s} --output-path {output_path} --disperse {d}'
@@ -22,36 +25,27 @@ for run_id, (n, l, d, s) in enumerate(product(number, length, dist, seed)):
         waiting = True
         while waiting:
             for i, (run_id_f, process) in enumerate(processes):
-                process.communicate()
+                so, se = process.communicate()
                 rc = process.poll()
                 if rc is None:
                     continue
                 else:
-                    if rc:
-                        print(run_id_f, 'FAILED!')
-                    else:
-                        print(run_id_f, 'FINISHED')
-                    done += 1
+                    status = FG_RED+'FAILED!'+RESET if rc else FG_GREEN+'FINISHED'+RESET
+                    pb.print(run_id, status)
+                    pb.update(rc == 0)
                     processes.pop(i)
                     waiting = False
-                    if monitored == process:
-                        monitored = None
                     break
 
-    if monitored is None:
-        process = sp.Popen(command, shell=True)
-        monitored = process
-    else:
-        process = sp.Popen(command, shell=True, stdout=sp.PIPE, stderr=sp.PIPE)
+    process = sp.Popen(command, shell=True, stdout=sp.PIPE, stderr=sp.PIPE)
     processes.append([run_id, process])
-    print(run_id, 'STARTED')
+    pb.print(run_id, 'STARTED')
 
 
 for run_id, process in processes:
     process.communicate()
     rc = process.wait()
-    if rc:
-        print(run_id, 'FAILED!')
-    else:
-        print(run_id, 'FINISHED')
+    status = FG_RED+'FAILED!'+RESET if rc else FG_GREEN+'FINISHED'+RESET
+    pb.print(run_id, status)
+    pb.update(rc == 0)
 
