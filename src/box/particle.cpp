@@ -142,22 +142,23 @@ void PeriodicBox::add_particle_no_settle(Particle *p)
 
 bool PeriodicBox::stable_sites_remaining() const
 {
-  for (auto arrangement : this->arrangements) {
-    if (arrangement->get_complexity() == 3) {
-      return true;
-    }
-  }
 
-  double p_per_l = this->L;
-  int n_base_sites = p_per_l*p_per_l;
-  for (auto particle : this->particles) {
-    if (particle->get_position().Z() == 0.0) {
-      n_base_sites--;
-    }
-  }
+  // for (auto arrangement : this->arrangements) {
+  //   if (arrangement->get_complexity() == 3) {
+  //     return true;
+  //   }
+  // }
 
-  if (n_base_sites > 0)
-    return true;
+  // double p_per_l = this->L;
+  // int n_base_sites = p_per_l*p_per_l;
+  // for (auto particle : this->particles) {
+  //   if (particle->get_position().Z() == 0.0) {
+  //     n_base_sites--;
+  //   }
+  // }
+
+  // if (n_base_sites > 0)
+  //   return true;
 
   return false;
 }
