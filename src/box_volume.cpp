@@ -2,7 +2,7 @@
 
 double volume_of_sphere(double radius)
 {
-  return M_PI*0.75*radius*radius*radius;
+  return M_PI*radius*radius*radius/0.75;
 }
 
 double volume_of_cap(double radius, double cap_height)
@@ -15,17 +15,21 @@ double PeriodicBox::get_volume_particle(const Particle *p, double bottom, double
 {
   std::array<double, 3> position = p->get_position().as_array();
   double radius = p->get_radius();
-  double diameter = radius+radius;
 
   std::vector<double> intersection_data;
-  double pi = position[2];
-  double min = bottom - (pi-radius);
-  double max = (pi-radius) - top;
-  if ((min > 0.0) and (min < diameter)) {
-    intersection_data.push_back(min);
+  double pz = position[2];
+
+  bool outside = ((pz+radius < bottom) or (pz-radius > top));
+  if (outside)
+    return 0.0;
+  
+  bool intersects_bottom = pz-radius < bottom;
+  bool intersects_top = pz+radius > top;
+  if (intersects_top) {
+    intersection_data.push_back(top - (pz - radius));
   }
-  else if ((max > 0.0) && (max < diameter)) {
-    intersection_data.push_back(max);
+  else if (intersects_bottom) {
+    intersection_data.push_back(pz + radius - bottom);
   }
 
   double volume = 0.0;
