@@ -7,7 +7,8 @@ from pb import ProgressBar, FG_GREEN, FG_RED, RESET
 number = [200]
 length = [10]
 seed = list(range(10))
-dist = ['mono', 'bi']
+dist = ['normal']
+std = [0.0, 0.02, 0.05, 0.1]
 
 nthreads = 3
 processes = list()
@@ -19,7 +20,7 @@ pb = ProgressBar(len(parameter_combinations))
 for run_id, (n, l, d, s) in enumerate(parameter_combinations):
     output_path = f'data/rlp_{n}_{l}_{d}_{s}.csv'
 
-    command = f'./rlp -q --number {n} --length {l} --seed {s} --output-path {output_path} --disperse {d}'
+    command = f'./rlp -q --number {n} --length {l} --seed {s} --output-path {output_path} --disperse {d} --error-tolerance most'
 
     if len(processes) >= nthreads:
         waiting = True
