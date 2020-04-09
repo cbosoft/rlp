@@ -24,6 +24,11 @@ ARRANGEMENT = \
 							obj/arrangement/line.o \
 							obj/arrangement/triangle.o
 
+SIEVE = \
+				obj/sieve/mono.o \
+				obj/sieve/bi.o \
+				obj/sieve/altbi.o
+
 TEST = \
 			 obj/test/run_tests.o \
 			 obj/test/line/creation.o \
@@ -40,10 +45,10 @@ TEST = \
 			 obj/test/triangle/trilateration.o \
 			 obj/test/volume/basic.o \
 			 obj/test/volume/cap.o \
-			 obj/test/volume/wall.o \
+			 obj/test/volume/wall.o
 
 HDR = $(shell ls src/**/*.hpp)
-OBJ = $(PARTICLE) $(UTIL) $(CONFIG) $(BOX) $(ARRANGEMENT) $(TEST)
+OBJ = $(PARTICLE) $(UTIL) $(CONFIG) $(BOX) $(ARRANGEMENT) $(SIEVE) $(TEST)
 LINK =
 DEFS =
 

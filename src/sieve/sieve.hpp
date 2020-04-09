@@ -19,20 +19,9 @@ class MonoSieve : virtual public Sieve {
 
   public:
 
-    MonoSieve() 
-    {
-      //
-    }
-
-    double get_size() const
-    {
-      return 1.0;
-    }
-
-    double get_mean() const
-    {
-      return 1.0;
-    }
+    MonoSieve();
+    double get_size() const;
+    double get_mean() const;
 
 };
 
@@ -46,31 +35,10 @@ class BiSieve : virtual public Sieve {
 
   public:
 
-    BiSieve(double ratio, double probability) 
-    {
-      if (ratio > 1.0)
-        ratio = 1.0/ratio;
+    BiSieve(double ratio, double probability);
+    double get_size() const;
+    double get_mean() const;
 
-      if (probability > 1.0)
-        throw ArgumentError("Probability cannot exceed 1.0.");
-
-      this->ratio = ratio;
-      this->probability = probability;
-
-    }
-
-    double get_size() const
-    {
-      double p = urand(0.0, 1.0);
-      if (p < this->probability)
-        return 1.0;
-      return this->ratio;
-    }
-
-    double get_mean() const
-    {
-      return this->probability + (1.0 - this->probability)*this->ratio;
-    }
 };
 
 
@@ -83,28 +51,8 @@ class AlternatingBiSieve : virtual public Sieve {
 
   public:
 
-    AlternatingBiSieve(double ratio) 
-    {
-      if (ratio > 1.0)
-        ratio = 1.0/ratio;
-      this->ratio = ratio;
-    }
+    AlternatingBiSieve(double ratio);
+    double get_size() const;
+    double get_mean() const;
 
-    double get_size() const
-    {
-      static bool prev = false;
-
-      prev = !prev;
-
-      if (prev) {
-        return 1.0;
-      }
-
-      return this->ratio;
-    }
-
-    double get_mean() const
-    {
-      return 0.5*(1.0 + this->ratio);
-    }
 };
