@@ -3,6 +3,7 @@
 #include "exception.hpp"
 #include "random.hpp"
 #include "sieve.hpp"
+#include "version.hpp"
 
 #define EITHER(A,B) ((strcmp(argv[i], A) == 0) || (strcmp(argv[i], B) == 0))
 
@@ -223,6 +224,38 @@ int main(int argc, const char **argv)
     double rho1d = args.length / mean_diameter;
     args.number = int(1.5*rho1d*rho1d*rho1d);
   }
+
+  if (args.verbosity >= 0) {
+    std::cerr 
+      << BOLD "RLP" RESET ": Random Loose Packing " << VERSION <<"\n"
+      << "Generating configuration of " << args.number << " particles in a box of side " << args.length << ".\n"
+      ;
+
+    if (strcmp(args.sieve_type, "mono") == 0) {
+      std::cerr << "Particles are monodisperse with diameter of " << mean_diameter << "." << std::endl;
+    }
+    else if (strcmp(args.sieve_type, "bi") == 0) {
+      std::cerr << "Particles are bi-disperse. Diameter has " 
+        << (1.0 - args.bi_probability)*100.0 << "% chance of being " << args.bi_ratio << ". Mean diameter is " << mean_diameter << "." << std::endl;
+    }
+    else if (strcmp(args.sieve_type, "altbi") == 0) {
+      std::cerr << "Particles are bi-disperse (alternating). Diameter will alternate between 1.0 and " << args.bi_ratio
+        << ". Mean diameter is " << mean_diameter << "." << std::endl;
+    }
+
+    std::cerr << "Config file will be written to " << args.output_path << std::endl;
+    if (args.error_tolerance > 0) {
+      std::cerr << args.error_tolerance << " non-trivial errors will be tolerated." << std::endl;
+    }
+    else if (args.error_tolerance < 0) {
+      std::cerr << "All non-trivial errors will be tolerated." << std::endl;
+    }
+    else {
+      std::cerr << "No non-trivial errors will be tolerated." << std::endl;
+    }
+
+  }
+
 
   seed(args.seed);
 
