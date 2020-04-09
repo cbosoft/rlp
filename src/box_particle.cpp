@@ -86,33 +86,45 @@ void PeriodicBox::settle_particle(Particle *p, int n, int recursion_limit)
 
   this->log(Formatter() << interacting_arrangement->repr() << "->");
 
-  Vec3 new_position = interacting_arrangement->get_interaction_result(p);
-  new_position = this->get_effective_position(new_position);
-  p->set_position(new_position);
-  p->set_previous_interacting(interacting_arrangement);
 
-  if (interacting_arrangement->is_final()) {
+  if (is_particle_frictional(p)) {
 
-
+    Vec3 new_position = interacting_arrangement->get_frictional_interaction_result(p);
+    p->set_position(new_position);
+    p->set_previous_interacting(interacting_arrangement);
     this->check_particle_set_settled(p);
 
-
-    // for (auto arrangement : interacting_arrangements) {
-
-    //   if (interacting_arrangement == arrangement)
-    //     continue;
-
-    //   if (interacting_arrangement->covers(arrangement)) {
-    //     this->arrangements.remove(arrangement);
-    //     delete arrangement;
-    //   }
-    // }
-
-    // this->arrangements.remove(interacting_arrangement);
-    // delete interacting_arrangement;
   }
-  else {
-    this->settle_particle(p, n+1, recursion_limit);
+  else{
+
+    Vec3 new_position = interacting_arrangement->get_interaction_result(p);
+    new_position = this->get_effective_position(new_position);
+    p->set_position(new_position);
+    p->set_previous_interacting(interacting_arrangement);
+
+    if (interacting_arrangement->is_final()) {
+
+
+      this->check_particle_set_settled(p);
+
+
+      // for (auto arrangement : interacting_arrangements) {
+
+      //   if (interacting_arrangement == arrangement)
+      //     continue;
+
+      //   if (interacting_arrangement->covers(arrangement)) {
+      //     this->arrangements.remove(arrangement);
+      //     delete arrangement;
+      //   }
+      // }
+
+      // this->arrangements.remove(interacting_arrangement);
+      // delete interacting_arrangement;
+    }
+    else {
+      this->settle_particle(p, n+1, recursion_limit);
+    }
   }
 }
 
@@ -162,4 +174,9 @@ double PeriodicBox::get_lowest_surface_height(int n) const
   // delete mesh;
 
   // return lowest;
+}
+
+bool PeriodicBox::is_particle_frictional(const Particle *p) const
+{
+  return p->get_diameter() > this->friction_thresh;
 }

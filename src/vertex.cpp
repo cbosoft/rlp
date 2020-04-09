@@ -40,6 +40,23 @@ start:
 }
 
 
+Vec3 Vertex::get_frictional_interaction_result(const Particle *p)
+{
+  double time = 0.0;
+  Vec3 result;
+  
+  if (not this->get_two_particle_frictional_interaction(p, this->particle, time, result)) {
+    throw IntersectionError("Intersection failure (vertex)");
+  }
+
+  return result;
+}
+
+
+
+
+
+
 double Vertex::get_sort_distance(const Particle *p)
 {
   double dp = this->box->get_effective_separation(p->get_position(), this->particle->get_position()).magnitude();

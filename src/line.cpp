@@ -98,6 +98,28 @@ start:
   return S.promote<3>( (h1>h2) ? h2 : h1 );
 }
 
+Vec3 Line::get_frictional_interaction_result(const Particle *p)
+{
+  double time = 0.0, result_time = 1e9;
+  Vec3 position, result_position;
+ 
+  bool interacts = false;
+  for (auto particle : this->particles) { 
+    bool res = this->get_two_particle_frictional_interaction(p, particle, time, position);
+
+    interacts |= res;
+
+    if (time < result_time)
+      result_position = position;
+
+  }
+
+  if (not interacts)
+    throw IntersectionError("Intersection failed (line)");
+
+  return result_position;
+}
+
 
 double Line::get_sort_distance(const Particle *p)
 {

@@ -18,6 +18,7 @@ class PeriodicBox {
     std::list<ParticleArrangement *> arrangements;
     Logger logger;
     bool particles_are_seed;
+    double friction_thresh;
 
     void check_particle_set_settled(Particle *p);
     void clear_particles();
@@ -28,11 +29,12 @@ class PeriodicBox {
 
     double get_volume_particle(const Particle *p, double bottom, double top) const;
     double get_lowest_surface_height(int n=4) const;
+    bool is_particle_frictional(const Particle *p) const;
 
   public:
 
     PeriodicBox() : PeriodicBox(0.0) {}
-    PeriodicBox(double L, int verbosity=1, const char *log_file_path=nullptr);
+    PeriodicBox(double L, int verbosity=1, const char *log_file_path=nullptr, double friction_thresh=2.0);
     ~PeriodicBox();
 
     void reserve(int n);
@@ -53,6 +55,7 @@ class PeriodicBox {
     std::list<ParticleArrangement *> get_arrangements() const;
     int get_number_particles() const;
     double get_volume_fraction() const;
+    double get_friction_fraction() const;
 
     const std::vector<Particle *> get_particles() const;
 

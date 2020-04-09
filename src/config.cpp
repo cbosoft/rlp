@@ -3,9 +3,9 @@
 #include "config.hpp"
 #include "exception.hpp"
 
-ConfigGenerator::ConfigGenerator(double L, int verbosity, bool particles_are_seed, std::string output_file_path)
+ConfigGenerator::ConfigGenerator(double L, int verbosity, bool particles_are_seed, double friction_thresh, std::string output_file_path)
 {
-  this->box = PeriodicBox(L, verbosity);
+  this->box = PeriodicBox(L, verbosity, nullptr, friction_thresh);
   this->verbosity = verbosity;
   this->box.set_particles_are_seed(particles_are_seed);
   this->output_file_path = output_file_path;
@@ -28,7 +28,7 @@ void ConfigGenerator::output_configuration()
   if (of.fail())
     throw IOError(Formatter() << "Error opening config file '" << this->output_file_path << "' for write! ", true);
 
-  of << this->box.get_L() << ", " << this->box.get_volume_fraction() << std::endl;
+  of << this->box.get_L() << ", " << this->box.get_volume_fraction() << ", " << this->box.get_friction_fraction() << std::endl;
   for (const Particle *particle : this->box.get_particles()) {
     of << particle->get_diameter() << ", " << particle->get_position().to_csv() << std::endl;
   }

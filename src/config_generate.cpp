@@ -7,6 +7,15 @@
 
 #define CLOCK std::chrono::steady_clock
 
+#define INC_ERROR_COUNT \
+  if ( (error_tolerance < 0) or (errors < error_tolerance) ) {\
+    errors ++;\
+  }\
+  else {\
+    throw e;\
+  }
+
+
 void ConfigGenerator::generate_particles(int n, int error_tolerance)
 {
 
@@ -29,18 +38,17 @@ void ConfigGenerator::generate_particles(int n, int error_tolerance)
     catch (const SettleError& e) {
       // do nothing
     }
+    catch (const IntersectionError& e) {
+      INC_ERROR_COUNT;
+    }
     catch (const MathError& e) {
-      // also do nothing
+      INC_ERROR_COUNT;
+    }
+    catch (const RecursionError& e) {
+      INC_ERROR_COUNT;
     }
     catch (const Exception& e) {
-
-      if ( (error_tolerance < 0) or (errors < error_tolerance) ) {
-        errors ++;
-      }
-      else {
-        throw e;
-      }
-
+      INC_ERROR_COUNT;
     }
 
     auto after = CLOCK::now();

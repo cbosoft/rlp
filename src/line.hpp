@@ -17,6 +17,7 @@ class Line : public virtual ParticleArrangement {
 
     bool check_interacts_with(const Particle *p) override;
     Vec3 get_interaction_result(const Particle *p) override;
+    Vec3 get_frictional_interaction_result(const Particle *p) override;
     double get_sort_distance(const Particle *p) override;
     double get_max_distance(const Particle *p) override;
     double get_min_distance(const Particle *p) override;
