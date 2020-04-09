@@ -132,3 +132,8 @@ bool PeriodicBox::is_particle_frictional(const Particle *p) const
 {
   return p->get_diameter() > this->friction_thresh;
 }
+
+void PeriodicBox::add_particle_no_settle(Particle *p)
+{
+  this->particles.push_back(p);
+}

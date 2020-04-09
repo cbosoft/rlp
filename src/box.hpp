@@ -56,6 +56,7 @@ class PeriodicBox {
     int get_number_particles() const;
     double get_volume_fraction() const;
     double get_friction_fraction() const;
+    void add_particle_no_settle(Particle *p);
 
     const std::vector<Particle *> get_particles() const;
 
@@ -63,6 +64,10 @@ class PeriodicBox {
 
     void log(std::string s) { this->logger.log(s); }
     void log(std::string s, int minimum_verbosity) { this->logger.log(s, minimum_verbosity); }
+
+    friend class VolumeBasicTest;
+    friend class VolumeWallTest;
+    friend class VolumeCapTest;
 
 
 };

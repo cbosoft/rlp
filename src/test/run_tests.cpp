@@ -4,6 +4,7 @@
 #include "line.hpp"
 #include "triangle.hpp"
 #include "multi.hpp"
+#include "volume.hpp"
 
 void run_tests(bool quiet)
 {
@@ -28,4 +29,9 @@ void run_tests(bool quiet)
 
   // multi
   MultiInteractionTest(quiet).run_each();
+
+  // volume
+  VolumeBasicTest(quiet).run_each();
+  VolumeWallTest(quiet).run_each();
+  VolumeCapTest(quiet).run_each();
 }
