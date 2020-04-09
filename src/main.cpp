@@ -8,7 +8,7 @@
 
 void show_help_and_exit()
 {
-  std::cerr 
+  std::cout 
     << "\n"
     << "  " BOLD "RLP:" RESET " Random Loose Packing\n"
     << "\n"
