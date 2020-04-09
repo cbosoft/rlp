@@ -1,5 +1,6 @@
 #pragma once
 #include "random.hpp"
+#include "exception.hpp"
 
 class Sieve {
 
@@ -9,26 +10,27 @@ class Sieve {
     virtual ~Sieve() { };
 
     virtual double get_size() const =0;
+    virtual double get_mean() const =0;
 };
 
 
 class MonoSieve : virtual public Sieve {
 
-  private:
-
-    double diameter;
-
   public:
 
-    MonoSieve(double diameter=1.0) 
-      : diameter(diameter) 
+    MonoSieve() 
     {
       //
     }
 
     double get_size() const
     {
-      return this->diameter;
+      return 1.0;
+    }
+
+    double get_mean() const
+    {
+      return 1.0;
     }
 
 };
@@ -39,23 +41,34 @@ class BiSieve : virtual public Sieve {
 
   private:
 
-    double diameter1, diameter2;
+    double ratio, probability;
 
   public:
 
-    BiSieve(double diameter1=1.0, double diameter2=0.5) 
-      : diameter1(diameter1), diameter2(diameter2) 
+    BiSieve(double ratio, double probability) 
     {
-      //
+      if (ratio > 1.0)
+        ratio = 1.0/ratio;
+
+      if (probability > 1.0)
+        throw ArgumentError("Probability cannot exceed 1.0.");
+
+      this->ratio = ratio;
+      this->probability = probability;
+
     }
 
     double get_size() const
     {
-      if (urand(0,1)) {
-        return this->diameter1;
-      }
+      double p = urand(0.0, 1.0);
+      if (p < this->probability)
+        return 1.0;
+      return this->ratio;
+    }
 
-      return this->diameter2;
+    double get_mean() const
+    {
+      return this->probability + (1.0 - this->probability)*this->ratio;
     }
 };
 
@@ -65,14 +78,15 @@ class AlternatingBiSieve : virtual public Sieve {
 
   private:
 
-    double diameter1, diameter2;
+    double ratio;
 
   public:
 
-    AlternatingBiSieve(double diameter1=1.0, double diameter2=0.5) 
-      : diameter1(diameter1), diameter2(diameter2)
+    AlternatingBiSieve(double ratio) 
     {
-      //
+      if (ratio > 1.0)
+        ratio = 1.0/ratio;
+      this->ratio = ratio;
     }
 
     double get_size() const
@@ -82,9 +96,14 @@ class AlternatingBiSieve : virtual public Sieve {
       prev = !prev;
 
       if (prev) {
-        return this->diameter1;
+        return 1.0;
       }
 
-      return this->diameter2;
+      return this->ratio;
+    }
+
+    double get_mean() const
+    {
+      return 0.5*(1.0 + this->ratio);
     }
 };
