@@ -23,8 +23,8 @@ void show_help_and_exit()
     << "  " BOLD "Options" RESET "\n"
     << "    --number <val>  Number of particles to settle in the box. More particles\n"
     << "                    takes more time, but increases the accuracy of the result.\n"
-    << "                    A full box (n = (length/diameter)^3) is recommended min.\n"
-    << "                    Default: 100.\n"
+    << "                    Value can also be 'recommended' to get a full box according\n"
+    << "                    to: n = 1.5*(length/mean_diameter)^3. Default: 'recommended'.\n"
     << "\n"
     << "    --length <val>  Length of side of cubic box. Default: 10.0.\n"
     << "\n"
@@ -100,6 +100,7 @@ int main(int argc, const char **argv)
 {
 
   struct {
+    // number and density
     int number;
     double length;
 
@@ -119,7 +120,7 @@ int main(int argc, const char **argv)
     bool particles_are_seed;
     double friction_thresh;
   } args = {
-    .number = 100,
+    .number = -1,
     .length = 10.0,
     
     .sieve_type = "mono",
@@ -139,7 +140,12 @@ int main(int argc, const char **argv)
   argc--; argv++;
   for (int i = 0; i < argc; i++) {
     if (EITHER("-n", "--number")) {
-      args.number = std::atoi(argv[++i]);
+
+      if (strcmp(argv[++i], "recommended") == 0)
+        args.number = -1;
+      else
+        args.number = std::atoi(argv[i]);
+
     }
     else if (EITHER("-l", "--length")) {
       args.length = std::atof(argv[++i]);
@@ -211,7 +217,12 @@ int main(int argc, const char **argv)
   else {
     throw ArgumentError(Formatter() << "Unrecognised sieve type \"" << args.sieve_type << "\".");
   }
+  double mean_diameter = cg.get_sieve()->get_mean();
 
+  if (args.number < 0) {
+    double rho1d = args.length / mean_diameter;
+    args.number = int(1.5*rho1d*rho1d*rho1d);
+  }
 
   seed(args.seed);
 
