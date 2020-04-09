@@ -57,6 +57,7 @@ class PeriodicBox {
     double get_volume_fraction() const;
     double get_friction_fraction() const;
     void add_particle_no_settle(Particle *p);
+    bool stable_sites_remaining() const;
 
     const std::vector<Particle *> get_particles() const;
 

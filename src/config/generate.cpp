@@ -26,6 +26,7 @@ void ConfigGenerator::generate_particles(int n, int error_tolerance)
   int i = 0;
   auto last_print = CLOCK::now();
   double time_since_print_duration = 100;
+  int previous_number = 0, count_same = 0;
   while ((i = this->box.get_number_particles()) < n) {
 
     auto before = CLOCK::now();
@@ -63,6 +64,14 @@ void ConfigGenerator::generate_particles(int n, int error_tolerance)
 
     auto after = CLOCK::now();
     generation_duration = static_cast<double>((after - before).count()) * CLOCK::duration::period::num / CLOCK::duration::period::den;
+
+    if (i == previous_number)
+      count_same ++;
+
+    if (count_same >= 100) {
+      if (not this->box.stable_sites_remaining())
+        throw NoSitesRemainError("No sites remaining!");
+    }
   }
 
   std::cerr << BG_BLUE << this->box.get_volume_fraction() << RESET << std::endl;

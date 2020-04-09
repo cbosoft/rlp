@@ -102,6 +102,7 @@ EXCEPTION(SettleError, "SettleError");
 EXCEPTION(IntersectionError, "IntersectionError");
 EXCEPTION(RecursionError, "RecursionError");
 EXCEPTION(TestError, "TestError");
+EXCEPTION(NoSitesRemainError, "NoSitesRemainError");
 
 
 
