@@ -59,3 +59,58 @@ double PeriodicBox::get_volume_fraction() const
   double box_volume = this->L*this->L*lowest_surface_height;
   return total_particle_volume / box_volume;
 }
+
+
+
+
+
+double PeriodicBox::get_lowest_surface_height(int n) const
+{
+  (void)n;
+
+  return this->L;
+
+  // averaging method: disabled 2020-04-09
+  // double tot = 0.0;
+  // for (auto particle : this->particles) {
+  //   tot += particle->get_position().Z();
+  // }
+  // double v = tot/double(this->particles.size());
+  // return v;
+
+  // meshing method: disabled 2020-04-08
+  // double dL = this->L / double(n);
+  // double **mesh = new double*[n];
+  // for (int i = 0; i < n; i++)
+  //   mesh[i] = new double[n];
+
+  // for (auto particle : this->particles) {
+  //   Vec3 v = particle->get_position();
+  //   double px = v.X();
+  //   double py = v.Y();
+  //   double pz = v.Z();
+
+  //   int ix = int(px/dL);
+  //   int iy = int(py/dL);
+
+  //   if ((ix > (n-1)) or (iy > (n-1)))
+  //     throw MathError("Index error in get_lowest_surface_height");
+
+  //   if (pz > mesh[ix][iy])
+  //     mesh[ix][iy] = pz;
+  // }
+
+  // double lowest = mesh[0][0];
+  // for (int i = 0; i < n; i++) {
+  //   for (int j = 0; j < n; j++) {
+  //     if (mesh[i][j] < lowest)
+  //       lowest = mesh[i][j];
+  //   }
+  // }
+
+  // for (int i = 0; i < n; i++)
+  //   delete mesh[i];
+  // delete mesh;
+
+  // return lowest;
+}
