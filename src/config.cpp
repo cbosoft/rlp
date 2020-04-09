@@ -42,3 +42,8 @@ void ConfigGenerator::set_sieve(Sieve *s)
   delete this->sieve;
   this->sieve = s;
 }
+
+const Sieve *ConfigGenerator::get_sieve() const
+{
+  return this->sieve;
+}

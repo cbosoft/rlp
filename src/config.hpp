@@ -24,5 +24,6 @@ class ConfigGenerator {
     void generate_particle();
     void output_configuration(bool fail=false);
     void set_sieve(Sieve *s);
+    const Sieve *get_sieve() const;
 
 };
