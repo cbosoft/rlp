@@ -1,4 +1,4 @@
-# RLP: Really Lame Packer
+# RLP: Really Lame Packer v0.2
 
 Rather Lively Peacock forms configurations of red little particles in random
 loose packing (minimum concentration for self-supporting structures).
@@ -28,4 +28,3 @@ hence the thresholding method.
   - [ ] Add more particle size distribution (normal, uniform, exponential,
     power-law...)
   - [ ] Add tests for frictional interaction
-  - [ ] Add tests for volume fraction calculation
