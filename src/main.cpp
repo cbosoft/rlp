@@ -89,7 +89,7 @@ int main(int argc, const char **argv)
   if (args.run_tests)
     run_tests();
 
-  ConfigGenerator cg = ConfigGenerator(args.length, args.verbosity, args.particles_are_seed);
+  ConfigGenerator cg = ConfigGenerator(args.length, args.verbosity, args.particles_are_seed, args.output_path);
 
   if (strcmp(args.disperse, "mono") == 0) {
     cg.set_sieve(new MonoSieve());
@@ -112,9 +112,9 @@ int main(int argc, const char **argv)
   }
   catch (const Exception &e) {
     if (args.output_on_error)
-      cg.output_configuration(args.output_path);
+      cg.output_configuration();
     throw e;
   }
 
-  cg.output_configuration(args.output_path);
+  cg.output_configuration();
 }
