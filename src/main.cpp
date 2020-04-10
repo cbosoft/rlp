@@ -40,9 +40,19 @@ void show_help_and_exit()
     << "\n"
     << "    --seed <val>    Seed the random number generator with an integer. Default: 1.\n"
     << "\n"
-    << "    --verbose       Make the sim more verbose every time this flag appears.\n"
+    << "    --verbose       Make the sim more verbose every time this flag appears. More\n"
+    << "                    verbose output means more detail, that may be harder to\n"
+    << "                    follow at a glance but will be more useful when tracing an \n"
+    << "                    error. This will primarily change the way progress is\n"
+    << "                    displayed. See the '--progress-xx' flags below.\n"
     << "\n"
     << "    --quiet         Make the sim less verbose every time this flag appears.\n"
+    << "\n"
+    << "    --progress-bar  Set the verbosity low such that progress is indicated by\n"
+    << "                    simple graphical bars.\n"
+    << "\n"
+    << "    --progress-json  Set the verbosity at its minimum: use JSON structured output\n"
+    << "                    intended to be parsed by an outside program.\n"
     << "\n"
     << "    --error-tolerance <val>  Set the number of allowable errors to <v>. This\n"
     << "                    will make the config generator ignore a number of errors.\n"
@@ -230,6 +240,12 @@ int main(int argc, const char **argv)
     else if (ARGEQ("--dont-output-on-error")) {
       args.output_on_error = false;
     }
+    else if (ARGEQ("--progress-bar")) {
+      args.verbosity = 0;
+    }
+    else if (ARGEQ("--progress-json")) {
+      args.verbosity = -1;
+    }
     else if (ARGEQ("--help")) {
       show_help_and_exit();
     }
@@ -237,6 +253,11 @@ int main(int argc, const char **argv)
       throw ArgumentError(Formatter() << "Unrecognised argument \"" << argv[i] << "\".");
     }
   }
+
+
+
+
+
 
   if (args.run_tests)
     run_tests(args.verbosity < 1);
@@ -271,6 +292,9 @@ int main(int argc, const char **argv)
   if (args.error_tolerance == -2) {
     args.error_tolerance = args.number;
   }
+
+
+
 
   if (args.verbosity >= 0) {
     std::cerr 

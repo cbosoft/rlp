@@ -36,7 +36,11 @@ void ConfigGenerator::generate_particles(int n, int error_tolerance)
     time_since_print_duration = static_cast<double>((before - last_print).count()) * CLOCK::duration::period::num / CLOCK::duration::period::den;
     if (time_since_print_duration > 1.0) {
 
-      if (verbosity <= 0) {
+
+      if (verbosity < 0){
+        std::cout << "[" << count_same << ", " << errors << ", " << i << "]" << std::endl;
+      }
+      else if (verbosity == 0) {
         last_print = CLOCK::now();
         pb.set_values({count_same, errors, i});
         pb.draw();
