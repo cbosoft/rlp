@@ -293,7 +293,8 @@ int main(int argc, const char **argv)
 
   if (args.number < 0) {
     double n_per_l = args.length / mean_diameter;
-    args.number = int(1.5*n_per_l*n_per_l*n_per_l);
+    double n_per_l_p1 = (args.length + 1) / mean_diameter;
+    args.number = int(n_per_l_p1*n_per_l*n_per_l);
   }
 
   if (args.error_tolerance == -2) {
