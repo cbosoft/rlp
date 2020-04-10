@@ -29,7 +29,7 @@ if __name__ == "__main__":
     print(n)
     interested_particle = particles[last]
     interested_position = interested_particle.position
-    particles.append(Particle(1.0, 3.07002, 9.87032-10.0, 0, 1000))
+    #particles.append(Particle(1.0, 3.07002, 9.87032-10.0, 0, 1000))
 
     fig, axes = plt.subplots(ncols=3, subplot_kw=dict(aspect='equal'), figsize=(15,5))
     titles = ['Right: -X -> YZ', 'Front: Y -> XZ', 'Top: -Z -> XY']
@@ -70,6 +70,11 @@ if __name__ == "__main__":
     # x.append(x[0])
     # y.append(y[0])
     # plt.plot(x, y)
-    plt.text(0.5, 0.9, f'Configuration of {n} particles, $\\phi = {vf:.3f}$, $f = {ff:.3f}$', transform=fig.transFigure, ha='center', size='xx-large')
+    Zmin = np.median([p.Z for p in particles])
+    Zav = np.mean([p.Z for p in particles])
+    Zmax = np.max([p.Z for p in particles])
+    print(Zmin, Zav, Zmax)
+    granular_rlp = Zav/(Zav + (2.0*np.sqrt(3)))
+    plt.text(0.5, 0.9, f'Configuration of {n} particles, $\\phi = {vf:.3f}$, $f = {ff:.3f}$, $\\phi_{{rlp,granular}} = {granular_rlp:.3f}$', transform=fig.transFigure, ha='center', size='xx-large')
     plt.savefig(args[1])
 
