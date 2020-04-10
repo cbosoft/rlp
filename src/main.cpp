@@ -59,7 +59,7 @@ void show_help_and_exit()
     << "                    Set to 0 to not ignore errors, set to -1 to ignore all\n"
     << "                    errors. Can also be set to 'all' to ignore all, or set\n"
     << "                    to 'most' to ignore errors until it becomes ridiculous.\n"
-    << "                    Default: 0.\n"
+    << "                    Default: most.\n"
     << "\n"
     << "    --infinitely-tolerate-errors <val>  Same as '--error-tolerance all'\n"
     << "\n"
@@ -166,7 +166,7 @@ int main(int argc, const char **argv)
     .output_path = "out.csv",
     .seed = 1,
     .verbosity = 0,
-    .error_tolerance = 0,
+    .error_tolerance = -2,
     .run_tests = true,
     .output_on_error = true,
     .particles_are_seed = false,
