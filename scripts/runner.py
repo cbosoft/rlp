@@ -40,11 +40,10 @@ if __name__ == "__main__":
         exit(1)
     
     
-    number = [500]
-    length = [10]
+    number = [8400]
+    length = [20]
     seed = list(range(10))
-    dist = ['normal']
-    std = [0.0, 0.02, 0.05, 0.1]
+    dist = ['mono']
     
     nthreads = 3
     processes = list()
