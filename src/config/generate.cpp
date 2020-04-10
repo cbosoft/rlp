@@ -29,7 +29,7 @@ void ConfigGenerator::generate_particles(int n, int error_tolerance)
   double time_since_print_duration = 100;
   int previous_number = 0, count_same = 0, inaction_thresh = 10000;
   ProgressBar pb;
-  if (verbosity == 1) pb = ProgressBar({"Inaction", "Errors", "Number"}, {inaction_thresh, error_tolerance, n});
+  if (verbosity == 0) pb = ProgressBar({"Inaction", "Errors", "Number"}, {inaction_thresh, error_tolerance, n});
   while ((i = this->box.get_number_particles()) < n) {
 
     auto before = CLOCK::now();
