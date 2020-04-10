@@ -27,6 +27,7 @@ class Particle {
     Vec3 get_position() const noexcept;
 
 
+    int get_contact_number() const noexcept;
     double get_diameter() const noexcept;
     double get_radius() const noexcept;
     bool is_settled() const noexcept;

@@ -89,3 +89,8 @@ ParticleArrangement *Particle::get_previous_interacting() const noexcept
 {
   return this->previous_interaction;
 }
+
+int Particle::get_contact_number() const noexcept
+{
+  return this->neighbours.size();
+}
