@@ -26,6 +26,7 @@ class ProgressBar {
 
   public:
 
+    ProgressBar() {};
     ProgressBar(std::vector<std::string> variables, std::vector<int> maximums)
       : variables(variables), maximums(maximums)
     {
