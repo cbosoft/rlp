@@ -267,20 +267,27 @@ int main(int argc, const char **argv)
   if (strcmp(args.sieve_type, "mono") == 0) {
     cg.set_sieve(new MonoSieve());
   }
-  else if (strcmp(args.sieve_type, "bi") == 0) {
-    cg.set_sieve(new BiSieve(args.bi_ratio, args.bi_probability));
-  }
-  else if (strcmp(args.sieve_type, "altbi") == 0) {
-    cg.set_sieve(new AlternatingBiSieve(args.bi_ratio));
-  }
-  else if (strcmp(args.sieve_type, "normal") == 0) {
-    cg.set_sieve(new NormalSieve(args.normal_std));
-  }
-  else if (strcmp(args.sieve_type, "uniform") == 0) {
-    cg.set_sieve(new UniformSieve(args.uniform_min));
-  }
-  else {
-    throw ArgumentError(Formatter() << "Unrecognised sieve type \"" << args.sieve_type << "\".");
+  else{ 
+  
+    if (args.error_tolerance == 0) {
+      throw ArgumentError(Formatter() << "Using a polydisperse sieve with no error tolerance will very likely end early due to error.");
+    }
+  
+    if (strcmp(args.sieve_type, "bi") == 0) {
+      cg.set_sieve(new BiSieve(args.bi_ratio, args.bi_probability));
+    }
+    else if (strcmp(args.sieve_type, "altbi") == 0) {
+      cg.set_sieve(new AlternatingBiSieve(args.bi_ratio));
+    }
+    else if (strcmp(args.sieve_type, "normal") == 0) {
+      cg.set_sieve(new NormalSieve(args.normal_std));
+    }
+    else if (strcmp(args.sieve_type, "uniform") == 0) {
+      cg.set_sieve(new UniformSieve(args.uniform_min));
+    }
+    else {
+      throw ArgumentError(Formatter() << "Unrecognised sieve type \"" << args.sieve_type << "\".");
+    }
   }
   double mean_diameter = cg.get_sieve()->get_mean();
 
