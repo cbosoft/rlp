@@ -6,9 +6,8 @@ loose packing (minimum concentration for self-supporting structures).
 # Status
 
 Randy Looking Porcupines is in almost there. The racontour-like particles are
-settling in a manner like Random Loose Packing (i.e. volume fraction approx 0.55
-for monodisperse spheres). Rampant Lavish Peas can create configurations of
-(mono- and bidisperse) particles approaching Random Loose Packing.
+settling to something like Random Loose Packing (i.e. volume fraction approx 0.55
+for monodisperse spheres).
 
 Rakish Lounging Pandas outputs the configuration to .csv, where the first line
 contains some meta data (box size, volume fraction, friction fraction) and
