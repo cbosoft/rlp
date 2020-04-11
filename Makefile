@@ -6,6 +6,8 @@ PARTICLE = \
 
 UTIL = \
 			 obj/util/vec.o \
+			 obj/util/args.o \
+			 obj/util/help.o \
 			 obj/util/random.o
 
 CONFIG = \
