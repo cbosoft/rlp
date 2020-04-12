@@ -16,10 +16,13 @@ CONFIG = \
 
 BOX = \
 			obj/box/box.o \
-			obj/box/bounds.o \
-			obj/box/arrangements.o \
 			obj/box/particle.o \
-			obj/box/volume.o
+			obj/box/volume.o \
+			obj/box/xyperiodic/xyperiodicbox.o \
+			obj/box/xyperiodic/bounds.o \
+			obj/box/xyperiodic/arrangements.o \
+			obj/box/xyperiodic/particle.o \
+			obj/box/xyperiodic/volume.o
 
 ARRANGEMENT = \
 							obj/arrangement/vertex.o \

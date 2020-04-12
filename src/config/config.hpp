@@ -9,7 +9,7 @@ class ConfigGenerator {
 
   private:
 
-    PeriodicBox box;
+    GenericBox *box;
     Sieve *sieve;
     int verbosity;
     std::string output_file_path;
@@ -18,12 +18,13 @@ class ConfigGenerator {
 
   public:
 
-    ConfigGenerator(double L, int verbosity, bool particles_are_seed, double friction_thresh, std::string output_file_path);
+    ConfigGenerator(int verbosity, std::string output_file_path);
 
     void generate_particles(int n, int error_tolerance);
     void generate_particle();
     void output_configuration(bool fail=false);
     void set_sieve(Sieve *s);
+    void set_box(GenericBox *b);
     const Sieve *get_sieve() const;
 
 };

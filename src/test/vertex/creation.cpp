@@ -15,7 +15,7 @@ VertexCreationTest::VertexCreationTest(bool is_quiet)
 
 void VertexCreationTest::run(Vec3 point, int expected_result)
 {
-  PeriodicBox box(10.0, this->is_quiet?-10:0);
+  XYPeriodicBox box(10.0, this->is_quiet?-10:0);
   Particle *p = new Particle(1.0, point);
   box.add_particle(p);
 

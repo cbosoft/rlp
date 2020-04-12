@@ -17,7 +17,7 @@ void MultiInteractionTest::run(Vec3 point, Vec3 expected_result)
 {
 
   // build
-  PeriodicBox box(10.0, this->is_quiet?-10:0);
+  XYPeriodicBox box(10.0, this->is_quiet?-10:0);
   Particle *pi = new Particle(1.0, Vec3({4.71171, 0.118055, 10.0}));
   box.add_particle(pi);
   pi->set_position(Vec3({4.71171, 0.118055, 0.363677}));

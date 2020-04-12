@@ -3,7 +3,7 @@
 #include <array>
 
 #include "arrangement.hpp"
-#include "../box/box.hpp"
+#include "../box/xyperiodic/xyperiodicbox.hpp"
 
 
 class Line : public virtual ParticleArrangement {
@@ -11,10 +11,10 @@ class Line : public virtual ParticleArrangement {
   private:
     double dist, supportable_size;
     std::array<Particle *, 2> particles;
-    PeriodicBox *box;
+    XYPeriodicBox *box;
 
   public:
-    Line(Particle *a, Particle *b, PeriodicBox *box);
+    Line(Particle *a, Particle *b, XYPeriodicBox *box);
 
     bool check_interacts_with(const Particle *p) override;
     Vec3 get_interaction_result(const Particle *p) override;

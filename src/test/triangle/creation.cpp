@@ -29,7 +29,7 @@ std::string repr_strvec(std::vector<std::string> strvec)
 
 void TriangleCreationTest::run(std::array<Vec3, 3> points, std::vector<std::string> expected_result)
 {
-  PeriodicBox box(10.0, this->is_quiet?-10:0);
+  XYPeriodicBox box(10.0, this->is_quiet?-10:0);
   Particle *pi = new Particle(1.0, points[0]),
     *pj = new Particle(1.0, points[1]),
     *pk = new Particle(1.0, points[2]);

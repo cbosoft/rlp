@@ -1,7 +1,7 @@
 #include "vertex.hpp"
 
 
-Vertex::Vertex(Particle *p, PeriodicBox *box)
+Vertex::Vertex(Particle *p, XYPeriodicBox *box)
 {
   this->particle = p;
   this->box = box;

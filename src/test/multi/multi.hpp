@@ -1,7 +1,7 @@
 #include "../test.hpp"
 #include "../../util/vec.hpp"
 #include "../../particle/particle.hpp"
-#include "../../box/box.hpp"
+#include "../../box/xyperiodic/xyperiodicbox.hpp"
 #include "../../arrangement/line.hpp"
 #include "../../util/random.hpp"
 #include "../../util/exception.hpp"

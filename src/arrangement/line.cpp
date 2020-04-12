@@ -1,7 +1,7 @@
 #include "line.hpp"
 
 
-Line::Line(Particle *a, Particle *b, PeriodicBox *box)
+Line::Line(Particle *a, Particle *b, XYPeriodicBox *box)
 {
   this->particles[0] = a;
   this->particles[1] = b;

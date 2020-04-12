@@ -1,16 +1,16 @@
 #include <cmath>
 #include <algorithm>
 
-#include "box.hpp"
-#include "../arrangement/vertex.hpp"
-#include "../arrangement/line.hpp"
-#include "../arrangement/triangle.hpp"
-#include "../util/coords.hpp"
-#include "../util/epsilon.hpp"
-#include "../util/exception.hpp"
+#include "xyperiodicbox.hpp"
+#include "../../arrangement/vertex.hpp"
+#include "../../arrangement/line.hpp"
+#include "../../arrangement/triangle.hpp"
+#include "../../util/coords.hpp"
+#include "../../util/epsilon.hpp"
+#include "../../util/exception.hpp"
 
 
-void PeriodicBox::update_arrangements()
+void XYPeriodicBox::update_arrangements()
 {
 
   // first remove arrangements which are now blocked
@@ -102,7 +102,7 @@ void PeriodicBox::update_arrangements()
 }
 
 
-ParticleArrangement *PeriodicBox::sort_and_filter_arrangements(std::list<ParticleArrangement *> &arrangements, const Particle *p) const
+ParticleArrangement *XYPeriodicBox::sort_and_filter_arrangements(std::list<ParticleArrangement *> &arrangements, const Particle *p) const
 {
 
   // Filter by closest.

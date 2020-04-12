@@ -20,7 +20,7 @@
 void ConfigGenerator::generate_particles(int n, int error_tolerance)
 {
 
-  this->box.reserve(n);
+  this->box->reserve(n);
 
   int errors = 0;
   double generation_duration = -1;
@@ -30,7 +30,7 @@ void ConfigGenerator::generate_particles(int n, int error_tolerance)
   int previous_number = 0, count_same = 0, inaction_thresh = 10000;
   ProgressBar pb;
   if (verbosity == 0) pb = ProgressBar({"Inaction", "Errors", "Number"}, {inaction_thresh, error_tolerance, n});
-  while ((i = this->box.get_number_particles()) < n) {
+  while ((i = this->box->get_number_particles()) < n) {
 
     auto before = CLOCK::now();
     time_since_print_duration = static_cast<double>((before - last_print).count()) * CLOCK::duration::period::num / CLOCK::duration::period::den;
@@ -47,7 +47,7 @@ void ConfigGenerator::generate_particles(int n, int error_tolerance)
         pb.draw();
       }
       else {
-        std::cerr << BG_BLUE << "(" << this->box.get_number_particles() << "/" << n << ") (" << generation_duration << ") (" << errors << "/" << error_tolerance << ")" RESET " ";
+        std::cerr << BG_BLUE << "(" << this->box->get_number_particles() << "/" << n << ") (" << generation_duration << ") (" << errors << "/" << error_tolerance << ")" RESET " ";
         if (this->verbosity < 1) {
           std::cerr << std::endl;
         }
@@ -86,19 +86,20 @@ void ConfigGenerator::generate_particles(int n, int error_tolerance)
     }
 
     if (count_same >= inaction_thresh) {
-      if (not this->box.stable_sites_remaining())
-        throw NoSitesRemainError("No sites remaining!");
+      throw InactionError("No sites remaining!");
     }
   }
 
-  std::cerr << BG_BLUE << this->box.get_volume_fraction() << RESET << std::endl;
+  std::cerr << BG_BLUE << this->box->get_volume_fraction() << RESET << std::endl;
 }
+
 
 void ConfigGenerator::generate_particle()
 {
-  Vec3 position = vec3_urand(0.0, this->box.get_L());
+  // TODO: move to box?
+  Vec3 position = vec3_urand(0.0, this->box->get_L());
   double d = this->sieve->get_size();
-  position.set(2, this->box.get_L());
+  position.set(2, this->box->get_L());
   Particle *p = new Particle(d, position);
-  this->box.add_particle(p);
+  this->box->add_particle(p);
 }

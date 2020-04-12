@@ -19,7 +19,7 @@ LineInteractionTest::LineInteractionTest(bool is_quiet)
 
 void LineInteractionTest::run(Vec3 point, Vec3 expected_result)
 {
-  PeriodicBox box(10.0, this->is_quiet?-10:0);
+  XYPeriodicBox box(10.0, this->is_quiet?-10:0);
   Particle *pi = new Particle(1.0, Vec3({4.5, 5.0, 0.0})),
     *pj = new Particle(1.0, Vec3({5.5, 5.0, 0.0}));
   Line line(pi, pj, &box);

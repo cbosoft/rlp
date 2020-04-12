@@ -2,7 +2,7 @@
 
 #include "../test.hpp"
 #include "../../particle/particle.hpp"
-#include "../../box/box.hpp"
+#include "../../box/xyperiodic/xyperiodicbox.hpp"
 #include "../../util/vec.hpp"
 #include "../../util/epsilon.hpp"
 

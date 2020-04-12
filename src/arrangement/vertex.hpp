@@ -1,16 +1,16 @@
 #pragma once
 
 #include "arrangement.hpp"
-#include "../box/box.hpp"
+#include "../box/xyperiodic/xyperiodicbox.hpp"
 
 class Vertex : public virtual ParticleArrangement {
 
   private:
     Particle *particle;
-    PeriodicBox *box;
+    XYPeriodicBox *box;
 
   public:
-    Vertex(Particle *p, PeriodicBox *box);
+    Vertex(Particle *p, XYPeriodicBox *box);
     ~Vertex() {}
 
     bool check_interacts_with(const Particle *p) override;

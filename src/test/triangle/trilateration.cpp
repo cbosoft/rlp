@@ -19,7 +19,7 @@ void TriangleTrilaterationTest::run(std::pair<std::array<Vec3, 3>, double> point
 {
   auto points = points_and_radius.first;
   double radius = points_and_radius.second;
-  PeriodicBox box(10.0, this->is_quiet?-10:0);
+  XYPeriodicBox box(10.0, this->is_quiet?-10:0);
   Particle *pi = new Particle(1.0, points[0]),
     *pj = new Particle(1.0, points[1]),
     *pk = new Particle(1.0, points[2]);

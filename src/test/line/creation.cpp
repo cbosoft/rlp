@@ -15,7 +15,7 @@ LineCreationTest::LineCreationTest(bool is_quiet)
 
 void LineCreationTest::run(std::pair<Vec3, Vec3> pair, int expected_result)
 {
-  PeriodicBox box(10.0, this->is_quiet?-10:0);
+  XYPeriodicBox box(10.0, this->is_quiet?-10:0);
   Particle *pi = new Particle(1.0, pair.first),
     *pj = new Particle(1.0, pair.second);
   box.add_particle(pi);

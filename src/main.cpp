@@ -5,6 +5,7 @@
 #include "sieve/sieve.hpp"
 #include "version.hpp"
 #include "util/args.hpp"
+#include "box/xyperiodic/xyperiodicbox.hpp"
 
 
 int main(int argc, const char **argv)
@@ -15,7 +16,10 @@ int main(int argc, const char **argv)
   if (args.run_tests)
     run_tests(args.verbosity < 1);
 
-  ConfigGenerator cg = ConfigGenerator(args.length, args.verbosity, args.particles_are_seed, args.friction_thresh, args.output_path);
+  ConfigGenerator cg = ConfigGenerator(args.verbosity, args.output_path);
+  // TODO read boxtype from args
+  GenericBox *box = new XYPeriodicBox(args.length, args.verbosity, args.friction_thresh);
+  cg.set_box(box);
 
   if (strcmp(args.sieve_type, "mono") == 0) {
     cg.set_sieve(new MonoSieve());

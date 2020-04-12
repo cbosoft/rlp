@@ -1,7 +1,7 @@
 #include "triangle.hpp"
 
 
-Triangle::Triangle(Particle *a, Particle *b, Particle *c, PeriodicBox *box)
+Triangle::Triangle(Particle *a, Particle *b, Particle *c, XYPeriodicBox *box)
 {
   this->particles[0] = a;
   this->particles[1] = b;
