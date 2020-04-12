@@ -90,6 +90,8 @@ void ConfigGenerator::generate_particles(int n, int error_tolerance)
     }
   }
 
+  this->box->finish();
+
   std::cerr << BG_BLUE << this->box->get_volume_fraction() << RESET << std::endl;
 }
 

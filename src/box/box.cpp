@@ -26,6 +26,11 @@ void GenericBox::clear_particles()
   }
 }
 
+void GenericBox::finish()
+{
+  // do nothing
+}
+
 
 
 

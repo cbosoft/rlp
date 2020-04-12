@@ -29,6 +29,7 @@ class GenericBox {
 
     void reserve(int n);
     virtual void add_particle(Particle *p) =0;
+    virtual void finish();
 
     void set_L(double L);
 
