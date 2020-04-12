@@ -6,12 +6,12 @@
 
 ConfigGenerator::ConfigGenerator(int verbosity, std::string output_file_path)
 {
-  this->box = nullptr;
   this->verbosity = verbosity;
   this->output_file_path = output_file_path;
   this->check_file_path();
 
-  this->sieve = new MonoSieve();
+  this->box = nullptr;
+  this->sieve = nullptr;
 }
 
 
@@ -40,7 +40,9 @@ void ConfigGenerator::output_configuration(bool failed)
 
 void ConfigGenerator::set_sieve(Sieve *s)
 {
-  delete this->sieve;
+  if (this->sieve != nullptr)
+    delete this->sieve;
+
   this->sieve = s;
 }
 
