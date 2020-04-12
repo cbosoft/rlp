@@ -13,6 +13,11 @@ Particle::Particle(double diameter, Vec3 position)
   this->previous_interaction = nullptr;
 }
 
+Particle::~Particle()
+{
+  // do nothing
+}
+
 void Particle::set_diameter(double diameter)
 {
   this->diameter = diameter;

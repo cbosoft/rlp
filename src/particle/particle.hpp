@@ -20,6 +20,8 @@ class Particle {
     std::vector<const Particle *> neighbours;
 
     Particle(double diameter, Vec3 position);
+    virtual ~Particle();
+
     std::string repr() const noexcept;
 
     void set_z(double z) noexcept;
