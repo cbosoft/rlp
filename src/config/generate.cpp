@@ -20,6 +20,12 @@
 void ConfigGenerator::generate_particles(int n, int error_tolerance)
 {
 
+  if (this->sieve == nullptr)
+    throw AuthorError("Sieve is nullptr! Should have been setup in main.cpp, but wasn't.");
+
+  if (this->box == nullptr)
+    throw AuthorError("Box is nullptr! Should have been setup in main.cpp, but wasn't.");
+
   this->box->reserve(n);
 
   int errors = 0;
