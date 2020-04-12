@@ -11,4 +11,6 @@ class MDParticle : virtual public Particle {
     MDParticle(double diameter, Vec3 position, Vec3 velocity, Vec3 force);
     ~MDParticle();
 
+    void interact(MDParticle *other);
+
 };
