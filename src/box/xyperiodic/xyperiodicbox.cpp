@@ -1,11 +1,5 @@
 #include "xyperiodicbox.hpp"
 
-XYPeriodicBox::XYPeriodicBox(double L, int verbosity, double friction_thresh)
-  : GenericBox(L, verbosity, friction_thresh) 
-{
-  this->logger = Logger(nullptr, verbosity);
-};
-
 
 std::list<ParticleArrangement *> XYPeriodicBox::get_arrangements() const
 {

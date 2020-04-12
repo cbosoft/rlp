@@ -34,7 +34,7 @@ class XYPeriodicBox : public virtual GenericBox {
   public:
 
     XYPeriodicBox() : XYPeriodicBox(0.0) {}
-    XYPeriodicBox(double L, int verbosity=1, double friction_thresh=2.0);
+    XYPeriodicBox(double L, int verbosity=1, double friction_thresh=2.0) : GenericBox(L, verbosity, friction_thresh) {};
     ~XYPeriodicBox();
 
     void add_particle(Particle *p) override;
