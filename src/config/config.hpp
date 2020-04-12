@@ -19,6 +19,7 @@ class ConfigGenerator {
   public:
 
     ConfigGenerator(int verbosity, std::string output_file_path);
+    ~ConfigGenerator();
 
     void generate_particles(int n, int error_tolerance);
     void generate_particle();

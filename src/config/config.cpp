@@ -14,6 +14,17 @@ ConfigGenerator::ConfigGenerator(int verbosity, std::string output_file_path)
   this->sieve = nullptr;
 }
 
+ConfigGenerator::~ConfigGenerator()
+{
+
+  if (this->box != nullptr)
+    delete this->box;
+
+  if (this->sieve != nullptr)
+    delete this->sieve;
+
+}
+
 
 void ConfigGenerator::check_file_path()
 {
